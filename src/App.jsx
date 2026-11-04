@@ -871,7 +871,7 @@ export default function EnglishTutorApp() {
                 <Layers className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="font-bold text-lg text-white tracking-wide">AI Shadowing Lab</h1>
+                <h1 className="font-bold text-lg text-white tracking-wide">TAEWON Shadowing Lab</h1>
                 <p className="text-xs text-slate-400">의미 덩어리(청크) 단위 보이스 섀도잉</p>
               </div>
             </div>
