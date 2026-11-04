@@ -129,6 +129,29 @@ const CHUNK_DATABASE = {
   }
 };
 
+// 모바일(iOS Safari 및 Android Chrome) 브라우저별 최적 녹음 코덱 감지
+const getBestAudioMimeType = () => {
+  if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) return '';
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isSafari) {
+    if (MediaRecorder.isTypeSupported('audio/mp4')) return 'audio/mp4';
+    if (MediaRecorder.isTypeSupported('audio/aac')) return 'audio/aac';
+  }
+  const candidates = [
+    'audio/webm;codecs=opus',
+    'audio/webm',
+    'audio/mp4',
+    'audio/aac',
+    'audio/ogg'
+  ];
+  for (const mime of candidates) {
+    if (MediaRecorder.isTypeSupported(mime)) {
+      return mime;
+    }
+  }
+  return '';
+};
+
 const cleanText = (str) => {
   return (str || '')
     .toLowerCase()
@@ -435,13 +458,40 @@ export default function EnglishTutorApp() {
 
   const playMyVoiceAudio = () => {
     if (!recordedAudioUrl) return;
-    if (userAudioPlayerRef.current) userAudioPlayerRef.current.pause();
-    const audio = new Audio(recordedAudioUrl);
-    userAudioPlayerRef.current = audio;
-    setIsPlayingMyVoice(true);
-    audio.onended = () => setIsPlayingMyVoice(false);
-    audio.onerror = () => setIsPlayingMyVoice(false);
-    audio.play().catch(() => setIsPlayingMyVoice(false));
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+    try {
+      if (userAudioPlayerRef.current) {
+        userAudioPlayerRef.current.pause();
+        userAudioPlayerRef.current.currentTime = 0;
+      }
+      const audio = new Audio();
+      audio.src = recordedAudioUrl;
+      // iOS Safari 모바일 인라인 재생 필수 속성
+      audio.setAttribute('playsinline', 'true');
+      audio.setAttribute('webkit-playsinline', 'true');
+      audio.preload = 'auto';
+      
+      userAudioPlayerRef.current = audio;
+      setIsPlayingMyVoice(true);
+
+      audio.onended = () => setIsPlayingMyVoice(false);
+      audio.onerror = (e) => {
+        console.warn("Audio playback error:", e);
+        setIsPlayingMyVoice(false);
+      };
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn("Audio play catch:", err);
+          setIsPlayingMyVoice(false);
+        });
+      }
+    } catch (e) {
+      console.warn("playMyVoiceAudio error:", e);
+      setIsPlayingMyVoice(false);
+    }
   };
 
   const playUserSpeechTts = () => {
@@ -461,19 +511,32 @@ export default function EnglishTutorApp() {
   const startMediaRecorder = async () => {
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
         mediaStreamRef.current = stream;
-        const mediaRecorder = new MediaRecorder(stream);
+        
+        const mimeType = getBestAudioMimeType();
+        const options = mimeType ? { mimeType } : undefined;
+        const mediaRecorder = options ? new MediaRecorder(stream, options) : new MediaRecorder(stream);
         audioChunksRef.current = [];
 
         mediaRecorder.ondataavailable = (event) => {
-          if (event.data && event.data.size > 0) audioChunksRef.current.push(event.data);
+          if (event.data && event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
         };
 
         mediaRecorder.onstop = () => {
           if (audioChunksRef.current.length > 0) {
-            const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-            setRecordedAudioUrl(URL.createObjectURL(audioBlob));
+            const actualMime = mediaRecorder.mimeType || mimeType || (MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : 'audio/webm');
+            const audioBlob = new Blob(audioChunksRef.current, { type: actualMime });
+            const url = URL.createObjectURL(audioBlob);
+            setRecordedAudioUrl(url);
           }
           if (mediaStreamRef.current) {
             mediaStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -481,10 +544,13 @@ export default function EnglishTutorApp() {
           }
         };
 
-        mediaRecorder.start();
+        // 모바일 브라우저에서 데이터 손실 방지를 위해 200ms 단위 청크 플러시
+        mediaRecorder.start(200);
         mediaRecorderRef.current = mediaRecorder;
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn("MediaRecorder start error:", e);
+    }
   };
 
   const stopMediaRecorder = () => {
