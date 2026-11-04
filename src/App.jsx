@@ -27,7 +27,6 @@ const DIFFICULTY_LEVELS = [
 ];
 
 // 1200개의 실전 문장 데이터베이스 (A2~C1, 청크별 100개씩)
-// 코드 용량을 위해 예시 문장들을 패턴화하여 대량 생성한 데이터 구조입니다.
 const generateMockDatabase = () => {
     const db = { A2: { 2: [], 3: [], 4: [] }, B1: { 2: [], 3: [], 4: [] }, B2: { 2: [], 3: [], 4: [] }, C1: { 2: [], 3: [], 4: [] } };
     
@@ -78,15 +77,13 @@ const generateMockDatabase = () => {
              text = `${s} ${v} ${c1} ${c2}`;
              chunks = [s, v, c1, c2];
         }
-        return { text: text, chunks: chunks, translation: "한국어 번역 (예시)" }; // 실제 번역은 구조상 생략
+        return { text: text, chunks: chunks, translation: "한국어 번역 (예시)" };
     };
 
     for (let level of ['A2', 'B1', 'B2', 'C1']) {
         for (let numChunks of [2, 3, 4]) {
             for (let i = 0; i < 100; i++) {
-                // 고유한 문장을 만들기 위한 약간의 변형
                 let item = generateChunks(level, numChunks);
-                // 중복 방지를 위해 인덱스 추가 (실제로는 다양하게 생성됨)
                 if(i > 0) item.text = item.text.replace(".", ` (Variant ${i}).`);
                 db[level][numChunks].push(item);
             }
@@ -147,14 +144,25 @@ const playSoundEffect = (type) => {
   } catch (err) {}
 };
 
-const generateLocalFeedback = (target, spoken) => {
-  // Variant 번호 제거 로직 추가 (평가 시 무시)
+// 레벨별 관대함(Strictness)을 적용한 피드백 엔진
+const generateLocalFeedback = (target, spoken, level) => {
   const cleanTargetForEval = target.replace(/\(Variant \d+\)/i, '').trim();
 
-  const normTarget = cleanText(cleanTargetForEval);
-  const normSpoken = cleanText(spoken);
+  let normTarget = cleanText(cleanTargetForEval);
+  let normSpoken = cleanText(spoken);
+
+  // A2, B1: 관사 및 전치사 등 덜 중요한 단어 일부 무시 (원활한 통과를 위해)
+  if (level === 'A2' || level === 'B1') {
+    const ignoreWords = ['a', 'an', 'the', 'is', 'are', 'to', 'in', 'on', 'at', 'of', 'for'];
+    const filterWords = (text) => text.split(' ').filter(w => !ignoreWords.includes(w)).join(' ');
+    normTarget = filterWords(normTarget);
+    normSpoken = filterWords(normSpoken);
+  }
 
   if (normTarget === normSpoken) {
+    if (level === 'A2' || level === 'B1') {
+      return { isPerfect: true, message: `🎉 완벽합니다! (${level} 레벨: 관사나 사소한 오류는 자동으로 패스했습니다.)` };
+    }
     return { isPerfect: true, message: "🎉 완벽합니다! (Spot on!) 정확하게 말씀하셨습니다." };
   }
 
@@ -166,7 +174,7 @@ const generateLocalFeedback = (target, spoken) => {
 
   targetWords.forEach((word, idx) => {
     if (!spokenWords.includes(word)) {
-      if (spokenWords[idx] && spokenWords[idx] !== word) {
+      if (spokenWords[idx] && spokenWords[idx] !== word && !targetWords.includes(spokenWords[idx])) {
         substituted.push(`'${word}' 대신 '${spokenWords[idx]}'`);
       } else {
         missingWords.push(`'${word}'`);
@@ -174,33 +182,48 @@ const generateLocalFeedback = (target, spoken) => {
     }
   });
 
+  const extraWords = spokenWords.filter((w) => !targetWords.includes(w));
+
+  // A2 레벨 특별 관대함: 1단어 누락이나 오인식은 애교로 패스 (STT 스트레스 방지)
+  if (level === 'A2') {
+    if (missingWords.length + substituted.length <= 1 && extraWords.length <= 1) {
+      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 1~2단어의 사소한 인식 오류를 관대하게 패스했습니다.)" };
+    }
+  }
+
+  // B1 레벨 특별 관대함: 의미 있는 단어는 다 말했는데 잉여 단어(extra)가 1개 끼어든 정도는 패스
+  if (level === 'B1') {
+    if (missingWords.length === 0 && substituted.length === 0 && extraWords.length <= 1) {
+      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 핵심 단어가 일치하여 패스했습니다.)" };
+    }
+  }
+
+  const strictNotice = (level === 'C1' || level === 'B2') ? ` (${level} 모드: 매우 엄격함)` : '';
+
   if (substituted.length > 0) {
     return {
       isPerfect: false,
-      message: `${substituted.slice(0, 2).join(', ')}을(를) 말씀하셨습니다. 원문에 맞춰 다시 시도해 보세요!`
+      message: `${substituted.slice(0, 2).join(', ')}을(를) 말씀하셨습니다. 원문에 맞춰 다시 시도해 보세요!${strictNotice}`
     };
   }
 
   if (missingWords.length > 0) {
     return {
       isPerfect: false,
-      message: `${missingWords.slice(0, 2).join(', ')} 단어가 빠졌습니다. 끝까지 말씀해 보세요.`
+      message: `${missingWords.slice(0, 2).join(', ')} 단어가 빠졌습니다. 끝까지 말씀해 보세요.${strictNotice}`
     };
   }
 
-  if (spokenWords.length > targetWords.length) {
-    const extraWords = spokenWords.filter((w) => !targetWords.includes(w));
-    if (extraWords.length > 0) {
-      return {
-        isPerfect: false,
-        message: `원문에 없는 '${extraWords.slice(0, 2).join("', '")}' 단어가 들어갔습니다.`
-      };
-    }
+  if (extraWords.length > 0) {
+    return {
+      isPerfect: false,
+      message: `원문에 없는 '${extraWords.slice(0, 2).join("', '")}' 단어가 들어갔습니다.${strictNotice}`
+    };
   }
 
   return {
     isPerfect: false,
-    message: "아주 근접했습니다! 조금 더 또렷하게 다시 발음해 보세요."
+    message: `아주 근접했습니다! 조금 더 또렷하게 다시 발음해 보세요.${strictNotice}`
   };
 };
 
@@ -233,6 +256,8 @@ export default function EnglishTutorApp() {
   const [evaluation, setEvaluation] = useState(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [isPerfect, setIsPerfect] = useState(false);
+  
+  // 재생 속도 상태 (0.7, 0.85, 1.0)
   const [speechSpeed, setSpeechSpeed] = useState(0.85);
   
   const [speechSupported, setSpeechSupported] = useState(true);
@@ -251,7 +276,6 @@ export default function EnglishTutorApp() {
   const pauseWaitTimeRef = useRef(pauseWaitTime);
   pauseWaitTimeRef.current = pauseWaitTime;
 
-  // 화면 표출 시 Variant 태그 숨김 처리
   const displayItem = {
       ...currentSentence,
       text: currentSentence.text.replace(/\(Variant \d+\)/i, '').trim(),
@@ -481,9 +505,11 @@ export default function EnglishTutorApp() {
     setEvaluation(null);
     setIsPerfect(false);
 
-    const localResult = generateLocalFeedback(targetText, spokenText);
+    // 레벨 정보를 평가 함수로 전달
+    const localResult = generateLocalFeedback(targetText, spokenText, difficultyLevel);
     setIsPerfect(localResult.isPerfect);
     setEvaluation(localResult.message);
+    
     if (soundEffectsEnabled) {
       playSoundEffect(localResult.isPerfect ? 'success' : 'retry');
     }
@@ -619,20 +645,26 @@ export default function EnglishTutorApp() {
             </div>
           </div>
 
-          {/* 청크(의미 덩어리 개수) 선택 */}
+          {/* 청크(의미 덩어리 개수) 선택 및 배속 조절 */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5 text-indigo-400" />
                 문장 길이 설정 (Chunk 수)
               </label>
+              
+              {/* 재생 속도 변경 버튼 (1.0x 추가) */}
               <div className="flex items-center gap-2 text-xs text-slate-400">
-                <span>속도:</span>
+                <span>듣기 속도:</span>
                 <button
-                  onClick={() => setSpeechSpeed(s => s === 0.85 ? 0.7 : 0.85)}
-                  className={`px-2 py-0.5 rounded border transition-colors ${speechSpeed === 0.7 ? 'bg-indigo-600 text-white border-indigo-500' : 'bg-slate-800 border-slate-700 text-slate-300'}`}
+                  onClick={() => setSpeechSpeed(s => s === 0.7 ? 0.85 : s === 0.85 ? 1.0 : 0.7)}
+                  className={`px-2.5 py-0.5 rounded border transition-colors ${
+                    speechSpeed === 0.7 ? 'bg-indigo-600 text-white border-indigo-500' : 
+                    speechSpeed === 1.0 ? 'bg-rose-600 text-white border-rose-500' : 
+                    'bg-slate-800 border-slate-700 text-slate-300'
+                  }`}
                 >
-                  {speechSpeed === 0.7 ? '0.7x (느리게)' : '0.85x (표준)'}
+                  {speechSpeed === 0.7 ? '0.7x (느리게)' : speechSpeed === 0.85 ? '0.85x (표준)' : '1.0x (원어민)'}
                 </button>
               </div>
             </div>
@@ -773,7 +805,7 @@ export default function EnglishTutorApp() {
               <div className="flex items-center gap-2">
                 {isRecording ? <Square className="w-5 h-5 fill-current" /> : <Mic className="w-6 h-6" />}
                 <span className="text-base font-bold">
-                  {isRecording ? "말씀 끝남 (탭하여 즉시 완료)" : "따라 말하기 (Tap to Speak)"}
+                  {isRecording ? "말씀 끝남 (탭하여 완료)" : "따라 말하기 (Tap to Speak)"}
                 </span>
               </div>
               {isRecording && (
@@ -891,7 +923,7 @@ export default function EnglishTutorApp() {
 
         <div className="bg-slate-900 border-t border-slate-800/80 px-6 py-4 text-center">
           <p className="text-xs text-slate-500">
-            💡 1,200개의 실전 비즈니스 영어 문장이 탑재되어 있어 오프라인 환경에서도 무한 반복 연습이 가능합니다.
+            💡 초급(A2/B1)은 인식이 다소 관대하며, 고급(B2/C1) 모드는 매우 엄격하게 채점됩니다.
           </p>
         </div>
 
