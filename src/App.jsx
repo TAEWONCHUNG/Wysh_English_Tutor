@@ -26,280 +26,10842 @@ const DIFFICULTY_LEVELS = [
   { id: 'C1', label: 'C1 고급', desc: '전문 분석·경영' }
 ];
 
-// 1,200개 문장을 100% 자연스러운 2~4단어 청크로 빌드하는 임베디드 데이터베이스 엔진
-const buildSentenceDatabase = () => {
-  const db = {
-    A2: { 2: [], 3: [], 4: [] },
-    B1: { 2: [], 3: [], 4: [] },
-    B2: { 2: [], 3: [], 4: [] },
-    C1: { 2: [], 3: [], 4: [] }
-  };
-
-  const add = (level, chunks, trans) => {
-    const text = chunks.join(' ');
-    db[level][chunks.length].push({ text, chunks, translation: trans });
-  };
-
-  // --- A2 (2청크: 100개, 3청크: 100개, 4청크: 100개) ---
-  const a2_subjects = [
-    ["I usually drink", "저는 보통 마십니다"],
-    ["She always prepares", "그녀는 항상 준비합니다"],
-    ["We often take", "우리는 자주 산책합니다"],
-    ["He checks his", "그는 확인합니다"],
-    ["They eat healthy", "그들은 건강하게 먹습니다"],
-    ["Please send me", "제게 보내주세요"],
-    ["Could you forward", "전달해 주시겠어요"],
-    ["We should schedule", "우리는 잡아야 합니다"],
-    ["I will call", "제가 전화하겠습니다"],
-    ["He packed his", "그는 챙겼습니다"]
-  ];
-  const a2_complements = [
-    ["warm black coffee.", "따뜻한 블랙 커피를."],
-    ["fresh green tea.", "신선한 녹차를."],
-    ["short morning walks.", "짧은 아침 산책을."],
-    ["daily work planners.", "일일 업무 플래너를."],
-    ["breakfast at home.", "집에서 아침 식사를."],
-    ["the project email.", "프로젝트 이메일을."],
-    ["the invoice details.", "청구서 세부내용을."],
-    ["a brief meeting.", "짧은 회의 일정을."],
-    ["you back soon.", "곧 다시."],
-    ["laptop bag safely.", "노트북 가방을 안전하게."]
-  ];
-  a2_subjects.forEach(([s, sk]) => {
-    a2_complements.forEach(([c, ck]) => {
-      add("A2", [s, c], `${sk} ${ck}`);
-    });
-  });
-
-  const a2_3_s = [
-    ["Our sales team", "우리 영업팀은"], ["The office manager", "사무실 관리자는"],
-    ["Every staff member", "모든 직원은"], ["The support desk", "지원 부서는"], ["My project partner", "제 프로젝트 파트너는"]
-  ];
-  const a2_3_v = [
-    ["prepares weekly reports", "주간 보고서를 준비합니다"], ["shares project schedules", "프로젝트 일정을 공유합니다"],
-    ["orders office supplies", "사무용품을 주문합니다"], ["answers client questions", "고객 질문에 답변합니다"], ["organizes meeting slides", "회의 슬라이드를 정리합니다"]
-  ];
-  const a2_3_c = [
-    ["every Monday morning.", "매주 월요일 아침에."], ["before lunch starts.", "점심시간이 시작되기 전에."],
-    ["in the room.", "회의실에서."], ["with great care.", "매우 정성스럽게."]
-  ];
-  a2_3_s.forEach(([s, sk]) => {
-    a2_3_v.forEach(([v, vk]) => {
-      a2_3_c.forEach(([c, ck]) => {
-        add("A2", [s, v, c], `${sk} ${ck} ${vk}`);
-      });
-    });
-  });
-
-  const a2_4_s1 = [
-    ["If weather permits,", "날씨가 좋으면,"], ["Before you leave,", "퇴근하기 전에,"],
-    ["When clients visit,", "고객이 방문할 때,"], ["After morning tasks,", "아침 업무 후에,"], ["If you ask,", "요청하신다면,"]
-  ];
-  const a2_4_s2 = [["we can enjoy", "우리는 즐길 수 있습니다"], ["staff will assist", "직원이 도울 것입니다"]];
-  const a2_4_s3 = [
-    ["a friendly lunch", "다정한 점심을"], ["helpful basic guidance", "유용한 기본 안내를"],
-    ["a brief meeting", "짧은 미팅을"], ["a warm welcome", "따뜻한 환영을"], ["quick service support", "신속한 지원 서비스를"]
-  ];
-  const a2_4_s4 = [["outside the park.", "공원 밖에서."], ["without any wait.", "기다림 없이."]];
-  a2_4_s1.forEach(([s1, k1]) => {
-    a2_4_s2.forEach(([s2, k2]) => {
-      a2_4_s3.forEach(([s3, k3]) => {
-        a2_4_s4.forEach(([s4, k4]) => {
-          add("A2", [s1, s2, s3, s4], `${k1} ${k4} ${k3} ${k2}`);
-        });
-      });
-    });
-  });
-
-  // --- B1 (2청크: 100개, 3청크: 100개, 4청크: 100개) ---
-  const b1_subjects = [
-    ["Customer satisfaction remains", "고객 만족은 언제나"], ["Service response quality", "서비스 응대 품질은"],
-    ["Direct client feedback", "직접적인 고객 피드백은"], ["Resolving user inquiries", "사용자 문의 해결은"],
-    ["Building firm trust", "확고한 신뢰 구축은"], ["Please review carefully", "주의 깊게 검토해 주세요"],
-    ["We finally approved", "우리는 마침내 승인했습니다"], ["The engineering team", "엔지니어링 팀은"],
-    ["We must streamline", "우리는 간소화해야 합니다"], ["Effective communication plays", "효과적인 소통은"]
-  ];
-  const b1_complements = [
-    ["our operational priority.", "우리의 최우선 과제입니다."], ["essential for success.", "성공을 위해 필수적입니다."],
-    ["critical for retention.", "고객 유지에 대단히 중요합니다."], ["vital for collaboration.", "협업을 위해 매우 중요합니다."],
-    ["key for growth.", "성장을 위한 핵심입니다."], ["the attached proposal.", "첨부된 제안서를."],
-    ["the project budget.", "프로젝트 예산을."], ["the server issue.", "서버 문제를 해결했습니다."],
-    ["the work process.", "업무 프로세스를."], ["a truly vital role.", "대단히 중대한 역할을 합니다."]
-  ];
-  b1_subjects.forEach(([s, sk]) => {
-    b1_complements.forEach(([c, ck]) => {
-      add("B1", [s, c], `${sk} ${ck}`);
-    });
-  });
-
-  const b1_3_s = [
-    ["Effective communication", "효과적인 의사소통은"], ["Flexible work setups", "유연 근무 환경은"],
-    ["Automating daily tasks", "일일 업무 자동화는"], ["Staff training programs", "직원 교육 프로그램은"], ["Streamlined approval steps", "간소화된 결재 단계는"]
-  ];
-  const b1_3_v = [
-    ["plays key roles", "핵심적인 역할을 합니다"], ["contributes quite significantly", "상당한 기여를 합니다"],
-    ["gives more freedom", "더 많은 여유를 줍니다"], ["brings lasting benefits", "오랜 혜택을 가져옵니다"], ["reduces administrative delays", "행정적 지연을 줄여줍니다"]
-  ];
-  const b1_3_c = [
-    ["in project collaboration.", "프로젝트 협업에서."], ["to workplace satisfaction.", "직장 만족도 향상에."],
-    ["for creative design.", "창의적인 기획 업무를 위해."], ["across our company.", "우리 회사 전반에 걸쳐."]
-  ];
-  b1_3_s.forEach(([s, sk]) => {
-    b1_3_v.forEach(([v, vk]) => {
-      b1_3_c.forEach(([c, ck]) => {
-        add("B1", [s, v, c], `${sk} ${ck} ${vk}`);
-      });
-    });
-  });
-
-  const b1_4_s1 = [
-    ["By adopting tools,", "도구를 도입함으로써,"], ["Despite market challenges,", "시장 난관에도 불구하고,"],
-    ["To improve quality,", "품질을 향상하기 위해,"], ["When auditing accounts,", "회계를 감사할 때,"], ["After conducting interviews,", "인터뷰를 진행한 후,"]
-  ];
-  const b1_4_s2 = [["our project team", "우리 프로젝트 팀은"], ["every regional branch", "모든 지역 지사는"]];
-  const b1_4_s3 = [
-    ["shares critical documents", "중요 서류들을 공유합니다"], ["achieves revenue growth", "매출 성장을 달성합니다"],
-    ["gathers direct feedback", "직접적인 피드백을 수집합니다"], ["implements process improvements", "프로세스 개선을 실행합니다"], ["resolves system errors", "시스템 오류를 해결합니다"]
-  ];
-  const b1_4_s4 = [["in real time.", "실시간으로."], ["without technical delays.", "기술적 지연 없이."]];
-  b1_4_s1.forEach(([s1, k1]) => {
-    b1_4_s2.forEach(([s2, k2]) => {
-      b1_4_s3.forEach(([s3, k3]) => {
-        b1_4_s4.forEach(([s4, k4]) => {
-          add("B1", [s1, s2, s3, s4], `${k1} ${k2} ${k4} ${k3}`);
-        });
-      });
-    });
-  });
-
-  // --- B2 (2청크: 100개, 3청크: 100개, 4청크: 100개) ---
-  const b2_subjects = [
-    ["We successfully negotiated", "우리는 성공적으로 협상했습니다"], ["Continuous professional learning", "지속적인 전문 학습은"],
-    ["Quarterly operating revenue", "분기별 영업 수익은"], ["Implementing agile frameworks", "애자일 프레임워크 도입은"],
-    ["Allocating capital resources", "자본 자원을 배분하는 것은"], ["Strengthening supply chains", "공급망을 강화하는 것은"],
-    ["Market volatility demands", "시장의 변동성은 요구합니다"], ["The leadership team", "경영진 리더십 팀은"],
-    ["Competitor benchmark analysis", "경쟁사 벤치마킹 분석은"], ["Disciplined financial budgeting", "절제된 재무 예산 편성은"]
-  ];
-  const b2_complements = [
-    ["international contract terms.", "국제 계약 조건들을."], ["essential for advancement.", "성장을 위해 필수적입니다."],
-    ["exceeded market forecasts.", "시장 전망치를 초과했습니다."], ["streamlined engineering cycles.", "개발 주기를 간소화했습니다."],
-    ["boosts strategic initiatives.", "전략적 이니셔티브를 촉진합니다."], ["mitigates logistics bottlenecks.", "물류 병목 현상을 완화합니다."],
-    ["decisive organizational actions.", "결단력 있는 조직적 조치를."], ["emphasized strict compliance.", "엄격한 준법을 강조했습니다."],
-    ["reveals untapped opportunities.", "미개척 기회를 발굴합니다."], ["secures organizational viability.", "조직의 생존력을 확보합니다."]
-  ];
-  b2_subjects.forEach(([s, sk]) => {
-    b2_complements.forEach(([c, ck]) => {
-      add("B2", [s, c], `${sk} ${ck}`);
-    });
-  });
-
-  const b2_3_s = [
-    ["Our executive committee", "우리 경영위원회는"], ["The senior strategy", "수석 전략팀은"],
-    ["Every regional director", "모든 지역 본부장은"], ["The marketing division", "마케팅 부문은"], ["Our innovation group", "우리 혁신 그룹은"]
-  ];
-  const b2_3_v = [
-    ["evaluates market performance", "시장 성과를 평가합니다"], ["implements agile principles", "애자일 원칙을 실행합니다"],
-    ["conducts competitor analysis", "경쟁사 분석을 수행합니다"], ["streamlines operational workflows", "운영 워크플로우를 간소화합니다"], ["allocates available capital", "가용 자본을 배분합니다"]
-  ];
-  const b2_3_c = [
-    ["to maintain advantages.", "우위를 유지하기 위해."], ["amid changing conditions.", "변화하는 환경 속에서."],
-    ["during the summit.", "서밋 회의 동안에."], ["with department heads.", "부서장들과 함께."]
-  ];
-  b2_3_s.forEach(([s, sk]) => {
-    b2_3_v.forEach(([v, vk]) => {
-      b2_3_c.forEach(([c, ck]) => {
-        add("B2", [s, v, c], `${sk} ${ck} ${vk}`);
-      });
-    });
-  });
-
-  const b2_4_s1 = [
-    ["Continuous professional learning", "지속적인 전문 역량 학습은"], ["The global team", "글로벌 비즈니스 팀은"],
-    ["Integrating customer feedback", "고객 피드백의 직접 통합은"], ["To protect advantages,", "경쟁적 우위를 보호하기 위해,"], ["Strengthening supply networks", "공급 네트워크의 강화는"]
-  ];
-  const b2_4_s2 = [["is highly essential", "대단히 필수적입니다"], ["across global units", "글로벌 부서 전반에 걸쳐"]];
-  const b2_4_s3 = [
-    ["in demanding environments", "까다로운 환경 속에서"], ["by expanding operations", "운영을 확장함으로써"],
-    ["into emerging markets", "신흥 시장 속으로"], ["to foster collaboration", "협업을 적극 조성하기 위해"], ["which enhances productivity", "생산성을 직접 향상시키는"]
-  ];
-  const b2_4_s4 = [["during this year.", "올해 동안."], ["without compromising standards.", "표준을 훼손하지 않고."]];
-  b2_4_s1.forEach(([s1, k1]) => {
-    b2_4_s2.forEach(([s2, k2]) => {
-      b2_4_s3.forEach(([s3, k3]) => {
-        b2_4_s4.forEach(([s4, k4]) => {
-          add("B2", [s1, s2, s3, s4], `${k1} ${k2} ${k3} ${k4}`);
-        });
-      });
-    });
-  });
-
-  // --- C1 (2청크: 100개, 3청크: 100개, 4청크: 100개) ---
-  const c1_subjects = [
-    ["The board reached", "이사회는 도달했습니다"], ["Meticulous regulatory scrutiny", "철저한 규제 정밀 검토는"],
-    ["Macroeconomic resilience hinges", "거시 경제적 회복력은 달려 있습니다"], ["Transparent corporate governance", "투명한 기업 지배구조는"],
-    ["Fiscal consolidation measures", "재정 건전화 조치는"], ["Cultivating organizational synergy", "조직 시너지를 육성하는 것은"],
-    ["Challenging orthodox assumptions", "기존 통념에 도전하는 것은"], ["Fostering institutional agility", "기관의 기민성을 함양하는 것은"],
-    ["Pioneering artificial intelligence", "선구적인 인공지능 기술은"], ["Comprehensive portfolio diversification", "포괄적인 포트폴리오 다각화는"]
-  ];
-  const c1_complements = [
-    ["a unanimous policy consensus.", "만장일치의 정책 합의에."], ["preempts operational bottlenecks.", "운영상의 병목 현상을 선제 방지합니다."],
-    ["upon agile monetary policies.", "기민한 통화 정책에."], ["fosters institutional investor confidence.", "기관 투자자의 신뢰를 촉진합니다."],
-    ["demand rigorous expenditure oversight.", "엄격한 지출 감독을 요구합니다."], ["requires transparent executive dialogue.", "투명한 경영진 대화를 요구합니다."],
-    ["enables unprecedented technological innovation.", "전례 없는 기술 혁신을 가능하게 합니다."], ["preempts volatile market disruptions.", "변동성 큰 시장 붕괴를 선제 방어합니다."],
-    ["dismantles legacy business paradigms.", "기존 비즈니스 패러다임을 해체합니다."], ["hedges systemic macroeconomic volatility.", "구조적 거시 경제 변동성을 방어합니다."]
-  ];
-  c1_subjects.forEach(([s, sk]) => {
-    c1_complements.forEach(([c, ck]) => {
-      add("C1", [s, c], `${sk} ${ck}`);
-    });
-  });
-
-  const c1_3_s = [
-    ["Sustainable macroeconomic resilience", "지속 가능한 거시경제 회복력은"], ["Meticulous regulatory compliance", "철저한 규제 준법 체계는"],
-    ["Strategic portfolio diversification", "전략적인 포트폴리오 다각화는"], ["Cultivating institutional synergy", "조직 시너지를 육성하는 것은"], ["Navigating regulatory ambiguities", "규제 모호성을 헤쳐나가는 것은"]
-  ];
-  const c1_3_v = [
-    ["hinges on policy adjustments", "정책 조정에 달려 있습니다"], ["safeguards proprietary corporate assets", "독점적 기업 자산을 보호합니다"],
-    ["hedges against volatile fluctuations", "변동성을 효과적으로 방어합니다"], ["requires dismantling entrenched silos", "고착화된 부서 장벽 해체를 요구합니다"], ["demands proactive international engagement", "선제적인 국제 참여를 요구합니다"]
-  ];
-  const c1_3_c = [
-    ["amid unprecedented geopolitical shifts.", "전례 없는 지정학적 격변 속에서."], ["prior to concluding mergers.", "합병 계약을 체결하기 전에."],
-    ["to ensure organizational viability.", "조직 생존력을 보장하기 위해."], ["across distributed global subsidiaries.", "분산된 글로벌 자회사 전반에 걸쳐."]
-  ];
-  c1_3_s.forEach(([s, sk]) => {
-    c1_3_v.forEach(([v, vk]) => {
-      c1_3_c.forEach(([c, ck]) => {
-        add("C1", [s, v, c], `${sk} ${ck} ${vk}`);
-      });
-    });
-  });
-
-  const c1_4_s1 = [
-    ["Navigating cross border ambiguities", "국경 간 규제 모호성 해결은,"], ["Fostering institutional agility", "기관의 기민성을 육성하는 것은,"],
-    ["Leveraging predictive algorithms", "예측 알고리즘을 활용하는 것은,"], ["Synthesizing macroeconomic indicators", "거시 경제 지표를 종합하는 것은,"], ["To preempt financial failures,", "금융 실패를 선제 방어하기 위해,"]
-  ];
-  const c1_4_s2 = [["demands decisive executive leadership", "결단력 있는 리더십을 요구하며"], ["enables resilient multinational enterprises", "다국적 기업들로 하여금"]];
-  const c1_4_s3 = [
-    ["to challenge orthodox assumptions", "고착화된 통념에 도전하고,"], ["and implement compliance protocols", "준법 프로토콜을 시행하도록,"],
-    ["to anticipate structural shifts", "구조적 변화를 예측하고,"], ["and optimize capital allocation", "자본 배분을 최적화하도록,"], ["while preserving institutional credibility", "기관 신뢰도를 보존하면서,"]
-  ];
-  const c1_4_s4 = [["across global capital markets.", "글로벌 자본 시장 전반에 걸쳐."], ["without compromising operational integrity.", "운영의 진실성을 훼손하지 않고."]];
-  c1_4_s1.forEach(([s1, k1]) => {
-    c1_4_s2.forEach(([s2, k2]) => {
-      c1_4_s3.forEach(([s3, k3]) => {
-        c1_4_s4.forEach(([s4, k4]) => {
-          add("C1", [s1, s2, s3, s4], `${k1} ${k2} ${k3} ${k4}`);
-        });
-      });
-    });
-  });
-
-  return db;
+const CHUNK_DATABASE = {
+  "A2": {
+    "2": [
+      {
+        "text": "I usually drink warm morning coffee.",
+        "chunks": [
+          "I usually drink",
+          "warm morning coffee."
+        ],
+        "translation": "저는 보통 마십니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "I usually drink fresh green tea.",
+        "chunks": [
+          "I usually drink",
+          "fresh green tea."
+        ],
+        "translation": "저는 보통 마십니다 신선한 녹차를."
+      },
+      {
+        "text": "I usually drink hot herbal tea.",
+        "chunks": [
+          "I usually drink",
+          "hot herbal tea."
+        ],
+        "translation": "저는 보통 마십니다 따뜻한 허브티를."
+      },
+      {
+        "text": "I usually drink pure mineral water.",
+        "chunks": [
+          "I usually drink",
+          "pure mineral water."
+        ],
+        "translation": "저는 보통 마십니다 맑은 생수를."
+      },
+      {
+        "text": "I usually drink sweet iced tea.",
+        "chunks": [
+          "I usually drink",
+          "sweet iced tea."
+        ],
+        "translation": "저는 보통 마십니다 달콤한 아이스티를."
+      },
+      {
+        "text": "I usually drink the project email.",
+        "chunks": [
+          "I usually drink",
+          "the project email."
+        ],
+        "translation": "저는 보통 마십니다 프로젝트 이메일을."
+      },
+      {
+        "text": "I usually drink the invoice document.",
+        "chunks": [
+          "I usually drink",
+          "the invoice document."
+        ],
+        "translation": "저는 보통 마십니다 청구서 서류를."
+      },
+      {
+        "text": "I usually drink the daily report.",
+        "chunks": [
+          "I usually drink",
+          "the daily report."
+        ],
+        "translation": "저는 보통 마십니다 일일 보고서를."
+      },
+      {
+        "text": "I usually drink these presentation slides.",
+        "chunks": [
+          "I usually drink",
+          "these presentation slides."
+        ],
+        "translation": "저는 보통 마십니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "I usually drink the meeting schedule.",
+        "chunks": [
+          "I usually drink",
+          "the meeting schedule."
+        ],
+        "translation": "저는 보통 마십니다 회의 일정을."
+      },
+      {
+        "text": "She always enjoys warm morning coffee.",
+        "chunks": [
+          "She always enjoys",
+          "warm morning coffee."
+        ],
+        "translation": "그녀는 항상 즐깁니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "She always enjoys fresh green tea.",
+        "chunks": [
+          "She always enjoys",
+          "fresh green tea."
+        ],
+        "translation": "그녀는 항상 즐깁니다 신선한 녹차를."
+      },
+      {
+        "text": "She always enjoys hot herbal tea.",
+        "chunks": [
+          "She always enjoys",
+          "hot herbal tea."
+        ],
+        "translation": "그녀는 항상 즐깁니다 따뜻한 허브티를."
+      },
+      {
+        "text": "She always enjoys pure mineral water.",
+        "chunks": [
+          "She always enjoys",
+          "pure mineral water."
+        ],
+        "translation": "그녀는 항상 즐깁니다 맑은 생수를."
+      },
+      {
+        "text": "She always enjoys sweet iced tea.",
+        "chunks": [
+          "She always enjoys",
+          "sweet iced tea."
+        ],
+        "translation": "그녀는 항상 즐깁니다 달콤한 아이스티를."
+      },
+      {
+        "text": "She always enjoys the project email.",
+        "chunks": [
+          "She always enjoys",
+          "the project email."
+        ],
+        "translation": "그녀는 항상 즐깁니다 프로젝트 이메일을."
+      },
+      {
+        "text": "She always enjoys the invoice document.",
+        "chunks": [
+          "She always enjoys",
+          "the invoice document."
+        ],
+        "translation": "그녀는 항상 즐깁니다 청구서 서류를."
+      },
+      {
+        "text": "She always enjoys the daily report.",
+        "chunks": [
+          "She always enjoys",
+          "the daily report."
+        ],
+        "translation": "그녀는 항상 즐깁니다 일일 보고서를."
+      },
+      {
+        "text": "She always enjoys these presentation slides.",
+        "chunks": [
+          "She always enjoys",
+          "these presentation slides."
+        ],
+        "translation": "그녀는 항상 즐깁니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "She always enjoys the meeting schedule.",
+        "chunks": [
+          "She always enjoys",
+          "the meeting schedule."
+        ],
+        "translation": "그녀는 항상 즐깁니다 회의 일정을."
+      },
+      {
+        "text": "He likes drinking warm morning coffee.",
+        "chunks": [
+          "He likes drinking",
+          "warm morning coffee."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "He likes drinking fresh green tea.",
+        "chunks": [
+          "He likes drinking",
+          "fresh green tea."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 신선한 녹차를."
+      },
+      {
+        "text": "He likes drinking hot herbal tea.",
+        "chunks": [
+          "He likes drinking",
+          "hot herbal tea."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 따뜻한 허브티를."
+      },
+      {
+        "text": "He likes drinking pure mineral water.",
+        "chunks": [
+          "He likes drinking",
+          "pure mineral water."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 맑은 생수를."
+      },
+      {
+        "text": "He likes drinking sweet iced tea.",
+        "chunks": [
+          "He likes drinking",
+          "sweet iced tea."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 달콤한 아이스티를."
+      },
+      {
+        "text": "He likes drinking the project email.",
+        "chunks": [
+          "He likes drinking",
+          "the project email."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 프로젝트 이메일을."
+      },
+      {
+        "text": "He likes drinking the invoice document.",
+        "chunks": [
+          "He likes drinking",
+          "the invoice document."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 청구서 서류를."
+      },
+      {
+        "text": "He likes drinking the daily report.",
+        "chunks": [
+          "He likes drinking",
+          "the daily report."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 일일 보고서를."
+      },
+      {
+        "text": "He likes drinking these presentation slides.",
+        "chunks": [
+          "He likes drinking",
+          "these presentation slides."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "He likes drinking the meeting schedule.",
+        "chunks": [
+          "He likes drinking",
+          "the meeting schedule."
+        ],
+        "translation": "그는 마시는 것을 좋아합니다 회의 일정을."
+      },
+      {
+        "text": "We often have warm morning coffee.",
+        "chunks": [
+          "We often have",
+          "warm morning coffee."
+        ],
+        "translation": "우리는 자주 마십니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "We often have fresh green tea.",
+        "chunks": [
+          "We often have",
+          "fresh green tea."
+        ],
+        "translation": "우리는 자주 마십니다 신선한 녹차를."
+      },
+      {
+        "text": "We often have hot herbal tea.",
+        "chunks": [
+          "We often have",
+          "hot herbal tea."
+        ],
+        "translation": "우리는 자주 마십니다 따뜻한 허브티를."
+      },
+      {
+        "text": "We often have pure mineral water.",
+        "chunks": [
+          "We often have",
+          "pure mineral water."
+        ],
+        "translation": "우리는 자주 마십니다 맑은 생수를."
+      },
+      {
+        "text": "We often have sweet iced tea.",
+        "chunks": [
+          "We often have",
+          "sweet iced tea."
+        ],
+        "translation": "우리는 자주 마십니다 달콤한 아이스티를."
+      },
+      {
+        "text": "We often have the project email.",
+        "chunks": [
+          "We often have",
+          "the project email."
+        ],
+        "translation": "우리는 자주 마십니다 프로젝트 이메일을."
+      },
+      {
+        "text": "We often have the invoice document.",
+        "chunks": [
+          "We often have",
+          "the invoice document."
+        ],
+        "translation": "우리는 자주 마십니다 청구서 서류를."
+      },
+      {
+        "text": "We often have the daily report.",
+        "chunks": [
+          "We often have",
+          "the daily report."
+        ],
+        "translation": "우리는 자주 마십니다 일일 보고서를."
+      },
+      {
+        "text": "We often have these presentation slides.",
+        "chunks": [
+          "We often have",
+          "these presentation slides."
+        ],
+        "translation": "우리는 자주 마십니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "We often have the meeting schedule.",
+        "chunks": [
+          "We often have",
+          "the meeting schedule."
+        ],
+        "translation": "우리는 자주 마십니다 회의 일정을."
+      },
+      {
+        "text": "They prefer drinking warm morning coffee.",
+        "chunks": [
+          "They prefer drinking",
+          "warm morning coffee."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "They prefer drinking fresh green tea.",
+        "chunks": [
+          "They prefer drinking",
+          "fresh green tea."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 신선한 녹차를."
+      },
+      {
+        "text": "They prefer drinking hot herbal tea.",
+        "chunks": [
+          "They prefer drinking",
+          "hot herbal tea."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 따뜻한 허브티를."
+      },
+      {
+        "text": "They prefer drinking pure mineral water.",
+        "chunks": [
+          "They prefer drinking",
+          "pure mineral water."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 맑은 생수를."
+      },
+      {
+        "text": "They prefer drinking sweet iced tea.",
+        "chunks": [
+          "They prefer drinking",
+          "sweet iced tea."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 달콤한 아이스티를."
+      },
+      {
+        "text": "They prefer drinking the project email.",
+        "chunks": [
+          "They prefer drinking",
+          "the project email."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 프로젝트 이메일을."
+      },
+      {
+        "text": "They prefer drinking the invoice document.",
+        "chunks": [
+          "They prefer drinking",
+          "the invoice document."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 청구서 서류를."
+      },
+      {
+        "text": "They prefer drinking the daily report.",
+        "chunks": [
+          "They prefer drinking",
+          "the daily report."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 일일 보고서를."
+      },
+      {
+        "text": "They prefer drinking these presentation slides.",
+        "chunks": [
+          "They prefer drinking",
+          "these presentation slides."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "They prefer drinking the meeting schedule.",
+        "chunks": [
+          "They prefer drinking",
+          "the meeting schedule."
+        ],
+        "translation": "그들은 마시는 것을 선호합니다 회의 일정을."
+      },
+      {
+        "text": "Please send me warm morning coffee.",
+        "chunks": [
+          "Please send me",
+          "warm morning coffee."
+        ],
+        "translation": "제게 보내주세요 따뜻한 아침 커피를."
+      },
+      {
+        "text": "Please send me fresh green tea.",
+        "chunks": [
+          "Please send me",
+          "fresh green tea."
+        ],
+        "translation": "제게 보내주세요 신선한 녹차를."
+      },
+      {
+        "text": "Please send me hot herbal tea.",
+        "chunks": [
+          "Please send me",
+          "hot herbal tea."
+        ],
+        "translation": "제게 보내주세요 따뜻한 허브티를."
+      },
+      {
+        "text": "Please send me pure mineral water.",
+        "chunks": [
+          "Please send me",
+          "pure mineral water."
+        ],
+        "translation": "제게 보내주세요 맑은 생수를."
+      },
+      {
+        "text": "Please send me sweet iced tea.",
+        "chunks": [
+          "Please send me",
+          "sweet iced tea."
+        ],
+        "translation": "제게 보내주세요 달콤한 아이스티를."
+      },
+      {
+        "text": "Please send me the project email.",
+        "chunks": [
+          "Please send me",
+          "the project email."
+        ],
+        "translation": "제게 보내주세요 프로젝트 이메일을."
+      },
+      {
+        "text": "Please send me the invoice document.",
+        "chunks": [
+          "Please send me",
+          "the invoice document."
+        ],
+        "translation": "제게 보내주세요 청구서 서류를."
+      },
+      {
+        "text": "Please send me the daily report.",
+        "chunks": [
+          "Please send me",
+          "the daily report."
+        ],
+        "translation": "제게 보내주세요 일일 보고서를."
+      },
+      {
+        "text": "Please send me these presentation slides.",
+        "chunks": [
+          "Please send me",
+          "these presentation slides."
+        ],
+        "translation": "제게 보내주세요 이 발표 슬라이드를."
+      },
+      {
+        "text": "Please send me the meeting schedule.",
+        "chunks": [
+          "Please send me",
+          "the meeting schedule."
+        ],
+        "translation": "제게 보내주세요 회의 일정을."
+      },
+      {
+        "text": "She checked her warm morning coffee.",
+        "chunks": [
+          "She checked her",
+          "warm morning coffee."
+        ],
+        "translation": "그녀는 확인했습니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "She checked her fresh green tea.",
+        "chunks": [
+          "She checked her",
+          "fresh green tea."
+        ],
+        "translation": "그녀는 확인했습니다 신선한 녹차를."
+      },
+      {
+        "text": "She checked her hot herbal tea.",
+        "chunks": [
+          "She checked her",
+          "hot herbal tea."
+        ],
+        "translation": "그녀는 확인했습니다 따뜻한 허브티를."
+      },
+      {
+        "text": "She checked her pure mineral water.",
+        "chunks": [
+          "She checked her",
+          "pure mineral water."
+        ],
+        "translation": "그녀는 확인했습니다 맑은 생수를."
+      },
+      {
+        "text": "She checked her sweet iced tea.",
+        "chunks": [
+          "She checked her",
+          "sweet iced tea."
+        ],
+        "translation": "그녀는 확인했습니다 달콤한 아이스티를."
+      },
+      {
+        "text": "She checked her the project email.",
+        "chunks": [
+          "She checked her",
+          "the project email."
+        ],
+        "translation": "그녀는 확인했습니다 프로젝트 이메일을."
+      },
+      {
+        "text": "She checked her the invoice document.",
+        "chunks": [
+          "She checked her",
+          "the invoice document."
+        ],
+        "translation": "그녀는 확인했습니다 청구서 서류를."
+      },
+      {
+        "text": "She checked her the daily report.",
+        "chunks": [
+          "She checked her",
+          "the daily report."
+        ],
+        "translation": "그녀는 확인했습니다 일일 보고서를."
+      },
+      {
+        "text": "She checked her these presentation slides.",
+        "chunks": [
+          "She checked her",
+          "these presentation slides."
+        ],
+        "translation": "그녀는 확인했습니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "She checked her the meeting schedule.",
+        "chunks": [
+          "She checked her",
+          "the meeting schedule."
+        ],
+        "translation": "그녀는 확인했습니다 회의 일정을."
+      },
+      {
+        "text": "I will forward warm morning coffee.",
+        "chunks": [
+          "I will forward",
+          "warm morning coffee."
+        ],
+        "translation": "제가 전달하겠습니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "I will forward fresh green tea.",
+        "chunks": [
+          "I will forward",
+          "fresh green tea."
+        ],
+        "translation": "제가 전달하겠습니다 신선한 녹차를."
+      },
+      {
+        "text": "I will forward hot herbal tea.",
+        "chunks": [
+          "I will forward",
+          "hot herbal tea."
+        ],
+        "translation": "제가 전달하겠습니다 따뜻한 허브티를."
+      },
+      {
+        "text": "I will forward pure mineral water.",
+        "chunks": [
+          "I will forward",
+          "pure mineral water."
+        ],
+        "translation": "제가 전달하겠습니다 맑은 생수를."
+      },
+      {
+        "text": "I will forward sweet iced tea.",
+        "chunks": [
+          "I will forward",
+          "sweet iced tea."
+        ],
+        "translation": "제가 전달하겠습니다 달콤한 아이스티를."
+      },
+      {
+        "text": "I will forward the project email.",
+        "chunks": [
+          "I will forward",
+          "the project email."
+        ],
+        "translation": "제가 전달하겠습니다 프로젝트 이메일을."
+      },
+      {
+        "text": "I will forward the invoice document.",
+        "chunks": [
+          "I will forward",
+          "the invoice document."
+        ],
+        "translation": "제가 전달하겠습니다 청구서 서류를."
+      },
+      {
+        "text": "I will forward the daily report.",
+        "chunks": [
+          "I will forward",
+          "the daily report."
+        ],
+        "translation": "제가 전달하겠습니다 일일 보고서를."
+      },
+      {
+        "text": "I will forward these presentation slides.",
+        "chunks": [
+          "I will forward",
+          "these presentation slides."
+        ],
+        "translation": "제가 전달하겠습니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "I will forward the meeting schedule.",
+        "chunks": [
+          "I will forward",
+          "the meeting schedule."
+        ],
+        "translation": "제가 전달하겠습니다 회의 일정을."
+      },
+      {
+        "text": "Could you print warm morning coffee.",
+        "chunks": [
+          "Could you print",
+          "warm morning coffee."
+        ],
+        "translation": "인쇄해 주시겠어요 따뜻한 아침 커피를."
+      },
+      {
+        "text": "Could you print fresh green tea.",
+        "chunks": [
+          "Could you print",
+          "fresh green tea."
+        ],
+        "translation": "인쇄해 주시겠어요 신선한 녹차를."
+      },
+      {
+        "text": "Could you print hot herbal tea.",
+        "chunks": [
+          "Could you print",
+          "hot herbal tea."
+        ],
+        "translation": "인쇄해 주시겠어요 따뜻한 허브티를."
+      },
+      {
+        "text": "Could you print pure mineral water.",
+        "chunks": [
+          "Could you print",
+          "pure mineral water."
+        ],
+        "translation": "인쇄해 주시겠어요 맑은 생수를."
+      },
+      {
+        "text": "Could you print sweet iced tea.",
+        "chunks": [
+          "Could you print",
+          "sweet iced tea."
+        ],
+        "translation": "인쇄해 주시겠어요 달콤한 아이스티를."
+      },
+      {
+        "text": "Could you print the project email.",
+        "chunks": [
+          "Could you print",
+          "the project email."
+        ],
+        "translation": "인쇄해 주시겠어요 프로젝트 이메일을."
+      },
+      {
+        "text": "Could you print the invoice document.",
+        "chunks": [
+          "Could you print",
+          "the invoice document."
+        ],
+        "translation": "인쇄해 주시겠어요 청구서 서류를."
+      },
+      {
+        "text": "Could you print the daily report.",
+        "chunks": [
+          "Could you print",
+          "the daily report."
+        ],
+        "translation": "인쇄해 주시겠어요 일일 보고서를."
+      },
+      {
+        "text": "Could you print these presentation slides.",
+        "chunks": [
+          "Could you print",
+          "these presentation slides."
+        ],
+        "translation": "인쇄해 주시겠어요 이 발표 슬라이드를."
+      },
+      {
+        "text": "Could you print the meeting schedule.",
+        "chunks": [
+          "Could you print",
+          "the meeting schedule."
+        ],
+        "translation": "인쇄해 주시겠어요 회의 일정을."
+      },
+      {
+        "text": "We must review warm morning coffee.",
+        "chunks": [
+          "We must review",
+          "warm morning coffee."
+        ],
+        "translation": "우리는 검토해야 합니다 따뜻한 아침 커피를."
+      },
+      {
+        "text": "We must review fresh green tea.",
+        "chunks": [
+          "We must review",
+          "fresh green tea."
+        ],
+        "translation": "우리는 검토해야 합니다 신선한 녹차를."
+      },
+      {
+        "text": "We must review hot herbal tea.",
+        "chunks": [
+          "We must review",
+          "hot herbal tea."
+        ],
+        "translation": "우리는 검토해야 합니다 따뜻한 허브티를."
+      },
+      {
+        "text": "We must review pure mineral water.",
+        "chunks": [
+          "We must review",
+          "pure mineral water."
+        ],
+        "translation": "우리는 검토해야 합니다 맑은 생수를."
+      },
+      {
+        "text": "We must review sweet iced tea.",
+        "chunks": [
+          "We must review",
+          "sweet iced tea."
+        ],
+        "translation": "우리는 검토해야 합니다 달콤한 아이스티를."
+      },
+      {
+        "text": "We must review the project email.",
+        "chunks": [
+          "We must review",
+          "the project email."
+        ],
+        "translation": "우리는 검토해야 합니다 프로젝트 이메일을."
+      },
+      {
+        "text": "We must review the invoice document.",
+        "chunks": [
+          "We must review",
+          "the invoice document."
+        ],
+        "translation": "우리는 검토해야 합니다 청구서 서류를."
+      },
+      {
+        "text": "We must review the daily report.",
+        "chunks": [
+          "We must review",
+          "the daily report."
+        ],
+        "translation": "우리는 검토해야 합니다 일일 보고서를."
+      },
+      {
+        "text": "We must review these presentation slides.",
+        "chunks": [
+          "We must review",
+          "these presentation slides."
+        ],
+        "translation": "우리는 검토해야 합니다 이 발표 슬라이드를."
+      },
+      {
+        "text": "We must review the meeting schedule.",
+        "chunks": [
+          "We must review",
+          "the meeting schedule."
+        ],
+        "translation": "우리는 검토해야 합니다 회의 일정을."
+      }
+    ],
+    "3": [
+      {
+        "text": "Our sales team prepares weekly reports every Monday morning.",
+        "chunks": [
+          "Our sales team",
+          "prepares weekly reports",
+          "every Monday morning."
+        ],
+        "translation": "우리 영업팀은 매주 월요일 아침에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Our sales team prepares weekly reports before lunch starts.",
+        "chunks": [
+          "Our sales team",
+          "prepares weekly reports",
+          "before lunch starts."
+        ],
+        "translation": "우리 영업팀은 점심시간이 시작되기 전에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Our sales team prepares weekly reports in the room.",
+        "chunks": [
+          "Our sales team",
+          "prepares weekly reports",
+          "in the room."
+        ],
+        "translation": "우리 영업팀은 회의실에서. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Our sales team prepares weekly reports with great care.",
+        "chunks": [
+          "Our sales team",
+          "prepares weekly reports",
+          "with great care."
+        ],
+        "translation": "우리 영업팀은 매우 정성스럽게. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Our sales team shares project schedules every Monday morning.",
+        "chunks": [
+          "Our sales team",
+          "shares project schedules",
+          "every Monday morning."
+        ],
+        "translation": "우리 영업팀은 매주 월요일 아침에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Our sales team shares project schedules before lunch starts.",
+        "chunks": [
+          "Our sales team",
+          "shares project schedules",
+          "before lunch starts."
+        ],
+        "translation": "우리 영업팀은 점심시간이 시작되기 전에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Our sales team shares project schedules in the room.",
+        "chunks": [
+          "Our sales team",
+          "shares project schedules",
+          "in the room."
+        ],
+        "translation": "우리 영업팀은 회의실에서. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Our sales team shares project schedules with great care.",
+        "chunks": [
+          "Our sales team",
+          "shares project schedules",
+          "with great care."
+        ],
+        "translation": "우리 영업팀은 매우 정성스럽게. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Our sales team orders office supplies every Monday morning.",
+        "chunks": [
+          "Our sales team",
+          "orders office supplies",
+          "every Monday morning."
+        ],
+        "translation": "우리 영업팀은 매주 월요일 아침에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Our sales team orders office supplies before lunch starts.",
+        "chunks": [
+          "Our sales team",
+          "orders office supplies",
+          "before lunch starts."
+        ],
+        "translation": "우리 영업팀은 점심시간이 시작되기 전에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Our sales team orders office supplies in the room.",
+        "chunks": [
+          "Our sales team",
+          "orders office supplies",
+          "in the room."
+        ],
+        "translation": "우리 영업팀은 회의실에서. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Our sales team orders office supplies with great care.",
+        "chunks": [
+          "Our sales team",
+          "orders office supplies",
+          "with great care."
+        ],
+        "translation": "우리 영업팀은 매우 정성스럽게. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Our sales team answers urgent questions every Monday morning.",
+        "chunks": [
+          "Our sales team",
+          "answers urgent questions",
+          "every Monday morning."
+        ],
+        "translation": "우리 영업팀은 매주 월요일 아침에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Our sales team answers urgent questions before lunch starts.",
+        "chunks": [
+          "Our sales team",
+          "answers urgent questions",
+          "before lunch starts."
+        ],
+        "translation": "우리 영업팀은 점심시간이 시작되기 전에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Our sales team answers urgent questions in the room.",
+        "chunks": [
+          "Our sales team",
+          "answers urgent questions",
+          "in the room."
+        ],
+        "translation": "우리 영업팀은 회의실에서. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Our sales team answers urgent questions with great care.",
+        "chunks": [
+          "Our sales team",
+          "answers urgent questions",
+          "with great care."
+        ],
+        "translation": "우리 영업팀은 매우 정성스럽게. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Our sales team organizes meeting slides every Monday morning.",
+        "chunks": [
+          "Our sales team",
+          "organizes meeting slides",
+          "every Monday morning."
+        ],
+        "translation": "우리 영업팀은 매주 월요일 아침에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Our sales team organizes meeting slides before lunch starts.",
+        "chunks": [
+          "Our sales team",
+          "organizes meeting slides",
+          "before lunch starts."
+        ],
+        "translation": "우리 영업팀은 점심시간이 시작되기 전에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Our sales team organizes meeting slides in the room.",
+        "chunks": [
+          "Our sales team",
+          "organizes meeting slides",
+          "in the room."
+        ],
+        "translation": "우리 영업팀은 회의실에서. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Our sales team organizes meeting slides with great care.",
+        "chunks": [
+          "Our sales team",
+          "organizes meeting slides",
+          "with great care."
+        ],
+        "translation": "우리 영업팀은 매우 정성스럽게. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The office manager prepares weekly reports every Monday morning.",
+        "chunks": [
+          "The office manager",
+          "prepares weekly reports",
+          "every Monday morning."
+        ],
+        "translation": "사무실 관리자는 매주 월요일 아침에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The office manager prepares weekly reports before lunch starts.",
+        "chunks": [
+          "The office manager",
+          "prepares weekly reports",
+          "before lunch starts."
+        ],
+        "translation": "사무실 관리자는 점심시간이 시작되기 전에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The office manager prepares weekly reports in the room.",
+        "chunks": [
+          "The office manager",
+          "prepares weekly reports",
+          "in the room."
+        ],
+        "translation": "사무실 관리자는 회의실에서. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The office manager prepares weekly reports with great care.",
+        "chunks": [
+          "The office manager",
+          "prepares weekly reports",
+          "with great care."
+        ],
+        "translation": "사무실 관리자는 매우 정성스럽게. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The office manager shares project schedules every Monday morning.",
+        "chunks": [
+          "The office manager",
+          "shares project schedules",
+          "every Monday morning."
+        ],
+        "translation": "사무실 관리자는 매주 월요일 아침에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The office manager shares project schedules before lunch starts.",
+        "chunks": [
+          "The office manager",
+          "shares project schedules",
+          "before lunch starts."
+        ],
+        "translation": "사무실 관리자는 점심시간이 시작되기 전에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The office manager shares project schedules in the room.",
+        "chunks": [
+          "The office manager",
+          "shares project schedules",
+          "in the room."
+        ],
+        "translation": "사무실 관리자는 회의실에서. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The office manager shares project schedules with great care.",
+        "chunks": [
+          "The office manager",
+          "shares project schedules",
+          "with great care."
+        ],
+        "translation": "사무실 관리자는 매우 정성스럽게. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The office manager orders office supplies every Monday morning.",
+        "chunks": [
+          "The office manager",
+          "orders office supplies",
+          "every Monday morning."
+        ],
+        "translation": "사무실 관리자는 매주 월요일 아침에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The office manager orders office supplies before lunch starts.",
+        "chunks": [
+          "The office manager",
+          "orders office supplies",
+          "before lunch starts."
+        ],
+        "translation": "사무실 관리자는 점심시간이 시작되기 전에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The office manager orders office supplies in the room.",
+        "chunks": [
+          "The office manager",
+          "orders office supplies",
+          "in the room."
+        ],
+        "translation": "사무실 관리자는 회의실에서. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The office manager orders office supplies with great care.",
+        "chunks": [
+          "The office manager",
+          "orders office supplies",
+          "with great care."
+        ],
+        "translation": "사무실 관리자는 매우 정성스럽게. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The office manager answers urgent questions every Monday morning.",
+        "chunks": [
+          "The office manager",
+          "answers urgent questions",
+          "every Monday morning."
+        ],
+        "translation": "사무실 관리자는 매주 월요일 아침에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The office manager answers urgent questions before lunch starts.",
+        "chunks": [
+          "The office manager",
+          "answers urgent questions",
+          "before lunch starts."
+        ],
+        "translation": "사무실 관리자는 점심시간이 시작되기 전에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The office manager answers urgent questions in the room.",
+        "chunks": [
+          "The office manager",
+          "answers urgent questions",
+          "in the room."
+        ],
+        "translation": "사무실 관리자는 회의실에서. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The office manager answers urgent questions with great care.",
+        "chunks": [
+          "The office manager",
+          "answers urgent questions",
+          "with great care."
+        ],
+        "translation": "사무실 관리자는 매우 정성스럽게. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The office manager organizes meeting slides every Monday morning.",
+        "chunks": [
+          "The office manager",
+          "organizes meeting slides",
+          "every Monday morning."
+        ],
+        "translation": "사무실 관리자는 매주 월요일 아침에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The office manager organizes meeting slides before lunch starts.",
+        "chunks": [
+          "The office manager",
+          "organizes meeting slides",
+          "before lunch starts."
+        ],
+        "translation": "사무실 관리자는 점심시간이 시작되기 전에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The office manager organizes meeting slides in the room.",
+        "chunks": [
+          "The office manager",
+          "organizes meeting slides",
+          "in the room."
+        ],
+        "translation": "사무실 관리자는 회의실에서. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The office manager organizes meeting slides with great care.",
+        "chunks": [
+          "The office manager",
+          "organizes meeting slides",
+          "with great care."
+        ],
+        "translation": "사무실 관리자는 매우 정성스럽게. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Every staff member prepares weekly reports every Monday morning.",
+        "chunks": [
+          "Every staff member",
+          "prepares weekly reports",
+          "every Monday morning."
+        ],
+        "translation": "모든 직원은 매주 월요일 아침에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Every staff member prepares weekly reports before lunch starts.",
+        "chunks": [
+          "Every staff member",
+          "prepares weekly reports",
+          "before lunch starts."
+        ],
+        "translation": "모든 직원은 점심시간이 시작되기 전에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Every staff member prepares weekly reports in the room.",
+        "chunks": [
+          "Every staff member",
+          "prepares weekly reports",
+          "in the room."
+        ],
+        "translation": "모든 직원은 회의실에서. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Every staff member prepares weekly reports with great care.",
+        "chunks": [
+          "Every staff member",
+          "prepares weekly reports",
+          "with great care."
+        ],
+        "translation": "모든 직원은 매우 정성스럽게. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "Every staff member shares project schedules every Monday morning.",
+        "chunks": [
+          "Every staff member",
+          "shares project schedules",
+          "every Monday morning."
+        ],
+        "translation": "모든 직원은 매주 월요일 아침에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Every staff member shares project schedules before lunch starts.",
+        "chunks": [
+          "Every staff member",
+          "shares project schedules",
+          "before lunch starts."
+        ],
+        "translation": "모든 직원은 점심시간이 시작되기 전에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Every staff member shares project schedules in the room.",
+        "chunks": [
+          "Every staff member",
+          "shares project schedules",
+          "in the room."
+        ],
+        "translation": "모든 직원은 회의실에서. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Every staff member shares project schedules with great care.",
+        "chunks": [
+          "Every staff member",
+          "shares project schedules",
+          "with great care."
+        ],
+        "translation": "모든 직원은 매우 정성스럽게. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "Every staff member orders office supplies every Monday morning.",
+        "chunks": [
+          "Every staff member",
+          "orders office supplies",
+          "every Monday morning."
+        ],
+        "translation": "모든 직원은 매주 월요일 아침에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Every staff member orders office supplies before lunch starts.",
+        "chunks": [
+          "Every staff member",
+          "orders office supplies",
+          "before lunch starts."
+        ],
+        "translation": "모든 직원은 점심시간이 시작되기 전에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Every staff member orders office supplies in the room.",
+        "chunks": [
+          "Every staff member",
+          "orders office supplies",
+          "in the room."
+        ],
+        "translation": "모든 직원은 회의실에서. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Every staff member orders office supplies with great care.",
+        "chunks": [
+          "Every staff member",
+          "orders office supplies",
+          "with great care."
+        ],
+        "translation": "모든 직원은 매우 정성스럽게. 사무용품을 주문합니다"
+      },
+      {
+        "text": "Every staff member answers urgent questions every Monday morning.",
+        "chunks": [
+          "Every staff member",
+          "answers urgent questions",
+          "every Monday morning."
+        ],
+        "translation": "모든 직원은 매주 월요일 아침에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Every staff member answers urgent questions before lunch starts.",
+        "chunks": [
+          "Every staff member",
+          "answers urgent questions",
+          "before lunch starts."
+        ],
+        "translation": "모든 직원은 점심시간이 시작되기 전에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Every staff member answers urgent questions in the room.",
+        "chunks": [
+          "Every staff member",
+          "answers urgent questions",
+          "in the room."
+        ],
+        "translation": "모든 직원은 회의실에서. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Every staff member answers urgent questions with great care.",
+        "chunks": [
+          "Every staff member",
+          "answers urgent questions",
+          "with great care."
+        ],
+        "translation": "모든 직원은 매우 정성스럽게. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "Every staff member organizes meeting slides every Monday morning.",
+        "chunks": [
+          "Every staff member",
+          "organizes meeting slides",
+          "every Monday morning."
+        ],
+        "translation": "모든 직원은 매주 월요일 아침에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Every staff member organizes meeting slides before lunch starts.",
+        "chunks": [
+          "Every staff member",
+          "organizes meeting slides",
+          "before lunch starts."
+        ],
+        "translation": "모든 직원은 점심시간이 시작되기 전에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Every staff member organizes meeting slides in the room.",
+        "chunks": [
+          "Every staff member",
+          "organizes meeting slides",
+          "in the room."
+        ],
+        "translation": "모든 직원은 회의실에서. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "Every staff member organizes meeting slides with great care.",
+        "chunks": [
+          "Every staff member",
+          "organizes meeting slides",
+          "with great care."
+        ],
+        "translation": "모든 직원은 매우 정성스럽게. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The support desk prepares weekly reports every Monday morning.",
+        "chunks": [
+          "The support desk",
+          "prepares weekly reports",
+          "every Monday morning."
+        ],
+        "translation": "지원 부서는 매주 월요일 아침에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The support desk prepares weekly reports before lunch starts.",
+        "chunks": [
+          "The support desk",
+          "prepares weekly reports",
+          "before lunch starts."
+        ],
+        "translation": "지원 부서는 점심시간이 시작되기 전에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The support desk prepares weekly reports in the room.",
+        "chunks": [
+          "The support desk",
+          "prepares weekly reports",
+          "in the room."
+        ],
+        "translation": "지원 부서는 회의실에서. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The support desk prepares weekly reports with great care.",
+        "chunks": [
+          "The support desk",
+          "prepares weekly reports",
+          "with great care."
+        ],
+        "translation": "지원 부서는 매우 정성스럽게. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "The support desk shares project schedules every Monday morning.",
+        "chunks": [
+          "The support desk",
+          "shares project schedules",
+          "every Monday morning."
+        ],
+        "translation": "지원 부서는 매주 월요일 아침에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The support desk shares project schedules before lunch starts.",
+        "chunks": [
+          "The support desk",
+          "shares project schedules",
+          "before lunch starts."
+        ],
+        "translation": "지원 부서는 점심시간이 시작되기 전에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The support desk shares project schedules in the room.",
+        "chunks": [
+          "The support desk",
+          "shares project schedules",
+          "in the room."
+        ],
+        "translation": "지원 부서는 회의실에서. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The support desk shares project schedules with great care.",
+        "chunks": [
+          "The support desk",
+          "shares project schedules",
+          "with great care."
+        ],
+        "translation": "지원 부서는 매우 정성스럽게. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "The support desk orders office supplies every Monday morning.",
+        "chunks": [
+          "The support desk",
+          "orders office supplies",
+          "every Monday morning."
+        ],
+        "translation": "지원 부서는 매주 월요일 아침에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The support desk orders office supplies before lunch starts.",
+        "chunks": [
+          "The support desk",
+          "orders office supplies",
+          "before lunch starts."
+        ],
+        "translation": "지원 부서는 점심시간이 시작되기 전에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The support desk orders office supplies in the room.",
+        "chunks": [
+          "The support desk",
+          "orders office supplies",
+          "in the room."
+        ],
+        "translation": "지원 부서는 회의실에서. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The support desk orders office supplies with great care.",
+        "chunks": [
+          "The support desk",
+          "orders office supplies",
+          "with great care."
+        ],
+        "translation": "지원 부서는 매우 정성스럽게. 사무용품을 주문합니다"
+      },
+      {
+        "text": "The support desk answers urgent questions every Monday morning.",
+        "chunks": [
+          "The support desk",
+          "answers urgent questions",
+          "every Monday morning."
+        ],
+        "translation": "지원 부서는 매주 월요일 아침에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The support desk answers urgent questions before lunch starts.",
+        "chunks": [
+          "The support desk",
+          "answers urgent questions",
+          "before lunch starts."
+        ],
+        "translation": "지원 부서는 점심시간이 시작되기 전에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The support desk answers urgent questions in the room.",
+        "chunks": [
+          "The support desk",
+          "answers urgent questions",
+          "in the room."
+        ],
+        "translation": "지원 부서는 회의실에서. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The support desk answers urgent questions with great care.",
+        "chunks": [
+          "The support desk",
+          "answers urgent questions",
+          "with great care."
+        ],
+        "translation": "지원 부서는 매우 정성스럽게. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "The support desk organizes meeting slides every Monday morning.",
+        "chunks": [
+          "The support desk",
+          "organizes meeting slides",
+          "every Monday morning."
+        ],
+        "translation": "지원 부서는 매주 월요일 아침에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The support desk organizes meeting slides before lunch starts.",
+        "chunks": [
+          "The support desk",
+          "organizes meeting slides",
+          "before lunch starts."
+        ],
+        "translation": "지원 부서는 점심시간이 시작되기 전에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The support desk organizes meeting slides in the room.",
+        "chunks": [
+          "The support desk",
+          "organizes meeting slides",
+          "in the room."
+        ],
+        "translation": "지원 부서는 회의실에서. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "The support desk organizes meeting slides with great care.",
+        "chunks": [
+          "The support desk",
+          "organizes meeting slides",
+          "with great care."
+        ],
+        "translation": "지원 부서는 매우 정성스럽게. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "My project colleague prepares weekly reports every Monday morning.",
+        "chunks": [
+          "My project colleague",
+          "prepares weekly reports",
+          "every Monday morning."
+        ],
+        "translation": "제 프로젝트 동료는 매주 월요일 아침에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "My project colleague prepares weekly reports before lunch starts.",
+        "chunks": [
+          "My project colleague",
+          "prepares weekly reports",
+          "before lunch starts."
+        ],
+        "translation": "제 프로젝트 동료는 점심시간이 시작되기 전에. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "My project colleague prepares weekly reports in the room.",
+        "chunks": [
+          "My project colleague",
+          "prepares weekly reports",
+          "in the room."
+        ],
+        "translation": "제 프로젝트 동료는 회의실에서. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "My project colleague prepares weekly reports with great care.",
+        "chunks": [
+          "My project colleague",
+          "prepares weekly reports",
+          "with great care."
+        ],
+        "translation": "제 프로젝트 동료는 매우 정성스럽게. 주간 보고서를 준비합니다"
+      },
+      {
+        "text": "My project colleague shares project schedules every Monday morning.",
+        "chunks": [
+          "My project colleague",
+          "shares project schedules",
+          "every Monday morning."
+        ],
+        "translation": "제 프로젝트 동료는 매주 월요일 아침에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "My project colleague shares project schedules before lunch starts.",
+        "chunks": [
+          "My project colleague",
+          "shares project schedules",
+          "before lunch starts."
+        ],
+        "translation": "제 프로젝트 동료는 점심시간이 시작되기 전에. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "My project colleague shares project schedules in the room.",
+        "chunks": [
+          "My project colleague",
+          "shares project schedules",
+          "in the room."
+        ],
+        "translation": "제 프로젝트 동료는 회의실에서. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "My project colleague shares project schedules with great care.",
+        "chunks": [
+          "My project colleague",
+          "shares project schedules",
+          "with great care."
+        ],
+        "translation": "제 프로젝트 동료는 매우 정성스럽게. 프로젝트 일정을 공유합니다"
+      },
+      {
+        "text": "My project colleague orders office supplies every Monday morning.",
+        "chunks": [
+          "My project colleague",
+          "orders office supplies",
+          "every Monday morning."
+        ],
+        "translation": "제 프로젝트 동료는 매주 월요일 아침에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "My project colleague orders office supplies before lunch starts.",
+        "chunks": [
+          "My project colleague",
+          "orders office supplies",
+          "before lunch starts."
+        ],
+        "translation": "제 프로젝트 동료는 점심시간이 시작되기 전에. 사무용품을 주문합니다"
+      },
+      {
+        "text": "My project colleague orders office supplies in the room.",
+        "chunks": [
+          "My project colleague",
+          "orders office supplies",
+          "in the room."
+        ],
+        "translation": "제 프로젝트 동료는 회의실에서. 사무용품을 주문합니다"
+      },
+      {
+        "text": "My project colleague orders office supplies with great care.",
+        "chunks": [
+          "My project colleague",
+          "orders office supplies",
+          "with great care."
+        ],
+        "translation": "제 프로젝트 동료는 매우 정성스럽게. 사무용품을 주문합니다"
+      },
+      {
+        "text": "My project colleague answers urgent questions every Monday morning.",
+        "chunks": [
+          "My project colleague",
+          "answers urgent questions",
+          "every Monday morning."
+        ],
+        "translation": "제 프로젝트 동료는 매주 월요일 아침에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "My project colleague answers urgent questions before lunch starts.",
+        "chunks": [
+          "My project colleague",
+          "answers urgent questions",
+          "before lunch starts."
+        ],
+        "translation": "제 프로젝트 동료는 점심시간이 시작되기 전에. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "My project colleague answers urgent questions in the room.",
+        "chunks": [
+          "My project colleague",
+          "answers urgent questions",
+          "in the room."
+        ],
+        "translation": "제 프로젝트 동료는 회의실에서. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "My project colleague answers urgent questions with great care.",
+        "chunks": [
+          "My project colleague",
+          "answers urgent questions",
+          "with great care."
+        ],
+        "translation": "제 프로젝트 동료는 매우 정성스럽게. 긴급한 질문에 답변합니다"
+      },
+      {
+        "text": "My project colleague organizes meeting slides every Monday morning.",
+        "chunks": [
+          "My project colleague",
+          "organizes meeting slides",
+          "every Monday morning."
+        ],
+        "translation": "제 프로젝트 동료는 매주 월요일 아침에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "My project colleague organizes meeting slides before lunch starts.",
+        "chunks": [
+          "My project colleague",
+          "organizes meeting slides",
+          "before lunch starts."
+        ],
+        "translation": "제 프로젝트 동료는 점심시간이 시작되기 전에. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "My project colleague organizes meeting slides in the room.",
+        "chunks": [
+          "My project colleague",
+          "organizes meeting slides",
+          "in the room."
+        ],
+        "translation": "제 프로젝트 동료는 회의실에서. 회의 슬라이드를 정리합니다"
+      },
+      {
+        "text": "My project colleague organizes meeting slides with great care.",
+        "chunks": [
+          "My project colleague",
+          "organizes meeting slides",
+          "with great care."
+        ],
+        "translation": "제 프로젝트 동료는 매우 정성스럽게. 회의 슬라이드를 정리합니다"
+      }
+    ],
+    "4": [
+      {
+        "text": "If weather permits, we can enjoy a friendly lunch outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy a friendly lunch without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy helpful basic guidance outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy helpful basic guidance without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy a brief meeting outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy a brief meeting without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy a warm welcome outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy a warm welcome without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy quick service support outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, we can enjoy quick service support without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "we can enjoy",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If weather permits, staff will assist a friendly lunch outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist a friendly lunch without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist helpful basic guidance outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist helpful basic guidance without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist a brief meeting outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist a brief meeting without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist a warm welcome outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist a warm welcome without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist quick service support outside the park.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "날씨가 허락한다면, 공원 밖에서. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If weather permits, staff will assist quick service support without any wait.",
+        "chunks": [
+          "If weather permits,",
+          "staff will assist",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "날씨가 허락한다면, 기다림 없이. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy a friendly lunch outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy a friendly lunch without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy helpful basic guidance outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy helpful basic guidance without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy a brief meeting outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy a brief meeting without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy a warm welcome outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy a warm welcome without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy quick service support outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, we can enjoy quick service support without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "we can enjoy",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "Before you leave, staff will assist a friendly lunch outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist a friendly lunch without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist helpful basic guidance outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist helpful basic guidance without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist a brief meeting outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist a brief meeting without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist a warm welcome outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist a warm welcome without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist quick service support outside the park.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "퇴근하기 전에, 공원 밖에서. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "Before you leave, staff will assist quick service support without any wait.",
+        "chunks": [
+          "Before you leave,",
+          "staff will assist",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "퇴근하기 전에, 기다림 없이. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy a friendly lunch outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy a friendly lunch without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy helpful basic guidance outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy helpful basic guidance without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy a brief meeting outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy a brief meeting without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy a warm welcome outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy a warm welcome without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy quick service support outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, we can enjoy quick service support without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "we can enjoy",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "When clients visit, staff will assist a friendly lunch outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist a friendly lunch without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist helpful basic guidance outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist helpful basic guidance without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist a brief meeting outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist a brief meeting without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist a warm welcome outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist a warm welcome without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist quick service support outside the park.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "고객이 방문할 때, 공원 밖에서. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "When clients visit, staff will assist quick service support without any wait.",
+        "chunks": [
+          "When clients visit,",
+          "staff will assist",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "고객이 방문할 때, 기다림 없이. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy a friendly lunch outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy a friendly lunch without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy helpful basic guidance outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy helpful basic guidance without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy a brief meeting outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy a brief meeting without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy a warm welcome outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy a warm welcome without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy quick service support outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, we can enjoy quick service support without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "we can enjoy",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist a friendly lunch outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist a friendly lunch without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist helpful basic guidance outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist helpful basic guidance without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist a brief meeting outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist a brief meeting without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist a warm welcome outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist a warm welcome without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist quick service support outside the park.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "아침 업무 후에, 공원 밖에서. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "After morning tasks, staff will assist quick service support without any wait.",
+        "chunks": [
+          "After morning tasks,",
+          "staff will assist",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "아침 업무 후에, 기다림 없이. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, we can enjoy a friendly lunch outside the park.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy a friendly lunch without any wait.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 다정한 점심을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy helpful basic guidance outside the park.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy helpful basic guidance without any wait.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 유용한 기본 안내를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy a brief meeting outside the park.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy a brief meeting without any wait.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 짧은 미팅을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy a warm welcome outside the park.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy a warm welcome without any wait.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 따뜻한 환영을 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy quick service support outside the park.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, we can enjoy quick service support without any wait.",
+        "chunks": [
+          "If you ask,",
+          "we can enjoy",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 신속한 지원 서비스를 우리는 즐길 수 있습니다"
+      },
+      {
+        "text": "If you ask, staff will assist a friendly lunch outside the park.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "a friendly lunch",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist a friendly lunch without any wait.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "a friendly lunch",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 다정한 점심을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist helpful basic guidance outside the park.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "helpful basic guidance",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist helpful basic guidance without any wait.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "helpful basic guidance",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 유용한 기본 안내를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist a brief meeting outside the park.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "a brief meeting",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist a brief meeting without any wait.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "a brief meeting",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 짧은 미팅을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist a warm welcome outside the park.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "a warm welcome",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist a warm welcome without any wait.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "a warm welcome",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 따뜻한 환영을 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist quick service support outside the park.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "quick service support",
+          "outside the park."
+        ],
+        "translation": "요청하신다면, 공원 밖에서. 신속한 지원 서비스를 직원이 도울 것입니다"
+      },
+      {
+        "text": "If you ask, staff will assist quick service support without any wait.",
+        "chunks": [
+          "If you ask,",
+          "staff will assist",
+          "quick service support",
+          "without any wait."
+        ],
+        "translation": "요청하신다면, 기다림 없이. 신속한 지원 서비스를 직원이 도울 것입니다"
+      }
+    ]
+  },
+  "B1": {
+    "2": [
+      {
+        "text": "Customer satisfaction remains our operational priority.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "our operational priority."
+        ],
+        "translation": "고객 만족은 언제나 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Customer satisfaction remains essential for success.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "essential for success."
+        ],
+        "translation": "고객 만족은 언제나 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Customer satisfaction remains critical for retention.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "critical for retention."
+        ],
+        "translation": "고객 만족은 언제나 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Customer satisfaction remains vital for collaboration.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "vital for collaboration."
+        ],
+        "translation": "고객 만족은 언제나 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Customer satisfaction remains key for growth.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "key for growth."
+        ],
+        "translation": "고객 만족은 언제나 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Customer satisfaction remains the attached proposal.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "the attached proposal."
+        ],
+        "translation": "고객 만족은 언제나 첨부된 제안서를."
+      },
+      {
+        "text": "Customer satisfaction remains the project budget.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "the project budget."
+        ],
+        "translation": "고객 만족은 언제나 프로젝트 예산을."
+      },
+      {
+        "text": "Customer satisfaction remains the server issue.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "the server issue."
+        ],
+        "translation": "고객 만족은 언제나 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Customer satisfaction remains the work process.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "the work process."
+        ],
+        "translation": "고객 만족은 언제나 업무 프로세스를."
+      },
+      {
+        "text": "Customer satisfaction remains a truly vital role.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "a truly vital role."
+        ],
+        "translation": "고객 만족은 언제나 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "Service response quality our operational priority.",
+        "chunks": [
+          "Service response quality",
+          "our operational priority."
+        ],
+        "translation": "서비스 응대 품질은 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Service response quality essential for success.",
+        "chunks": [
+          "Service response quality",
+          "essential for success."
+        ],
+        "translation": "서비스 응대 품질은 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Service response quality critical for retention.",
+        "chunks": [
+          "Service response quality",
+          "critical for retention."
+        ],
+        "translation": "서비스 응대 품질은 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Service response quality vital for collaboration.",
+        "chunks": [
+          "Service response quality",
+          "vital for collaboration."
+        ],
+        "translation": "서비스 응대 품질은 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Service response quality key for growth.",
+        "chunks": [
+          "Service response quality",
+          "key for growth."
+        ],
+        "translation": "서비스 응대 품질은 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Service response quality the attached proposal.",
+        "chunks": [
+          "Service response quality",
+          "the attached proposal."
+        ],
+        "translation": "서비스 응대 품질은 첨부된 제안서를."
+      },
+      {
+        "text": "Service response quality the project budget.",
+        "chunks": [
+          "Service response quality",
+          "the project budget."
+        ],
+        "translation": "서비스 응대 품질은 프로젝트 예산을."
+      },
+      {
+        "text": "Service response quality the server issue.",
+        "chunks": [
+          "Service response quality",
+          "the server issue."
+        ],
+        "translation": "서비스 응대 품질은 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Service response quality the work process.",
+        "chunks": [
+          "Service response quality",
+          "the work process."
+        ],
+        "translation": "서비스 응대 품질은 업무 프로세스를."
+      },
+      {
+        "text": "Service response quality a truly vital role.",
+        "chunks": [
+          "Service response quality",
+          "a truly vital role."
+        ],
+        "translation": "서비스 응대 품질은 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "Direct client feedback our operational priority.",
+        "chunks": [
+          "Direct client feedback",
+          "our operational priority."
+        ],
+        "translation": "직접적인 고객 피드백은 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Direct client feedback essential for success.",
+        "chunks": [
+          "Direct client feedback",
+          "essential for success."
+        ],
+        "translation": "직접적인 고객 피드백은 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Direct client feedback critical for retention.",
+        "chunks": [
+          "Direct client feedback",
+          "critical for retention."
+        ],
+        "translation": "직접적인 고객 피드백은 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Direct client feedback vital for collaboration.",
+        "chunks": [
+          "Direct client feedback",
+          "vital for collaboration."
+        ],
+        "translation": "직접적인 고객 피드백은 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Direct client feedback key for growth.",
+        "chunks": [
+          "Direct client feedback",
+          "key for growth."
+        ],
+        "translation": "직접적인 고객 피드백은 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Direct client feedback the attached proposal.",
+        "chunks": [
+          "Direct client feedback",
+          "the attached proposal."
+        ],
+        "translation": "직접적인 고객 피드백은 첨부된 제안서를."
+      },
+      {
+        "text": "Direct client feedback the project budget.",
+        "chunks": [
+          "Direct client feedback",
+          "the project budget."
+        ],
+        "translation": "직접적인 고객 피드백은 프로젝트 예산을."
+      },
+      {
+        "text": "Direct client feedback the server issue.",
+        "chunks": [
+          "Direct client feedback",
+          "the server issue."
+        ],
+        "translation": "직접적인 고객 피드백은 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Direct client feedback the work process.",
+        "chunks": [
+          "Direct client feedback",
+          "the work process."
+        ],
+        "translation": "직접적인 고객 피드백은 업무 프로세스를."
+      },
+      {
+        "text": "Direct client feedback a truly vital role.",
+        "chunks": [
+          "Direct client feedback",
+          "a truly vital role."
+        ],
+        "translation": "직접적인 고객 피드백은 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "Resolving user inquiries our operational priority.",
+        "chunks": [
+          "Resolving user inquiries",
+          "our operational priority."
+        ],
+        "translation": "사용자 문의 해결은 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Resolving user inquiries essential for success.",
+        "chunks": [
+          "Resolving user inquiries",
+          "essential for success."
+        ],
+        "translation": "사용자 문의 해결은 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Resolving user inquiries critical for retention.",
+        "chunks": [
+          "Resolving user inquiries",
+          "critical for retention."
+        ],
+        "translation": "사용자 문의 해결은 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Resolving user inquiries vital for collaboration.",
+        "chunks": [
+          "Resolving user inquiries",
+          "vital for collaboration."
+        ],
+        "translation": "사용자 문의 해결은 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Resolving user inquiries key for growth.",
+        "chunks": [
+          "Resolving user inquiries",
+          "key for growth."
+        ],
+        "translation": "사용자 문의 해결은 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Resolving user inquiries the attached proposal.",
+        "chunks": [
+          "Resolving user inquiries",
+          "the attached proposal."
+        ],
+        "translation": "사용자 문의 해결은 첨부된 제안서를."
+      },
+      {
+        "text": "Resolving user inquiries the project budget.",
+        "chunks": [
+          "Resolving user inquiries",
+          "the project budget."
+        ],
+        "translation": "사용자 문의 해결은 프로젝트 예산을."
+      },
+      {
+        "text": "Resolving user inquiries the server issue.",
+        "chunks": [
+          "Resolving user inquiries",
+          "the server issue."
+        ],
+        "translation": "사용자 문의 해결은 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Resolving user inquiries the work process.",
+        "chunks": [
+          "Resolving user inquiries",
+          "the work process."
+        ],
+        "translation": "사용자 문의 해결은 업무 프로세스를."
+      },
+      {
+        "text": "Resolving user inquiries a truly vital role.",
+        "chunks": [
+          "Resolving user inquiries",
+          "a truly vital role."
+        ],
+        "translation": "사용자 문의 해결은 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "Building firm trust our operational priority.",
+        "chunks": [
+          "Building firm trust",
+          "our operational priority."
+        ],
+        "translation": "확고한 신뢰 구축은 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Building firm trust essential for success.",
+        "chunks": [
+          "Building firm trust",
+          "essential for success."
+        ],
+        "translation": "확고한 신뢰 구축은 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Building firm trust critical for retention.",
+        "chunks": [
+          "Building firm trust",
+          "critical for retention."
+        ],
+        "translation": "확고한 신뢰 구축은 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Building firm trust vital for collaboration.",
+        "chunks": [
+          "Building firm trust",
+          "vital for collaboration."
+        ],
+        "translation": "확고한 신뢰 구축은 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Building firm trust key for growth.",
+        "chunks": [
+          "Building firm trust",
+          "key for growth."
+        ],
+        "translation": "확고한 신뢰 구축은 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Building firm trust the attached proposal.",
+        "chunks": [
+          "Building firm trust",
+          "the attached proposal."
+        ],
+        "translation": "확고한 신뢰 구축은 첨부된 제안서를."
+      },
+      {
+        "text": "Building firm trust the project budget.",
+        "chunks": [
+          "Building firm trust",
+          "the project budget."
+        ],
+        "translation": "확고한 신뢰 구축은 프로젝트 예산을."
+      },
+      {
+        "text": "Building firm trust the server issue.",
+        "chunks": [
+          "Building firm trust",
+          "the server issue."
+        ],
+        "translation": "확고한 신뢰 구축은 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Building firm trust the work process.",
+        "chunks": [
+          "Building firm trust",
+          "the work process."
+        ],
+        "translation": "확고한 신뢰 구축은 업무 프로세스를."
+      },
+      {
+        "text": "Building firm trust a truly vital role.",
+        "chunks": [
+          "Building firm trust",
+          "a truly vital role."
+        ],
+        "translation": "확고한 신뢰 구축은 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "Please review carefully our operational priority.",
+        "chunks": [
+          "Please review carefully",
+          "our operational priority."
+        ],
+        "translation": "주의 깊게 검토해 주세요 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Please review carefully essential for success.",
+        "chunks": [
+          "Please review carefully",
+          "essential for success."
+        ],
+        "translation": "주의 깊게 검토해 주세요 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Please review carefully critical for retention.",
+        "chunks": [
+          "Please review carefully",
+          "critical for retention."
+        ],
+        "translation": "주의 깊게 검토해 주세요 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Please review carefully vital for collaboration.",
+        "chunks": [
+          "Please review carefully",
+          "vital for collaboration."
+        ],
+        "translation": "주의 깊게 검토해 주세요 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Please review carefully key for growth.",
+        "chunks": [
+          "Please review carefully",
+          "key for growth."
+        ],
+        "translation": "주의 깊게 검토해 주세요 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Please review carefully the attached proposal.",
+        "chunks": [
+          "Please review carefully",
+          "the attached proposal."
+        ],
+        "translation": "주의 깊게 검토해 주세요 첨부된 제안서를."
+      },
+      {
+        "text": "Please review carefully the project budget.",
+        "chunks": [
+          "Please review carefully",
+          "the project budget."
+        ],
+        "translation": "주의 깊게 검토해 주세요 프로젝트 예산을."
+      },
+      {
+        "text": "Please review carefully the server issue.",
+        "chunks": [
+          "Please review carefully",
+          "the server issue."
+        ],
+        "translation": "주의 깊게 검토해 주세요 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Please review carefully the work process.",
+        "chunks": [
+          "Please review carefully",
+          "the work process."
+        ],
+        "translation": "주의 깊게 검토해 주세요 업무 프로세스를."
+      },
+      {
+        "text": "Please review carefully a truly vital role.",
+        "chunks": [
+          "Please review carefully",
+          "a truly vital role."
+        ],
+        "translation": "주의 깊게 검토해 주세요 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "We finally approved our operational priority.",
+        "chunks": [
+          "We finally approved",
+          "our operational priority."
+        ],
+        "translation": "우리는 마침내 승인했습니다 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "We finally approved essential for success.",
+        "chunks": [
+          "We finally approved",
+          "essential for success."
+        ],
+        "translation": "우리는 마침내 승인했습니다 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "We finally approved critical for retention.",
+        "chunks": [
+          "We finally approved",
+          "critical for retention."
+        ],
+        "translation": "우리는 마침내 승인했습니다 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "We finally approved vital for collaboration.",
+        "chunks": [
+          "We finally approved",
+          "vital for collaboration."
+        ],
+        "translation": "우리는 마침내 승인했습니다 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "We finally approved key for growth.",
+        "chunks": [
+          "We finally approved",
+          "key for growth."
+        ],
+        "translation": "우리는 마침내 승인했습니다 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "We finally approved the attached proposal.",
+        "chunks": [
+          "We finally approved",
+          "the attached proposal."
+        ],
+        "translation": "우리는 마침내 승인했습니다 첨부된 제안서를."
+      },
+      {
+        "text": "We finally approved the project budget.",
+        "chunks": [
+          "We finally approved",
+          "the project budget."
+        ],
+        "translation": "우리는 마침내 승인했습니다 프로젝트 예산을."
+      },
+      {
+        "text": "We finally approved the server issue.",
+        "chunks": [
+          "We finally approved",
+          "the server issue."
+        ],
+        "translation": "우리는 마침내 승인했습니다 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "We finally approved the work process.",
+        "chunks": [
+          "We finally approved",
+          "the work process."
+        ],
+        "translation": "우리는 마침내 승인했습니다 업무 프로세스를."
+      },
+      {
+        "text": "We finally approved a truly vital role.",
+        "chunks": [
+          "We finally approved",
+          "a truly vital role."
+        ],
+        "translation": "우리는 마침내 승인했습니다 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "The engineering team our operational priority.",
+        "chunks": [
+          "The engineering team",
+          "our operational priority."
+        ],
+        "translation": "엔지니어링 팀은 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "The engineering team essential for success.",
+        "chunks": [
+          "The engineering team",
+          "essential for success."
+        ],
+        "translation": "엔지니어링 팀은 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "The engineering team critical for retention.",
+        "chunks": [
+          "The engineering team",
+          "critical for retention."
+        ],
+        "translation": "엔지니어링 팀은 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "The engineering team vital for collaboration.",
+        "chunks": [
+          "The engineering team",
+          "vital for collaboration."
+        ],
+        "translation": "엔지니어링 팀은 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "The engineering team key for growth.",
+        "chunks": [
+          "The engineering team",
+          "key for growth."
+        ],
+        "translation": "엔지니어링 팀은 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "The engineering team the attached proposal.",
+        "chunks": [
+          "The engineering team",
+          "the attached proposal."
+        ],
+        "translation": "엔지니어링 팀은 첨부된 제안서를."
+      },
+      {
+        "text": "The engineering team the project budget.",
+        "chunks": [
+          "The engineering team",
+          "the project budget."
+        ],
+        "translation": "엔지니어링 팀은 프로젝트 예산을."
+      },
+      {
+        "text": "The engineering team the server issue.",
+        "chunks": [
+          "The engineering team",
+          "the server issue."
+        ],
+        "translation": "엔지니어링 팀은 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "The engineering team the work process.",
+        "chunks": [
+          "The engineering team",
+          "the work process."
+        ],
+        "translation": "엔지니어링 팀은 업무 프로세스를."
+      },
+      {
+        "text": "The engineering team a truly vital role.",
+        "chunks": [
+          "The engineering team",
+          "a truly vital role."
+        ],
+        "translation": "엔지니어링 팀은 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "We must streamline our operational priority.",
+        "chunks": [
+          "We must streamline",
+          "our operational priority."
+        ],
+        "translation": "우리는 간소화해야 합니다 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "We must streamline essential for success.",
+        "chunks": [
+          "We must streamline",
+          "essential for success."
+        ],
+        "translation": "우리는 간소화해야 합니다 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "We must streamline critical for retention.",
+        "chunks": [
+          "We must streamline",
+          "critical for retention."
+        ],
+        "translation": "우리는 간소화해야 합니다 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "We must streamline vital for collaboration.",
+        "chunks": [
+          "We must streamline",
+          "vital for collaboration."
+        ],
+        "translation": "우리는 간소화해야 합니다 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "We must streamline key for growth.",
+        "chunks": [
+          "We must streamline",
+          "key for growth."
+        ],
+        "translation": "우리는 간소화해야 합니다 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "We must streamline the attached proposal.",
+        "chunks": [
+          "We must streamline",
+          "the attached proposal."
+        ],
+        "translation": "우리는 간소화해야 합니다 첨부된 제안서를."
+      },
+      {
+        "text": "We must streamline the project budget.",
+        "chunks": [
+          "We must streamline",
+          "the project budget."
+        ],
+        "translation": "우리는 간소화해야 합니다 프로젝트 예산을."
+      },
+      {
+        "text": "We must streamline the server issue.",
+        "chunks": [
+          "We must streamline",
+          "the server issue."
+        ],
+        "translation": "우리는 간소화해야 합니다 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "We must streamline the work process.",
+        "chunks": [
+          "We must streamline",
+          "the work process."
+        ],
+        "translation": "우리는 간소화해야 합니다 업무 프로세스를."
+      },
+      {
+        "text": "We must streamline a truly vital role.",
+        "chunks": [
+          "We must streamline",
+          "a truly vital role."
+        ],
+        "translation": "우리는 간소화해야 합니다 대단히 중대한 역할을 합니다."
+      },
+      {
+        "text": "Effective communication plays our operational priority.",
+        "chunks": [
+          "Effective communication plays",
+          "our operational priority."
+        ],
+        "translation": "효과적인 소통은 우리의 최우선 과제입니다."
+      },
+      {
+        "text": "Effective communication plays essential for success.",
+        "chunks": [
+          "Effective communication plays",
+          "essential for success."
+        ],
+        "translation": "효과적인 소통은 성공을 위해 필수적입니다."
+      },
+      {
+        "text": "Effective communication plays critical for retention.",
+        "chunks": [
+          "Effective communication plays",
+          "critical for retention."
+        ],
+        "translation": "효과적인 소통은 고객 유지에 대단히 중요합니다."
+      },
+      {
+        "text": "Effective communication plays vital for collaboration.",
+        "chunks": [
+          "Effective communication plays",
+          "vital for collaboration."
+        ],
+        "translation": "효과적인 소통은 협업을 위해 매우 중요합니다."
+      },
+      {
+        "text": "Effective communication plays key for growth.",
+        "chunks": [
+          "Effective communication plays",
+          "key for growth."
+        ],
+        "translation": "효과적인 소통은 성장을 위한 핵심입니다."
+      },
+      {
+        "text": "Effective communication plays the attached proposal.",
+        "chunks": [
+          "Effective communication plays",
+          "the attached proposal."
+        ],
+        "translation": "효과적인 소통은 첨부된 제안서를."
+      },
+      {
+        "text": "Effective communication plays the project budget.",
+        "chunks": [
+          "Effective communication plays",
+          "the project budget."
+        ],
+        "translation": "효과적인 소통은 프로젝트 예산을."
+      },
+      {
+        "text": "Effective communication plays the server issue.",
+        "chunks": [
+          "Effective communication plays",
+          "the server issue."
+        ],
+        "translation": "효과적인 소통은 서버 문제를 해결했습니다."
+      },
+      {
+        "text": "Effective communication plays the work process.",
+        "chunks": [
+          "Effective communication plays",
+          "the work process."
+        ],
+        "translation": "효과적인 소통은 업무 프로세스를."
+      },
+      {
+        "text": "Effective communication plays a truly vital role.",
+        "chunks": [
+          "Effective communication plays",
+          "a truly vital role."
+        ],
+        "translation": "효과적인 소통은 대단히 중대한 역할을 합니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "Effective communication plays key roles in project collaboration.",
+        "chunks": [
+          "Effective communication",
+          "plays key roles",
+          "in project collaboration."
+        ],
+        "translation": "효과적인 의사소통은 프로젝트 협업에서. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Effective communication plays key roles to workplace satisfaction.",
+        "chunks": [
+          "Effective communication",
+          "plays key roles",
+          "to workplace satisfaction."
+        ],
+        "translation": "효과적인 의사소통은 직장 만족도 향상에. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Effective communication plays key roles for creative design.",
+        "chunks": [
+          "Effective communication",
+          "plays key roles",
+          "for creative design."
+        ],
+        "translation": "효과적인 의사소통은 창의적인 기획 업무를 위해. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Effective communication plays key roles across our company.",
+        "chunks": [
+          "Effective communication",
+          "plays key roles",
+          "across our company."
+        ],
+        "translation": "효과적인 의사소통은 우리 회사 전반에 걸쳐. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Effective communication contributes quite significantly in project collaboration.",
+        "chunks": [
+          "Effective communication",
+          "contributes quite significantly",
+          "in project collaboration."
+        ],
+        "translation": "효과적인 의사소통은 프로젝트 협업에서. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Effective communication contributes quite significantly to workplace satisfaction.",
+        "chunks": [
+          "Effective communication",
+          "contributes quite significantly",
+          "to workplace satisfaction."
+        ],
+        "translation": "효과적인 의사소통은 직장 만족도 향상에. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Effective communication contributes quite significantly for creative design.",
+        "chunks": [
+          "Effective communication",
+          "contributes quite significantly",
+          "for creative design."
+        ],
+        "translation": "효과적인 의사소통은 창의적인 기획 업무를 위해. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Effective communication contributes quite significantly across our company.",
+        "chunks": [
+          "Effective communication",
+          "contributes quite significantly",
+          "across our company."
+        ],
+        "translation": "효과적인 의사소통은 우리 회사 전반에 걸쳐. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Effective communication gives more freedom in project collaboration.",
+        "chunks": [
+          "Effective communication",
+          "gives more freedom",
+          "in project collaboration."
+        ],
+        "translation": "효과적인 의사소통은 프로젝트 협업에서. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Effective communication gives more freedom to workplace satisfaction.",
+        "chunks": [
+          "Effective communication",
+          "gives more freedom",
+          "to workplace satisfaction."
+        ],
+        "translation": "효과적인 의사소통은 직장 만족도 향상에. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Effective communication gives more freedom for creative design.",
+        "chunks": [
+          "Effective communication",
+          "gives more freedom",
+          "for creative design."
+        ],
+        "translation": "효과적인 의사소통은 창의적인 기획 업무를 위해. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Effective communication gives more freedom across our company.",
+        "chunks": [
+          "Effective communication",
+          "gives more freedom",
+          "across our company."
+        ],
+        "translation": "효과적인 의사소통은 우리 회사 전반에 걸쳐. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Effective communication brings lasting benefits in project collaboration.",
+        "chunks": [
+          "Effective communication",
+          "brings lasting benefits",
+          "in project collaboration."
+        ],
+        "translation": "효과적인 의사소통은 프로젝트 협업에서. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Effective communication brings lasting benefits to workplace satisfaction.",
+        "chunks": [
+          "Effective communication",
+          "brings lasting benefits",
+          "to workplace satisfaction."
+        ],
+        "translation": "효과적인 의사소통은 직장 만족도 향상에. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Effective communication brings lasting benefits for creative design.",
+        "chunks": [
+          "Effective communication",
+          "brings lasting benefits",
+          "for creative design."
+        ],
+        "translation": "효과적인 의사소통은 창의적인 기획 업무를 위해. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Effective communication brings lasting benefits across our company.",
+        "chunks": [
+          "Effective communication",
+          "brings lasting benefits",
+          "across our company."
+        ],
+        "translation": "효과적인 의사소통은 우리 회사 전반에 걸쳐. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Effective communication reduces administrative delays in project collaboration.",
+        "chunks": [
+          "Effective communication",
+          "reduces administrative delays",
+          "in project collaboration."
+        ],
+        "translation": "효과적인 의사소통은 프로젝트 협업에서. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Effective communication reduces administrative delays to workplace satisfaction.",
+        "chunks": [
+          "Effective communication",
+          "reduces administrative delays",
+          "to workplace satisfaction."
+        ],
+        "translation": "효과적인 의사소통은 직장 만족도 향상에. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Effective communication reduces administrative delays for creative design.",
+        "chunks": [
+          "Effective communication",
+          "reduces administrative delays",
+          "for creative design."
+        ],
+        "translation": "효과적인 의사소통은 창의적인 기획 업무를 위해. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Effective communication reduces administrative delays across our company.",
+        "chunks": [
+          "Effective communication",
+          "reduces administrative delays",
+          "across our company."
+        ],
+        "translation": "효과적인 의사소통은 우리 회사 전반에 걸쳐. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Flexible work setups plays key roles in project collaboration.",
+        "chunks": [
+          "Flexible work setups",
+          "plays key roles",
+          "in project collaboration."
+        ],
+        "translation": "유연 근무 환경은 프로젝트 협업에서. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Flexible work setups plays key roles to workplace satisfaction.",
+        "chunks": [
+          "Flexible work setups",
+          "plays key roles",
+          "to workplace satisfaction."
+        ],
+        "translation": "유연 근무 환경은 직장 만족도 향상에. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Flexible work setups plays key roles for creative design.",
+        "chunks": [
+          "Flexible work setups",
+          "plays key roles",
+          "for creative design."
+        ],
+        "translation": "유연 근무 환경은 창의적인 기획 업무를 위해. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Flexible work setups plays key roles across our company.",
+        "chunks": [
+          "Flexible work setups",
+          "plays key roles",
+          "across our company."
+        ],
+        "translation": "유연 근무 환경은 우리 회사 전반에 걸쳐. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Flexible work setups contributes quite significantly in project collaboration.",
+        "chunks": [
+          "Flexible work setups",
+          "contributes quite significantly",
+          "in project collaboration."
+        ],
+        "translation": "유연 근무 환경은 프로젝트 협업에서. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Flexible work setups contributes quite significantly to workplace satisfaction.",
+        "chunks": [
+          "Flexible work setups",
+          "contributes quite significantly",
+          "to workplace satisfaction."
+        ],
+        "translation": "유연 근무 환경은 직장 만족도 향상에. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Flexible work setups contributes quite significantly for creative design.",
+        "chunks": [
+          "Flexible work setups",
+          "contributes quite significantly",
+          "for creative design."
+        ],
+        "translation": "유연 근무 환경은 창의적인 기획 업무를 위해. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Flexible work setups contributes quite significantly across our company.",
+        "chunks": [
+          "Flexible work setups",
+          "contributes quite significantly",
+          "across our company."
+        ],
+        "translation": "유연 근무 환경은 우리 회사 전반에 걸쳐. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Flexible work setups gives more freedom in project collaboration.",
+        "chunks": [
+          "Flexible work setups",
+          "gives more freedom",
+          "in project collaboration."
+        ],
+        "translation": "유연 근무 환경은 프로젝트 협업에서. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Flexible work setups gives more freedom to workplace satisfaction.",
+        "chunks": [
+          "Flexible work setups",
+          "gives more freedom",
+          "to workplace satisfaction."
+        ],
+        "translation": "유연 근무 환경은 직장 만족도 향상에. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Flexible work setups gives more freedom for creative design.",
+        "chunks": [
+          "Flexible work setups",
+          "gives more freedom",
+          "for creative design."
+        ],
+        "translation": "유연 근무 환경은 창의적인 기획 업무를 위해. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Flexible work setups gives more freedom across our company.",
+        "chunks": [
+          "Flexible work setups",
+          "gives more freedom",
+          "across our company."
+        ],
+        "translation": "유연 근무 환경은 우리 회사 전반에 걸쳐. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Flexible work setups brings lasting benefits in project collaboration.",
+        "chunks": [
+          "Flexible work setups",
+          "brings lasting benefits",
+          "in project collaboration."
+        ],
+        "translation": "유연 근무 환경은 프로젝트 협업에서. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Flexible work setups brings lasting benefits to workplace satisfaction.",
+        "chunks": [
+          "Flexible work setups",
+          "brings lasting benefits",
+          "to workplace satisfaction."
+        ],
+        "translation": "유연 근무 환경은 직장 만족도 향상에. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Flexible work setups brings lasting benefits for creative design.",
+        "chunks": [
+          "Flexible work setups",
+          "brings lasting benefits",
+          "for creative design."
+        ],
+        "translation": "유연 근무 환경은 창의적인 기획 업무를 위해. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Flexible work setups brings lasting benefits across our company.",
+        "chunks": [
+          "Flexible work setups",
+          "brings lasting benefits",
+          "across our company."
+        ],
+        "translation": "유연 근무 환경은 우리 회사 전반에 걸쳐. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Flexible work setups reduces administrative delays in project collaboration.",
+        "chunks": [
+          "Flexible work setups",
+          "reduces administrative delays",
+          "in project collaboration."
+        ],
+        "translation": "유연 근무 환경은 프로젝트 협업에서. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Flexible work setups reduces administrative delays to workplace satisfaction.",
+        "chunks": [
+          "Flexible work setups",
+          "reduces administrative delays",
+          "to workplace satisfaction."
+        ],
+        "translation": "유연 근무 환경은 직장 만족도 향상에. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Flexible work setups reduces administrative delays for creative design.",
+        "chunks": [
+          "Flexible work setups",
+          "reduces administrative delays",
+          "for creative design."
+        ],
+        "translation": "유연 근무 환경은 창의적인 기획 업무를 위해. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Flexible work setups reduces administrative delays across our company.",
+        "chunks": [
+          "Flexible work setups",
+          "reduces administrative delays",
+          "across our company."
+        ],
+        "translation": "유연 근무 환경은 우리 회사 전반에 걸쳐. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Automating daily tasks plays key roles in project collaboration.",
+        "chunks": [
+          "Automating daily tasks",
+          "plays key roles",
+          "in project collaboration."
+        ],
+        "translation": "일일 업무 자동화는 프로젝트 협업에서. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Automating daily tasks plays key roles to workplace satisfaction.",
+        "chunks": [
+          "Automating daily tasks",
+          "plays key roles",
+          "to workplace satisfaction."
+        ],
+        "translation": "일일 업무 자동화는 직장 만족도 향상에. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Automating daily tasks plays key roles for creative design.",
+        "chunks": [
+          "Automating daily tasks",
+          "plays key roles",
+          "for creative design."
+        ],
+        "translation": "일일 업무 자동화는 창의적인 기획 업무를 위해. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Automating daily tasks plays key roles across our company.",
+        "chunks": [
+          "Automating daily tasks",
+          "plays key roles",
+          "across our company."
+        ],
+        "translation": "일일 업무 자동화는 우리 회사 전반에 걸쳐. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Automating daily tasks contributes quite significantly in project collaboration.",
+        "chunks": [
+          "Automating daily tasks",
+          "contributes quite significantly",
+          "in project collaboration."
+        ],
+        "translation": "일일 업무 자동화는 프로젝트 협업에서. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Automating daily tasks contributes quite significantly to workplace satisfaction.",
+        "chunks": [
+          "Automating daily tasks",
+          "contributes quite significantly",
+          "to workplace satisfaction."
+        ],
+        "translation": "일일 업무 자동화는 직장 만족도 향상에. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Automating daily tasks contributes quite significantly for creative design.",
+        "chunks": [
+          "Automating daily tasks",
+          "contributes quite significantly",
+          "for creative design."
+        ],
+        "translation": "일일 업무 자동화는 창의적인 기획 업무를 위해. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Automating daily tasks contributes quite significantly across our company.",
+        "chunks": [
+          "Automating daily tasks",
+          "contributes quite significantly",
+          "across our company."
+        ],
+        "translation": "일일 업무 자동화는 우리 회사 전반에 걸쳐. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Automating daily tasks gives more freedom in project collaboration.",
+        "chunks": [
+          "Automating daily tasks",
+          "gives more freedom",
+          "in project collaboration."
+        ],
+        "translation": "일일 업무 자동화는 프로젝트 협업에서. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Automating daily tasks gives more freedom to workplace satisfaction.",
+        "chunks": [
+          "Automating daily tasks",
+          "gives more freedom",
+          "to workplace satisfaction."
+        ],
+        "translation": "일일 업무 자동화는 직장 만족도 향상에. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Automating daily tasks gives more freedom for creative design.",
+        "chunks": [
+          "Automating daily tasks",
+          "gives more freedom",
+          "for creative design."
+        ],
+        "translation": "일일 업무 자동화는 창의적인 기획 업무를 위해. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Automating daily tasks gives more freedom across our company.",
+        "chunks": [
+          "Automating daily tasks",
+          "gives more freedom",
+          "across our company."
+        ],
+        "translation": "일일 업무 자동화는 우리 회사 전반에 걸쳐. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Automating daily tasks brings lasting benefits in project collaboration.",
+        "chunks": [
+          "Automating daily tasks",
+          "brings lasting benefits",
+          "in project collaboration."
+        ],
+        "translation": "일일 업무 자동화는 프로젝트 협업에서. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Automating daily tasks brings lasting benefits to workplace satisfaction.",
+        "chunks": [
+          "Automating daily tasks",
+          "brings lasting benefits",
+          "to workplace satisfaction."
+        ],
+        "translation": "일일 업무 자동화는 직장 만족도 향상에. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Automating daily tasks brings lasting benefits for creative design.",
+        "chunks": [
+          "Automating daily tasks",
+          "brings lasting benefits",
+          "for creative design."
+        ],
+        "translation": "일일 업무 자동화는 창의적인 기획 업무를 위해. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Automating daily tasks brings lasting benefits across our company.",
+        "chunks": [
+          "Automating daily tasks",
+          "brings lasting benefits",
+          "across our company."
+        ],
+        "translation": "일일 업무 자동화는 우리 회사 전반에 걸쳐. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Automating daily tasks reduces administrative delays in project collaboration.",
+        "chunks": [
+          "Automating daily tasks",
+          "reduces administrative delays",
+          "in project collaboration."
+        ],
+        "translation": "일일 업무 자동화는 프로젝트 협업에서. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Automating daily tasks reduces administrative delays to workplace satisfaction.",
+        "chunks": [
+          "Automating daily tasks",
+          "reduces administrative delays",
+          "to workplace satisfaction."
+        ],
+        "translation": "일일 업무 자동화는 직장 만족도 향상에. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Automating daily tasks reduces administrative delays for creative design.",
+        "chunks": [
+          "Automating daily tasks",
+          "reduces administrative delays",
+          "for creative design."
+        ],
+        "translation": "일일 업무 자동화는 창의적인 기획 업무를 위해. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Automating daily tasks reduces administrative delays across our company.",
+        "chunks": [
+          "Automating daily tasks",
+          "reduces administrative delays",
+          "across our company."
+        ],
+        "translation": "일일 업무 자동화는 우리 회사 전반에 걸쳐. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Staff training programs plays key roles in project collaboration.",
+        "chunks": [
+          "Staff training programs",
+          "plays key roles",
+          "in project collaboration."
+        ],
+        "translation": "직원 교육 프로그램은 프로젝트 협업에서. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Staff training programs plays key roles to workplace satisfaction.",
+        "chunks": [
+          "Staff training programs",
+          "plays key roles",
+          "to workplace satisfaction."
+        ],
+        "translation": "직원 교육 프로그램은 직장 만족도 향상에. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Staff training programs plays key roles for creative design.",
+        "chunks": [
+          "Staff training programs",
+          "plays key roles",
+          "for creative design."
+        ],
+        "translation": "직원 교육 프로그램은 창의적인 기획 업무를 위해. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Staff training programs plays key roles across our company.",
+        "chunks": [
+          "Staff training programs",
+          "plays key roles",
+          "across our company."
+        ],
+        "translation": "직원 교육 프로그램은 우리 회사 전반에 걸쳐. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Staff training programs contributes quite significantly in project collaboration.",
+        "chunks": [
+          "Staff training programs",
+          "contributes quite significantly",
+          "in project collaboration."
+        ],
+        "translation": "직원 교육 프로그램은 프로젝트 협업에서. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Staff training programs contributes quite significantly to workplace satisfaction.",
+        "chunks": [
+          "Staff training programs",
+          "contributes quite significantly",
+          "to workplace satisfaction."
+        ],
+        "translation": "직원 교육 프로그램은 직장 만족도 향상에. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Staff training programs contributes quite significantly for creative design.",
+        "chunks": [
+          "Staff training programs",
+          "contributes quite significantly",
+          "for creative design."
+        ],
+        "translation": "직원 교육 프로그램은 창의적인 기획 업무를 위해. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Staff training programs contributes quite significantly across our company.",
+        "chunks": [
+          "Staff training programs",
+          "contributes quite significantly",
+          "across our company."
+        ],
+        "translation": "직원 교육 프로그램은 우리 회사 전반에 걸쳐. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Staff training programs gives more freedom in project collaboration.",
+        "chunks": [
+          "Staff training programs",
+          "gives more freedom",
+          "in project collaboration."
+        ],
+        "translation": "직원 교육 프로그램은 프로젝트 협업에서. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Staff training programs gives more freedom to workplace satisfaction.",
+        "chunks": [
+          "Staff training programs",
+          "gives more freedom",
+          "to workplace satisfaction."
+        ],
+        "translation": "직원 교육 프로그램은 직장 만족도 향상에. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Staff training programs gives more freedom for creative design.",
+        "chunks": [
+          "Staff training programs",
+          "gives more freedom",
+          "for creative design."
+        ],
+        "translation": "직원 교육 프로그램은 창의적인 기획 업무를 위해. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Staff training programs gives more freedom across our company.",
+        "chunks": [
+          "Staff training programs",
+          "gives more freedom",
+          "across our company."
+        ],
+        "translation": "직원 교육 프로그램은 우리 회사 전반에 걸쳐. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Staff training programs brings lasting benefits in project collaboration.",
+        "chunks": [
+          "Staff training programs",
+          "brings lasting benefits",
+          "in project collaboration."
+        ],
+        "translation": "직원 교육 프로그램은 프로젝트 협업에서. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Staff training programs brings lasting benefits to workplace satisfaction.",
+        "chunks": [
+          "Staff training programs",
+          "brings lasting benefits",
+          "to workplace satisfaction."
+        ],
+        "translation": "직원 교육 프로그램은 직장 만족도 향상에. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Staff training programs brings lasting benefits for creative design.",
+        "chunks": [
+          "Staff training programs",
+          "brings lasting benefits",
+          "for creative design."
+        ],
+        "translation": "직원 교육 프로그램은 창의적인 기획 업무를 위해. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Staff training programs brings lasting benefits across our company.",
+        "chunks": [
+          "Staff training programs",
+          "brings lasting benefits",
+          "across our company."
+        ],
+        "translation": "직원 교육 프로그램은 우리 회사 전반에 걸쳐. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Staff training programs reduces administrative delays in project collaboration.",
+        "chunks": [
+          "Staff training programs",
+          "reduces administrative delays",
+          "in project collaboration."
+        ],
+        "translation": "직원 교육 프로그램은 프로젝트 협업에서. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Staff training programs reduces administrative delays to workplace satisfaction.",
+        "chunks": [
+          "Staff training programs",
+          "reduces administrative delays",
+          "to workplace satisfaction."
+        ],
+        "translation": "직원 교육 프로그램은 직장 만족도 향상에. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Staff training programs reduces administrative delays for creative design.",
+        "chunks": [
+          "Staff training programs",
+          "reduces administrative delays",
+          "for creative design."
+        ],
+        "translation": "직원 교육 프로그램은 창의적인 기획 업무를 위해. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Staff training programs reduces administrative delays across our company.",
+        "chunks": [
+          "Staff training programs",
+          "reduces administrative delays",
+          "across our company."
+        ],
+        "translation": "직원 교육 프로그램은 우리 회사 전반에 걸쳐. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Streamlined approval steps plays key roles in project collaboration.",
+        "chunks": [
+          "Streamlined approval steps",
+          "plays key roles",
+          "in project collaboration."
+        ],
+        "translation": "간소화된 결재 단계는 프로젝트 협업에서. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Streamlined approval steps plays key roles to workplace satisfaction.",
+        "chunks": [
+          "Streamlined approval steps",
+          "plays key roles",
+          "to workplace satisfaction."
+        ],
+        "translation": "간소화된 결재 단계는 직장 만족도 향상에. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Streamlined approval steps plays key roles for creative design.",
+        "chunks": [
+          "Streamlined approval steps",
+          "plays key roles",
+          "for creative design."
+        ],
+        "translation": "간소화된 결재 단계는 창의적인 기획 업무를 위해. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Streamlined approval steps plays key roles across our company.",
+        "chunks": [
+          "Streamlined approval steps",
+          "plays key roles",
+          "across our company."
+        ],
+        "translation": "간소화된 결재 단계는 우리 회사 전반에 걸쳐. 핵심적인 역할을 합니다"
+      },
+      {
+        "text": "Streamlined approval steps contributes quite significantly in project collaboration.",
+        "chunks": [
+          "Streamlined approval steps",
+          "contributes quite significantly",
+          "in project collaboration."
+        ],
+        "translation": "간소화된 결재 단계는 프로젝트 협업에서. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Streamlined approval steps contributes quite significantly to workplace satisfaction.",
+        "chunks": [
+          "Streamlined approval steps",
+          "contributes quite significantly",
+          "to workplace satisfaction."
+        ],
+        "translation": "간소화된 결재 단계는 직장 만족도 향상에. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Streamlined approval steps contributes quite significantly for creative design.",
+        "chunks": [
+          "Streamlined approval steps",
+          "contributes quite significantly",
+          "for creative design."
+        ],
+        "translation": "간소화된 결재 단계는 창의적인 기획 업무를 위해. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Streamlined approval steps contributes quite significantly across our company.",
+        "chunks": [
+          "Streamlined approval steps",
+          "contributes quite significantly",
+          "across our company."
+        ],
+        "translation": "간소화된 결재 단계는 우리 회사 전반에 걸쳐. 상당한 기여를 합니다"
+      },
+      {
+        "text": "Streamlined approval steps gives more freedom in project collaboration.",
+        "chunks": [
+          "Streamlined approval steps",
+          "gives more freedom",
+          "in project collaboration."
+        ],
+        "translation": "간소화된 결재 단계는 프로젝트 협업에서. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Streamlined approval steps gives more freedom to workplace satisfaction.",
+        "chunks": [
+          "Streamlined approval steps",
+          "gives more freedom",
+          "to workplace satisfaction."
+        ],
+        "translation": "간소화된 결재 단계는 직장 만족도 향상에. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Streamlined approval steps gives more freedom for creative design.",
+        "chunks": [
+          "Streamlined approval steps",
+          "gives more freedom",
+          "for creative design."
+        ],
+        "translation": "간소화된 결재 단계는 창의적인 기획 업무를 위해. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Streamlined approval steps gives more freedom across our company.",
+        "chunks": [
+          "Streamlined approval steps",
+          "gives more freedom",
+          "across our company."
+        ],
+        "translation": "간소화된 결재 단계는 우리 회사 전반에 걸쳐. 더 많은 여유를 줍니다"
+      },
+      {
+        "text": "Streamlined approval steps brings lasting benefits in project collaboration.",
+        "chunks": [
+          "Streamlined approval steps",
+          "brings lasting benefits",
+          "in project collaboration."
+        ],
+        "translation": "간소화된 결재 단계는 프로젝트 협업에서. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Streamlined approval steps brings lasting benefits to workplace satisfaction.",
+        "chunks": [
+          "Streamlined approval steps",
+          "brings lasting benefits",
+          "to workplace satisfaction."
+        ],
+        "translation": "간소화된 결재 단계는 직장 만족도 향상에. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Streamlined approval steps brings lasting benefits for creative design.",
+        "chunks": [
+          "Streamlined approval steps",
+          "brings lasting benefits",
+          "for creative design."
+        ],
+        "translation": "간소화된 결재 단계는 창의적인 기획 업무를 위해. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Streamlined approval steps brings lasting benefits across our company.",
+        "chunks": [
+          "Streamlined approval steps",
+          "brings lasting benefits",
+          "across our company."
+        ],
+        "translation": "간소화된 결재 단계는 우리 회사 전반에 걸쳐. 오랜 혜택을 가져옵니다"
+      },
+      {
+        "text": "Streamlined approval steps reduces administrative delays in project collaboration.",
+        "chunks": [
+          "Streamlined approval steps",
+          "reduces administrative delays",
+          "in project collaboration."
+        ],
+        "translation": "간소화된 결재 단계는 프로젝트 협업에서. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Streamlined approval steps reduces administrative delays to workplace satisfaction.",
+        "chunks": [
+          "Streamlined approval steps",
+          "reduces administrative delays",
+          "to workplace satisfaction."
+        ],
+        "translation": "간소화된 결재 단계는 직장 만족도 향상에. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Streamlined approval steps reduces administrative delays for creative design.",
+        "chunks": [
+          "Streamlined approval steps",
+          "reduces administrative delays",
+          "for creative design."
+        ],
+        "translation": "간소화된 결재 단계는 창의적인 기획 업무를 위해. 행정적 지연을 줄여줍니다"
+      },
+      {
+        "text": "Streamlined approval steps reduces administrative delays across our company.",
+        "chunks": [
+          "Streamlined approval steps",
+          "reduces administrative delays",
+          "across our company."
+        ],
+        "translation": "간소화된 결재 단계는 우리 회사 전반에 걸쳐. 행정적 지연을 줄여줍니다"
+      }
+    ],
+    "4": [
+      {
+        "text": "By adopting tools, our project team shares critical documents in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "By adopting tools, our project team shares critical documents without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "By adopting tools, our project team achieves revenue growth in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "By adopting tools, our project team achieves revenue growth without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "By adopting tools, our project team gathers direct feedback in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "By adopting tools, our project team gathers direct feedback without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "By adopting tools, our project team implements process improvements in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "By adopting tools, our project team implements process improvements without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "By adopting tools, our project team resolves system errors in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "By adopting tools, our project team resolves system errors without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "our project team",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 우리 프로젝트 팀은 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch shares critical documents in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch shares critical documents without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch achieves revenue growth in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch achieves revenue growth without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch gathers direct feedback in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch gathers direct feedback without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch implements process improvements in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch implements process improvements without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch resolves system errors in real time.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "By adopting tools, every regional branch resolves system errors without technical delays.",
+        "chunks": [
+          "By adopting tools,",
+          "every regional branch",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "도구를 도입함으로써, 모든 지역 지사는 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team shares critical documents in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team shares critical documents without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team achieves revenue growth in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team achieves revenue growth without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team gathers direct feedback in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team gathers direct feedback without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team implements process improvements in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team implements process improvements without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team resolves system errors in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "Despite market challenges, our project team resolves system errors without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "our project team",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 우리 프로젝트 팀은 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch shares critical documents in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch shares critical documents without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch achieves revenue growth in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch achieves revenue growth without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch gathers direct feedback in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch gathers direct feedback without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch implements process improvements in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch implements process improvements without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch resolves system errors in real time.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "Despite market challenges, every regional branch resolves system errors without technical delays.",
+        "chunks": [
+          "Despite market challenges,",
+          "every regional branch",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "시장 난관에도 불구하고, 모든 지역 지사는 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "To improve quality, our project team shares critical documents in real time.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "To improve quality, our project team shares critical documents without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "To improve quality, our project team achieves revenue growth in real time.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "To improve quality, our project team achieves revenue growth without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "To improve quality, our project team gathers direct feedback in real time.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "To improve quality, our project team gathers direct feedback without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "To improve quality, our project team implements process improvements in real time.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "To improve quality, our project team implements process improvements without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "To improve quality, our project team resolves system errors in real time.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "To improve quality, our project team resolves system errors without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "our project team",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 우리 프로젝트 팀은 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch shares critical documents in real time.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch shares critical documents without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch achieves revenue growth in real time.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch achieves revenue growth without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch gathers direct feedback in real time.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch gathers direct feedback without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch implements process improvements in real time.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch implements process improvements without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch resolves system errors in real time.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "To improve quality, every regional branch resolves system errors without technical delays.",
+        "chunks": [
+          "To improve quality,",
+          "every regional branch",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "품질을 향상하기 위해, 모든 지역 지사는 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team shares critical documents in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team shares critical documents without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team achieves revenue growth in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team achieves revenue growth without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team gathers direct feedback in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team gathers direct feedback without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team implements process improvements in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team implements process improvements without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team resolves system errors in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "When auditing accounts, our project team resolves system errors without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "our project team",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 우리 프로젝트 팀은 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch shares critical documents in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch shares critical documents without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch achieves revenue growth in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch achieves revenue growth without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch gathers direct feedback in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch gathers direct feedback without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch implements process improvements in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch implements process improvements without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch resolves system errors in real time.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "When auditing accounts, every regional branch resolves system errors without technical delays.",
+        "chunks": [
+          "When auditing accounts,",
+          "every regional branch",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "회계를 감사할 때, 모든 지역 지사는 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team shares critical documents in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team shares critical documents without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team achieves revenue growth in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team achieves revenue growth without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team gathers direct feedback in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team gathers direct feedback without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team implements process improvements in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team implements process improvements without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team resolves system errors in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "After conducting interviews, our project team resolves system errors without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "our project team",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 우리 프로젝트 팀은 기술적 지연 없이. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch shares critical documents in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "shares critical documents",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 실시간으로. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch shares critical documents without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "shares critical documents",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 기술적 지연 없이. 중요 서류들을 공유합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch achieves revenue growth in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "achieves revenue growth",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 실시간으로. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch achieves revenue growth without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "achieves revenue growth",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 기술적 지연 없이. 매출 성장을 달성합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch gathers direct feedback in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "gathers direct feedback",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 실시간으로. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch gathers direct feedback without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "gathers direct feedback",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 기술적 지연 없이. 직접적인 피드백을 수집합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch implements process improvements in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "implements process improvements",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 실시간으로. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch implements process improvements without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "implements process improvements",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 기술적 지연 없이. 프로세스 개선을 실행합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch resolves system errors in real time.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "resolves system errors",
+          "in real time."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 실시간으로. 시스템 오류를 해결합니다"
+      },
+      {
+        "text": "After conducting interviews, every regional branch resolves system errors without technical delays.",
+        "chunks": [
+          "After conducting interviews,",
+          "every regional branch",
+          "resolves system errors",
+          "without technical delays."
+        ],
+        "translation": "인터뷰를 진행한 후, 모든 지역 지사는 기술적 지연 없이. 시스템 오류를 해결합니다"
+      }
+    ]
+  },
+  "B2": {
+    "2": [
+      {
+        "text": "We successfully negotiated international contract terms.",
+        "chunks": [
+          "We successfully negotiated",
+          "international contract terms."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 국제 계약 조건들을."
+      },
+      {
+        "text": "We successfully negotiated essential for advancement.",
+        "chunks": [
+          "We successfully negotiated",
+          "essential for advancement."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "We successfully negotiated exceeded market forecasts.",
+        "chunks": [
+          "We successfully negotiated",
+          "exceeded market forecasts."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "We successfully negotiated streamlined engineering cycles.",
+        "chunks": [
+          "We successfully negotiated",
+          "streamlined engineering cycles."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "We successfully negotiated boosts strategic initiatives.",
+        "chunks": [
+          "We successfully negotiated",
+          "boosts strategic initiatives."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "We successfully negotiated mitigates logistics bottlenecks.",
+        "chunks": [
+          "We successfully negotiated",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "We successfully negotiated decisive organizational actions.",
+        "chunks": [
+          "We successfully negotiated",
+          "decisive organizational actions."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "We successfully negotiated emphasized strict compliance.",
+        "chunks": [
+          "We successfully negotiated",
+          "emphasized strict compliance."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "We successfully negotiated reveals untapped opportunities.",
+        "chunks": [
+          "We successfully negotiated",
+          "reveals untapped opportunities."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "We successfully negotiated secures organizational viability.",
+        "chunks": [
+          "We successfully negotiated",
+          "secures organizational viability."
+        ],
+        "translation": "우리는 성공적으로 협상했습니다 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Continuous professional learning international contract terms.",
+        "chunks": [
+          "Continuous professional learning",
+          "international contract terms."
+        ],
+        "translation": "지속적인 전문 학습은 국제 계약 조건들을."
+      },
+      {
+        "text": "Continuous professional learning essential for advancement.",
+        "chunks": [
+          "Continuous professional learning",
+          "essential for advancement."
+        ],
+        "translation": "지속적인 전문 학습은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Continuous professional learning exceeded market forecasts.",
+        "chunks": [
+          "Continuous professional learning",
+          "exceeded market forecasts."
+        ],
+        "translation": "지속적인 전문 학습은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Continuous professional learning streamlined engineering cycles.",
+        "chunks": [
+          "Continuous professional learning",
+          "streamlined engineering cycles."
+        ],
+        "translation": "지속적인 전문 학습은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Continuous professional learning boosts strategic initiatives.",
+        "chunks": [
+          "Continuous professional learning",
+          "boosts strategic initiatives."
+        ],
+        "translation": "지속적인 전문 학습은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Continuous professional learning mitigates logistics bottlenecks.",
+        "chunks": [
+          "Continuous professional learning",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "지속적인 전문 학습은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Continuous professional learning decisive organizational actions.",
+        "chunks": [
+          "Continuous professional learning",
+          "decisive organizational actions."
+        ],
+        "translation": "지속적인 전문 학습은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Continuous professional learning emphasized strict compliance.",
+        "chunks": [
+          "Continuous professional learning",
+          "emphasized strict compliance."
+        ],
+        "translation": "지속적인 전문 학습은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Continuous professional learning reveals untapped opportunities.",
+        "chunks": [
+          "Continuous professional learning",
+          "reveals untapped opportunities."
+        ],
+        "translation": "지속적인 전문 학습은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Continuous professional learning secures organizational viability.",
+        "chunks": [
+          "Continuous professional learning",
+          "secures organizational viability."
+        ],
+        "translation": "지속적인 전문 학습은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Quarterly operating revenue international contract terms.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "international contract terms."
+        ],
+        "translation": "분기별 영업 수익은 국제 계약 조건들을."
+      },
+      {
+        "text": "Quarterly operating revenue essential for advancement.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "essential for advancement."
+        ],
+        "translation": "분기별 영업 수익은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Quarterly operating revenue exceeded market forecasts.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "exceeded market forecasts."
+        ],
+        "translation": "분기별 영업 수익은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Quarterly operating revenue streamlined engineering cycles.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "streamlined engineering cycles."
+        ],
+        "translation": "분기별 영업 수익은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Quarterly operating revenue boosts strategic initiatives.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "boosts strategic initiatives."
+        ],
+        "translation": "분기별 영업 수익은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Quarterly operating revenue mitigates logistics bottlenecks.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "분기별 영업 수익은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Quarterly operating revenue decisive organizational actions.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "decisive organizational actions."
+        ],
+        "translation": "분기별 영업 수익은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Quarterly operating revenue emphasized strict compliance.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "emphasized strict compliance."
+        ],
+        "translation": "분기별 영업 수익은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Quarterly operating revenue reveals untapped opportunities.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "reveals untapped opportunities."
+        ],
+        "translation": "분기별 영업 수익은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Quarterly operating revenue secures organizational viability.",
+        "chunks": [
+          "Quarterly operating revenue",
+          "secures organizational viability."
+        ],
+        "translation": "분기별 영업 수익은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Implementing agile frameworks international contract terms.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "international contract terms."
+        ],
+        "translation": "애자일 프레임워크 도입은 국제 계약 조건들을."
+      },
+      {
+        "text": "Implementing agile frameworks essential for advancement.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "essential for advancement."
+        ],
+        "translation": "애자일 프레임워크 도입은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Implementing agile frameworks exceeded market forecasts.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "exceeded market forecasts."
+        ],
+        "translation": "애자일 프레임워크 도입은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Implementing agile frameworks streamlined engineering cycles.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "streamlined engineering cycles."
+        ],
+        "translation": "애자일 프레임워크 도입은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Implementing agile frameworks boosts strategic initiatives.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "boosts strategic initiatives."
+        ],
+        "translation": "애자일 프레임워크 도입은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Implementing agile frameworks mitigates logistics bottlenecks.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "애자일 프레임워크 도입은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Implementing agile frameworks decisive organizational actions.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "decisive organizational actions."
+        ],
+        "translation": "애자일 프레임워크 도입은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Implementing agile frameworks emphasized strict compliance.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "emphasized strict compliance."
+        ],
+        "translation": "애자일 프레임워크 도입은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Implementing agile frameworks reveals untapped opportunities.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "reveals untapped opportunities."
+        ],
+        "translation": "애자일 프레임워크 도입은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Implementing agile frameworks secures organizational viability.",
+        "chunks": [
+          "Implementing agile frameworks",
+          "secures organizational viability."
+        ],
+        "translation": "애자일 프레임워크 도입은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Allocating capital resources international contract terms.",
+        "chunks": [
+          "Allocating capital resources",
+          "international contract terms."
+        ],
+        "translation": "자본 자원을 배분하는 것은 국제 계약 조건들을."
+      },
+      {
+        "text": "Allocating capital resources essential for advancement.",
+        "chunks": [
+          "Allocating capital resources",
+          "essential for advancement."
+        ],
+        "translation": "자본 자원을 배분하는 것은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Allocating capital resources exceeded market forecasts.",
+        "chunks": [
+          "Allocating capital resources",
+          "exceeded market forecasts."
+        ],
+        "translation": "자본 자원을 배분하는 것은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Allocating capital resources streamlined engineering cycles.",
+        "chunks": [
+          "Allocating capital resources",
+          "streamlined engineering cycles."
+        ],
+        "translation": "자본 자원을 배분하는 것은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Allocating capital resources boosts strategic initiatives.",
+        "chunks": [
+          "Allocating capital resources",
+          "boosts strategic initiatives."
+        ],
+        "translation": "자본 자원을 배분하는 것은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Allocating capital resources mitigates logistics bottlenecks.",
+        "chunks": [
+          "Allocating capital resources",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "자본 자원을 배분하는 것은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Allocating capital resources decisive organizational actions.",
+        "chunks": [
+          "Allocating capital resources",
+          "decisive organizational actions."
+        ],
+        "translation": "자본 자원을 배분하는 것은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Allocating capital resources emphasized strict compliance.",
+        "chunks": [
+          "Allocating capital resources",
+          "emphasized strict compliance."
+        ],
+        "translation": "자본 자원을 배분하는 것은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Allocating capital resources reveals untapped opportunities.",
+        "chunks": [
+          "Allocating capital resources",
+          "reveals untapped opportunities."
+        ],
+        "translation": "자본 자원을 배분하는 것은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Allocating capital resources secures organizational viability.",
+        "chunks": [
+          "Allocating capital resources",
+          "secures organizational viability."
+        ],
+        "translation": "자본 자원을 배분하는 것은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Strengthening supply chains international contract terms.",
+        "chunks": [
+          "Strengthening supply chains",
+          "international contract terms."
+        ],
+        "translation": "공급망을 강화하는 것은 국제 계약 조건들을."
+      },
+      {
+        "text": "Strengthening supply chains essential for advancement.",
+        "chunks": [
+          "Strengthening supply chains",
+          "essential for advancement."
+        ],
+        "translation": "공급망을 강화하는 것은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Strengthening supply chains exceeded market forecasts.",
+        "chunks": [
+          "Strengthening supply chains",
+          "exceeded market forecasts."
+        ],
+        "translation": "공급망을 강화하는 것은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Strengthening supply chains streamlined engineering cycles.",
+        "chunks": [
+          "Strengthening supply chains",
+          "streamlined engineering cycles."
+        ],
+        "translation": "공급망을 강화하는 것은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Strengthening supply chains boosts strategic initiatives.",
+        "chunks": [
+          "Strengthening supply chains",
+          "boosts strategic initiatives."
+        ],
+        "translation": "공급망을 강화하는 것은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Strengthening supply chains mitigates logistics bottlenecks.",
+        "chunks": [
+          "Strengthening supply chains",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "공급망을 강화하는 것은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Strengthening supply chains decisive organizational actions.",
+        "chunks": [
+          "Strengthening supply chains",
+          "decisive organizational actions."
+        ],
+        "translation": "공급망을 강화하는 것은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Strengthening supply chains emphasized strict compliance.",
+        "chunks": [
+          "Strengthening supply chains",
+          "emphasized strict compliance."
+        ],
+        "translation": "공급망을 강화하는 것은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Strengthening supply chains reveals untapped opportunities.",
+        "chunks": [
+          "Strengthening supply chains",
+          "reveals untapped opportunities."
+        ],
+        "translation": "공급망을 강화하는 것은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Strengthening supply chains secures organizational viability.",
+        "chunks": [
+          "Strengthening supply chains",
+          "secures organizational viability."
+        ],
+        "translation": "공급망을 강화하는 것은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Market volatility demands international contract terms.",
+        "chunks": [
+          "Market volatility demands",
+          "international contract terms."
+        ],
+        "translation": "시장의 변동성은 요구합니다 국제 계약 조건들을."
+      },
+      {
+        "text": "Market volatility demands essential for advancement.",
+        "chunks": [
+          "Market volatility demands",
+          "essential for advancement."
+        ],
+        "translation": "시장의 변동성은 요구합니다 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Market volatility demands exceeded market forecasts.",
+        "chunks": [
+          "Market volatility demands",
+          "exceeded market forecasts."
+        ],
+        "translation": "시장의 변동성은 요구합니다 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Market volatility demands streamlined engineering cycles.",
+        "chunks": [
+          "Market volatility demands",
+          "streamlined engineering cycles."
+        ],
+        "translation": "시장의 변동성은 요구합니다 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Market volatility demands boosts strategic initiatives.",
+        "chunks": [
+          "Market volatility demands",
+          "boosts strategic initiatives."
+        ],
+        "translation": "시장의 변동성은 요구합니다 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Market volatility demands mitigates logistics bottlenecks.",
+        "chunks": [
+          "Market volatility demands",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "시장의 변동성은 요구합니다 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Market volatility demands decisive organizational actions.",
+        "chunks": [
+          "Market volatility demands",
+          "decisive organizational actions."
+        ],
+        "translation": "시장의 변동성은 요구합니다 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Market volatility demands emphasized strict compliance.",
+        "chunks": [
+          "Market volatility demands",
+          "emphasized strict compliance."
+        ],
+        "translation": "시장의 변동성은 요구합니다 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Market volatility demands reveals untapped opportunities.",
+        "chunks": [
+          "Market volatility demands",
+          "reveals untapped opportunities."
+        ],
+        "translation": "시장의 변동성은 요구합니다 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Market volatility demands secures organizational viability.",
+        "chunks": [
+          "Market volatility demands",
+          "secures organizational viability."
+        ],
+        "translation": "시장의 변동성은 요구합니다 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "The leadership team international contract terms.",
+        "chunks": [
+          "The leadership team",
+          "international contract terms."
+        ],
+        "translation": "경영진 리더십 팀은 국제 계약 조건들을."
+      },
+      {
+        "text": "The leadership team essential for advancement.",
+        "chunks": [
+          "The leadership team",
+          "essential for advancement."
+        ],
+        "translation": "경영진 리더십 팀은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "The leadership team exceeded market forecasts.",
+        "chunks": [
+          "The leadership team",
+          "exceeded market forecasts."
+        ],
+        "translation": "경영진 리더십 팀은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "The leadership team streamlined engineering cycles.",
+        "chunks": [
+          "The leadership team",
+          "streamlined engineering cycles."
+        ],
+        "translation": "경영진 리더십 팀은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "The leadership team boosts strategic initiatives.",
+        "chunks": [
+          "The leadership team",
+          "boosts strategic initiatives."
+        ],
+        "translation": "경영진 리더십 팀은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "The leadership team mitigates logistics bottlenecks.",
+        "chunks": [
+          "The leadership team",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "경영진 리더십 팀은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "The leadership team decisive organizational actions.",
+        "chunks": [
+          "The leadership team",
+          "decisive organizational actions."
+        ],
+        "translation": "경영진 리더십 팀은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "The leadership team emphasized strict compliance.",
+        "chunks": [
+          "The leadership team",
+          "emphasized strict compliance."
+        ],
+        "translation": "경영진 리더십 팀은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "The leadership team reveals untapped opportunities.",
+        "chunks": [
+          "The leadership team",
+          "reveals untapped opportunities."
+        ],
+        "translation": "경영진 리더십 팀은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "The leadership team secures organizational viability.",
+        "chunks": [
+          "The leadership team",
+          "secures organizational viability."
+        ],
+        "translation": "경영진 리더십 팀은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Competitor benchmark analysis international contract terms.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "international contract terms."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 국제 계약 조건들을."
+      },
+      {
+        "text": "Competitor benchmark analysis essential for advancement.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "essential for advancement."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Competitor benchmark analysis exceeded market forecasts.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "exceeded market forecasts."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Competitor benchmark analysis streamlined engineering cycles.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "streamlined engineering cycles."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Competitor benchmark analysis boosts strategic initiatives.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "boosts strategic initiatives."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Competitor benchmark analysis mitigates logistics bottlenecks.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Competitor benchmark analysis decisive organizational actions.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "decisive organizational actions."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Competitor benchmark analysis emphasized strict compliance.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "emphasized strict compliance."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Competitor benchmark analysis reveals untapped opportunities.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "reveals untapped opportunities."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Competitor benchmark analysis secures organizational viability.",
+        "chunks": [
+          "Competitor benchmark analysis",
+          "secures organizational viability."
+        ],
+        "translation": "경쟁사 벤치마킹 분석은 조직의 생존력을 확보합니다."
+      },
+      {
+        "text": "Disciplined financial budgeting international contract terms.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "international contract terms."
+        ],
+        "translation": "절제된 재무 예산 편성은 국제 계약 조건들을."
+      },
+      {
+        "text": "Disciplined financial budgeting essential for advancement.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "essential for advancement."
+        ],
+        "translation": "절제된 재무 예산 편성은 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Disciplined financial budgeting exceeded market forecasts.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "exceeded market forecasts."
+        ],
+        "translation": "절제된 재무 예산 편성은 시장 전망치를 초과했습니다."
+      },
+      {
+        "text": "Disciplined financial budgeting streamlined engineering cycles.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "streamlined engineering cycles."
+        ],
+        "translation": "절제된 재무 예산 편성은 개발 주기를 간소화했습니다."
+      },
+      {
+        "text": "Disciplined financial budgeting boosts strategic initiatives.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "boosts strategic initiatives."
+        ],
+        "translation": "절제된 재무 예산 편성은 전략적 이니셔티브를 촉진합니다."
+      },
+      {
+        "text": "Disciplined financial budgeting mitigates logistics bottlenecks.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "mitigates logistics bottlenecks."
+        ],
+        "translation": "절제된 재무 예산 편성은 물류 병목 현상을 완화합니다."
+      },
+      {
+        "text": "Disciplined financial budgeting decisive organizational actions.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "decisive organizational actions."
+        ],
+        "translation": "절제된 재무 예산 편성은 결단력 있는 조직적 조치를."
+      },
+      {
+        "text": "Disciplined financial budgeting emphasized strict compliance.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "emphasized strict compliance."
+        ],
+        "translation": "절제된 재무 예산 편성은 엄격한 준법을 강조했습니다."
+      },
+      {
+        "text": "Disciplined financial budgeting reveals untapped opportunities.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "reveals untapped opportunities."
+        ],
+        "translation": "절제된 재무 예산 편성은 미개척 기회를 발굴합니다."
+      },
+      {
+        "text": "Disciplined financial budgeting secures organizational viability.",
+        "chunks": [
+          "Disciplined financial budgeting",
+          "secures organizational viability."
+        ],
+        "translation": "절제된 재무 예산 편성은 조직의 생존력을 확보합니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "Our executive committee evaluates market performance to maintain advantages.",
+        "chunks": [
+          "Our executive committee",
+          "evaluates market performance",
+          "to maintain advantages."
+        ],
+        "translation": "우리 경영위원회는 우위를 유지하기 위해. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our executive committee evaluates market performance amid changing conditions.",
+        "chunks": [
+          "Our executive committee",
+          "evaluates market performance",
+          "amid changing conditions."
+        ],
+        "translation": "우리 경영위원회는 변화하는 환경 속에서. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our executive committee evaluates market performance during the summit.",
+        "chunks": [
+          "Our executive committee",
+          "evaluates market performance",
+          "during the summit."
+        ],
+        "translation": "우리 경영위원회는 서밋 회의 동안에. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our executive committee evaluates market performance with department heads.",
+        "chunks": [
+          "Our executive committee",
+          "evaluates market performance",
+          "with department heads."
+        ],
+        "translation": "우리 경영위원회는 부서장들과 함께. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our executive committee implements agile principles to maintain advantages.",
+        "chunks": [
+          "Our executive committee",
+          "implements agile principles",
+          "to maintain advantages."
+        ],
+        "translation": "우리 경영위원회는 우위를 유지하기 위해. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our executive committee implements agile principles amid changing conditions.",
+        "chunks": [
+          "Our executive committee",
+          "implements agile principles",
+          "amid changing conditions."
+        ],
+        "translation": "우리 경영위원회는 변화하는 환경 속에서. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our executive committee implements agile principles during the summit.",
+        "chunks": [
+          "Our executive committee",
+          "implements agile principles",
+          "during the summit."
+        ],
+        "translation": "우리 경영위원회는 서밋 회의 동안에. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our executive committee implements agile principles with department heads.",
+        "chunks": [
+          "Our executive committee",
+          "implements agile principles",
+          "with department heads."
+        ],
+        "translation": "우리 경영위원회는 부서장들과 함께. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our executive committee conducts competitor analysis to maintain advantages.",
+        "chunks": [
+          "Our executive committee",
+          "conducts competitor analysis",
+          "to maintain advantages."
+        ],
+        "translation": "우리 경영위원회는 우위를 유지하기 위해. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our executive committee conducts competitor analysis amid changing conditions.",
+        "chunks": [
+          "Our executive committee",
+          "conducts competitor analysis",
+          "amid changing conditions."
+        ],
+        "translation": "우리 경영위원회는 변화하는 환경 속에서. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our executive committee conducts competitor analysis during the summit.",
+        "chunks": [
+          "Our executive committee",
+          "conducts competitor analysis",
+          "during the summit."
+        ],
+        "translation": "우리 경영위원회는 서밋 회의 동안에. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our executive committee conducts competitor analysis with department heads.",
+        "chunks": [
+          "Our executive committee",
+          "conducts competitor analysis",
+          "with department heads."
+        ],
+        "translation": "우리 경영위원회는 부서장들과 함께. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our executive committee streamlines operational workflows to maintain advantages.",
+        "chunks": [
+          "Our executive committee",
+          "streamlines operational workflows",
+          "to maintain advantages."
+        ],
+        "translation": "우리 경영위원회는 우위를 유지하기 위해. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our executive committee streamlines operational workflows amid changing conditions.",
+        "chunks": [
+          "Our executive committee",
+          "streamlines operational workflows",
+          "amid changing conditions."
+        ],
+        "translation": "우리 경영위원회는 변화하는 환경 속에서. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our executive committee streamlines operational workflows during the summit.",
+        "chunks": [
+          "Our executive committee",
+          "streamlines operational workflows",
+          "during the summit."
+        ],
+        "translation": "우리 경영위원회는 서밋 회의 동안에. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our executive committee streamlines operational workflows with department heads.",
+        "chunks": [
+          "Our executive committee",
+          "streamlines operational workflows",
+          "with department heads."
+        ],
+        "translation": "우리 경영위원회는 부서장들과 함께. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our executive committee allocates available capital to maintain advantages.",
+        "chunks": [
+          "Our executive committee",
+          "allocates available capital",
+          "to maintain advantages."
+        ],
+        "translation": "우리 경영위원회는 우위를 유지하기 위해. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our executive committee allocates available capital amid changing conditions.",
+        "chunks": [
+          "Our executive committee",
+          "allocates available capital",
+          "amid changing conditions."
+        ],
+        "translation": "우리 경영위원회는 변화하는 환경 속에서. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our executive committee allocates available capital during the summit.",
+        "chunks": [
+          "Our executive committee",
+          "allocates available capital",
+          "during the summit."
+        ],
+        "translation": "우리 경영위원회는 서밋 회의 동안에. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our executive committee allocates available capital with department heads.",
+        "chunks": [
+          "Our executive committee",
+          "allocates available capital",
+          "with department heads."
+        ],
+        "translation": "우리 경영위원회는 부서장들과 함께. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The senior strategy evaluates market performance to maintain advantages.",
+        "chunks": [
+          "The senior strategy",
+          "evaluates market performance",
+          "to maintain advantages."
+        ],
+        "translation": "수석 전략팀은 우위를 유지하기 위해. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The senior strategy evaluates market performance amid changing conditions.",
+        "chunks": [
+          "The senior strategy",
+          "evaluates market performance",
+          "amid changing conditions."
+        ],
+        "translation": "수석 전략팀은 변화하는 환경 속에서. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The senior strategy evaluates market performance during the summit.",
+        "chunks": [
+          "The senior strategy",
+          "evaluates market performance",
+          "during the summit."
+        ],
+        "translation": "수석 전략팀은 서밋 회의 동안에. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The senior strategy evaluates market performance with department heads.",
+        "chunks": [
+          "The senior strategy",
+          "evaluates market performance",
+          "with department heads."
+        ],
+        "translation": "수석 전략팀은 부서장들과 함께. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The senior strategy implements agile principles to maintain advantages.",
+        "chunks": [
+          "The senior strategy",
+          "implements agile principles",
+          "to maintain advantages."
+        ],
+        "translation": "수석 전략팀은 우위를 유지하기 위해. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The senior strategy implements agile principles amid changing conditions.",
+        "chunks": [
+          "The senior strategy",
+          "implements agile principles",
+          "amid changing conditions."
+        ],
+        "translation": "수석 전략팀은 변화하는 환경 속에서. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The senior strategy implements agile principles during the summit.",
+        "chunks": [
+          "The senior strategy",
+          "implements agile principles",
+          "during the summit."
+        ],
+        "translation": "수석 전략팀은 서밋 회의 동안에. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The senior strategy implements agile principles with department heads.",
+        "chunks": [
+          "The senior strategy",
+          "implements agile principles",
+          "with department heads."
+        ],
+        "translation": "수석 전략팀은 부서장들과 함께. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The senior strategy conducts competitor analysis to maintain advantages.",
+        "chunks": [
+          "The senior strategy",
+          "conducts competitor analysis",
+          "to maintain advantages."
+        ],
+        "translation": "수석 전략팀은 우위를 유지하기 위해. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The senior strategy conducts competitor analysis amid changing conditions.",
+        "chunks": [
+          "The senior strategy",
+          "conducts competitor analysis",
+          "amid changing conditions."
+        ],
+        "translation": "수석 전략팀은 변화하는 환경 속에서. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The senior strategy conducts competitor analysis during the summit.",
+        "chunks": [
+          "The senior strategy",
+          "conducts competitor analysis",
+          "during the summit."
+        ],
+        "translation": "수석 전략팀은 서밋 회의 동안에. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The senior strategy conducts competitor analysis with department heads.",
+        "chunks": [
+          "The senior strategy",
+          "conducts competitor analysis",
+          "with department heads."
+        ],
+        "translation": "수석 전략팀은 부서장들과 함께. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The senior strategy streamlines operational workflows to maintain advantages.",
+        "chunks": [
+          "The senior strategy",
+          "streamlines operational workflows",
+          "to maintain advantages."
+        ],
+        "translation": "수석 전략팀은 우위를 유지하기 위해. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The senior strategy streamlines operational workflows amid changing conditions.",
+        "chunks": [
+          "The senior strategy",
+          "streamlines operational workflows",
+          "amid changing conditions."
+        ],
+        "translation": "수석 전략팀은 변화하는 환경 속에서. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The senior strategy streamlines operational workflows during the summit.",
+        "chunks": [
+          "The senior strategy",
+          "streamlines operational workflows",
+          "during the summit."
+        ],
+        "translation": "수석 전략팀은 서밋 회의 동안에. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The senior strategy streamlines operational workflows with department heads.",
+        "chunks": [
+          "The senior strategy",
+          "streamlines operational workflows",
+          "with department heads."
+        ],
+        "translation": "수석 전략팀은 부서장들과 함께. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The senior strategy allocates available capital to maintain advantages.",
+        "chunks": [
+          "The senior strategy",
+          "allocates available capital",
+          "to maintain advantages."
+        ],
+        "translation": "수석 전략팀은 우위를 유지하기 위해. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The senior strategy allocates available capital amid changing conditions.",
+        "chunks": [
+          "The senior strategy",
+          "allocates available capital",
+          "amid changing conditions."
+        ],
+        "translation": "수석 전략팀은 변화하는 환경 속에서. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The senior strategy allocates available capital during the summit.",
+        "chunks": [
+          "The senior strategy",
+          "allocates available capital",
+          "during the summit."
+        ],
+        "translation": "수석 전략팀은 서밋 회의 동안에. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The senior strategy allocates available capital with department heads.",
+        "chunks": [
+          "The senior strategy",
+          "allocates available capital",
+          "with department heads."
+        ],
+        "translation": "수석 전략팀은 부서장들과 함께. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Every regional director evaluates market performance to maintain advantages.",
+        "chunks": [
+          "Every regional director",
+          "evaluates market performance",
+          "to maintain advantages."
+        ],
+        "translation": "모든 지역 본부장은 우위를 유지하기 위해. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Every regional director evaluates market performance amid changing conditions.",
+        "chunks": [
+          "Every regional director",
+          "evaluates market performance",
+          "amid changing conditions."
+        ],
+        "translation": "모든 지역 본부장은 변화하는 환경 속에서. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Every regional director evaluates market performance during the summit.",
+        "chunks": [
+          "Every regional director",
+          "evaluates market performance",
+          "during the summit."
+        ],
+        "translation": "모든 지역 본부장은 서밋 회의 동안에. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Every regional director evaluates market performance with department heads.",
+        "chunks": [
+          "Every regional director",
+          "evaluates market performance",
+          "with department heads."
+        ],
+        "translation": "모든 지역 본부장은 부서장들과 함께. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Every regional director implements agile principles to maintain advantages.",
+        "chunks": [
+          "Every regional director",
+          "implements agile principles",
+          "to maintain advantages."
+        ],
+        "translation": "모든 지역 본부장은 우위를 유지하기 위해. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Every regional director implements agile principles amid changing conditions.",
+        "chunks": [
+          "Every regional director",
+          "implements agile principles",
+          "amid changing conditions."
+        ],
+        "translation": "모든 지역 본부장은 변화하는 환경 속에서. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Every regional director implements agile principles during the summit.",
+        "chunks": [
+          "Every regional director",
+          "implements agile principles",
+          "during the summit."
+        ],
+        "translation": "모든 지역 본부장은 서밋 회의 동안에. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Every regional director implements agile principles with department heads.",
+        "chunks": [
+          "Every regional director",
+          "implements agile principles",
+          "with department heads."
+        ],
+        "translation": "모든 지역 본부장은 부서장들과 함께. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Every regional director conducts competitor analysis to maintain advantages.",
+        "chunks": [
+          "Every regional director",
+          "conducts competitor analysis",
+          "to maintain advantages."
+        ],
+        "translation": "모든 지역 본부장은 우위를 유지하기 위해. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Every regional director conducts competitor analysis amid changing conditions.",
+        "chunks": [
+          "Every regional director",
+          "conducts competitor analysis",
+          "amid changing conditions."
+        ],
+        "translation": "모든 지역 본부장은 변화하는 환경 속에서. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Every regional director conducts competitor analysis during the summit.",
+        "chunks": [
+          "Every regional director",
+          "conducts competitor analysis",
+          "during the summit."
+        ],
+        "translation": "모든 지역 본부장은 서밋 회의 동안에. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Every regional director conducts competitor analysis with department heads.",
+        "chunks": [
+          "Every regional director",
+          "conducts competitor analysis",
+          "with department heads."
+        ],
+        "translation": "모든 지역 본부장은 부서장들과 함께. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Every regional director streamlines operational workflows to maintain advantages.",
+        "chunks": [
+          "Every regional director",
+          "streamlines operational workflows",
+          "to maintain advantages."
+        ],
+        "translation": "모든 지역 본부장은 우위를 유지하기 위해. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Every regional director streamlines operational workflows amid changing conditions.",
+        "chunks": [
+          "Every regional director",
+          "streamlines operational workflows",
+          "amid changing conditions."
+        ],
+        "translation": "모든 지역 본부장은 변화하는 환경 속에서. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Every regional director streamlines operational workflows during the summit.",
+        "chunks": [
+          "Every regional director",
+          "streamlines operational workflows",
+          "during the summit."
+        ],
+        "translation": "모든 지역 본부장은 서밋 회의 동안에. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Every regional director streamlines operational workflows with department heads.",
+        "chunks": [
+          "Every regional director",
+          "streamlines operational workflows",
+          "with department heads."
+        ],
+        "translation": "모든 지역 본부장은 부서장들과 함께. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Every regional director allocates available capital to maintain advantages.",
+        "chunks": [
+          "Every regional director",
+          "allocates available capital",
+          "to maintain advantages."
+        ],
+        "translation": "모든 지역 본부장은 우위를 유지하기 위해. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Every regional director allocates available capital amid changing conditions.",
+        "chunks": [
+          "Every regional director",
+          "allocates available capital",
+          "amid changing conditions."
+        ],
+        "translation": "모든 지역 본부장은 변화하는 환경 속에서. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Every regional director allocates available capital during the summit.",
+        "chunks": [
+          "Every regional director",
+          "allocates available capital",
+          "during the summit."
+        ],
+        "translation": "모든 지역 본부장은 서밋 회의 동안에. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Every regional director allocates available capital with department heads.",
+        "chunks": [
+          "Every regional director",
+          "allocates available capital",
+          "with department heads."
+        ],
+        "translation": "모든 지역 본부장은 부서장들과 함께. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The marketing division evaluates market performance to maintain advantages.",
+        "chunks": [
+          "The marketing division",
+          "evaluates market performance",
+          "to maintain advantages."
+        ],
+        "translation": "마케팅 부문은 우위를 유지하기 위해. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The marketing division evaluates market performance amid changing conditions.",
+        "chunks": [
+          "The marketing division",
+          "evaluates market performance",
+          "amid changing conditions."
+        ],
+        "translation": "마케팅 부문은 변화하는 환경 속에서. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The marketing division evaluates market performance during the summit.",
+        "chunks": [
+          "The marketing division",
+          "evaluates market performance",
+          "during the summit."
+        ],
+        "translation": "마케팅 부문은 서밋 회의 동안에. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The marketing division evaluates market performance with department heads.",
+        "chunks": [
+          "The marketing division",
+          "evaluates market performance",
+          "with department heads."
+        ],
+        "translation": "마케팅 부문은 부서장들과 함께. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "The marketing division implements agile principles to maintain advantages.",
+        "chunks": [
+          "The marketing division",
+          "implements agile principles",
+          "to maintain advantages."
+        ],
+        "translation": "마케팅 부문은 우위를 유지하기 위해. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The marketing division implements agile principles amid changing conditions.",
+        "chunks": [
+          "The marketing division",
+          "implements agile principles",
+          "amid changing conditions."
+        ],
+        "translation": "마케팅 부문은 변화하는 환경 속에서. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The marketing division implements agile principles during the summit.",
+        "chunks": [
+          "The marketing division",
+          "implements agile principles",
+          "during the summit."
+        ],
+        "translation": "마케팅 부문은 서밋 회의 동안에. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The marketing division implements agile principles with department heads.",
+        "chunks": [
+          "The marketing division",
+          "implements agile principles",
+          "with department heads."
+        ],
+        "translation": "마케팅 부문은 부서장들과 함께. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "The marketing division conducts competitor analysis to maintain advantages.",
+        "chunks": [
+          "The marketing division",
+          "conducts competitor analysis",
+          "to maintain advantages."
+        ],
+        "translation": "마케팅 부문은 우위를 유지하기 위해. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The marketing division conducts competitor analysis amid changing conditions.",
+        "chunks": [
+          "The marketing division",
+          "conducts competitor analysis",
+          "amid changing conditions."
+        ],
+        "translation": "마케팅 부문은 변화하는 환경 속에서. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The marketing division conducts competitor analysis during the summit.",
+        "chunks": [
+          "The marketing division",
+          "conducts competitor analysis",
+          "during the summit."
+        ],
+        "translation": "마케팅 부문은 서밋 회의 동안에. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The marketing division conducts competitor analysis with department heads.",
+        "chunks": [
+          "The marketing division",
+          "conducts competitor analysis",
+          "with department heads."
+        ],
+        "translation": "마케팅 부문은 부서장들과 함께. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "The marketing division streamlines operational workflows to maintain advantages.",
+        "chunks": [
+          "The marketing division",
+          "streamlines operational workflows",
+          "to maintain advantages."
+        ],
+        "translation": "마케팅 부문은 우위를 유지하기 위해. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The marketing division streamlines operational workflows amid changing conditions.",
+        "chunks": [
+          "The marketing division",
+          "streamlines operational workflows",
+          "amid changing conditions."
+        ],
+        "translation": "마케팅 부문은 변화하는 환경 속에서. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The marketing division streamlines operational workflows during the summit.",
+        "chunks": [
+          "The marketing division",
+          "streamlines operational workflows",
+          "during the summit."
+        ],
+        "translation": "마케팅 부문은 서밋 회의 동안에. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The marketing division streamlines operational workflows with department heads.",
+        "chunks": [
+          "The marketing division",
+          "streamlines operational workflows",
+          "with department heads."
+        ],
+        "translation": "마케팅 부문은 부서장들과 함께. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "The marketing division allocates available capital to maintain advantages.",
+        "chunks": [
+          "The marketing division",
+          "allocates available capital",
+          "to maintain advantages."
+        ],
+        "translation": "마케팅 부문은 우위를 유지하기 위해. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The marketing division allocates available capital amid changing conditions.",
+        "chunks": [
+          "The marketing division",
+          "allocates available capital",
+          "amid changing conditions."
+        ],
+        "translation": "마케팅 부문은 변화하는 환경 속에서. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The marketing division allocates available capital during the summit.",
+        "chunks": [
+          "The marketing division",
+          "allocates available capital",
+          "during the summit."
+        ],
+        "translation": "마케팅 부문은 서밋 회의 동안에. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "The marketing division allocates available capital with department heads.",
+        "chunks": [
+          "The marketing division",
+          "allocates available capital",
+          "with department heads."
+        ],
+        "translation": "마케팅 부문은 부서장들과 함께. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our innovation group evaluates market performance to maintain advantages.",
+        "chunks": [
+          "Our innovation group",
+          "evaluates market performance",
+          "to maintain advantages."
+        ],
+        "translation": "우리 혁신 그룹은 우위를 유지하기 위해. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our innovation group evaluates market performance amid changing conditions.",
+        "chunks": [
+          "Our innovation group",
+          "evaluates market performance",
+          "amid changing conditions."
+        ],
+        "translation": "우리 혁신 그룹은 변화하는 환경 속에서. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our innovation group evaluates market performance during the summit.",
+        "chunks": [
+          "Our innovation group",
+          "evaluates market performance",
+          "during the summit."
+        ],
+        "translation": "우리 혁신 그룹은 서밋 회의 동안에. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our innovation group evaluates market performance with department heads.",
+        "chunks": [
+          "Our innovation group",
+          "evaluates market performance",
+          "with department heads."
+        ],
+        "translation": "우리 혁신 그룹은 부서장들과 함께. 시장 성과를 평가합니다"
+      },
+      {
+        "text": "Our innovation group implements agile principles to maintain advantages.",
+        "chunks": [
+          "Our innovation group",
+          "implements agile principles",
+          "to maintain advantages."
+        ],
+        "translation": "우리 혁신 그룹은 우위를 유지하기 위해. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our innovation group implements agile principles amid changing conditions.",
+        "chunks": [
+          "Our innovation group",
+          "implements agile principles",
+          "amid changing conditions."
+        ],
+        "translation": "우리 혁신 그룹은 변화하는 환경 속에서. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our innovation group implements agile principles during the summit.",
+        "chunks": [
+          "Our innovation group",
+          "implements agile principles",
+          "during the summit."
+        ],
+        "translation": "우리 혁신 그룹은 서밋 회의 동안에. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our innovation group implements agile principles with department heads.",
+        "chunks": [
+          "Our innovation group",
+          "implements agile principles",
+          "with department heads."
+        ],
+        "translation": "우리 혁신 그룹은 부서장들과 함께. 애자일 원칙을 실행합니다"
+      },
+      {
+        "text": "Our innovation group conducts competitor analysis to maintain advantages.",
+        "chunks": [
+          "Our innovation group",
+          "conducts competitor analysis",
+          "to maintain advantages."
+        ],
+        "translation": "우리 혁신 그룹은 우위를 유지하기 위해. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our innovation group conducts competitor analysis amid changing conditions.",
+        "chunks": [
+          "Our innovation group",
+          "conducts competitor analysis",
+          "amid changing conditions."
+        ],
+        "translation": "우리 혁신 그룹은 변화하는 환경 속에서. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our innovation group conducts competitor analysis during the summit.",
+        "chunks": [
+          "Our innovation group",
+          "conducts competitor analysis",
+          "during the summit."
+        ],
+        "translation": "우리 혁신 그룹은 서밋 회의 동안에. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our innovation group conducts competitor analysis with department heads.",
+        "chunks": [
+          "Our innovation group",
+          "conducts competitor analysis",
+          "with department heads."
+        ],
+        "translation": "우리 혁신 그룹은 부서장들과 함께. 경쟁사 분석을 수행합니다"
+      },
+      {
+        "text": "Our innovation group streamlines operational workflows to maintain advantages.",
+        "chunks": [
+          "Our innovation group",
+          "streamlines operational workflows",
+          "to maintain advantages."
+        ],
+        "translation": "우리 혁신 그룹은 우위를 유지하기 위해. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our innovation group streamlines operational workflows amid changing conditions.",
+        "chunks": [
+          "Our innovation group",
+          "streamlines operational workflows",
+          "amid changing conditions."
+        ],
+        "translation": "우리 혁신 그룹은 변화하는 환경 속에서. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our innovation group streamlines operational workflows during the summit.",
+        "chunks": [
+          "Our innovation group",
+          "streamlines operational workflows",
+          "during the summit."
+        ],
+        "translation": "우리 혁신 그룹은 서밋 회의 동안에. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our innovation group streamlines operational workflows with department heads.",
+        "chunks": [
+          "Our innovation group",
+          "streamlines operational workflows",
+          "with department heads."
+        ],
+        "translation": "우리 혁신 그룹은 부서장들과 함께. 운영 워크플로우를 간소화합니다"
+      },
+      {
+        "text": "Our innovation group allocates available capital to maintain advantages.",
+        "chunks": [
+          "Our innovation group",
+          "allocates available capital",
+          "to maintain advantages."
+        ],
+        "translation": "우리 혁신 그룹은 우위를 유지하기 위해. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our innovation group allocates available capital amid changing conditions.",
+        "chunks": [
+          "Our innovation group",
+          "allocates available capital",
+          "amid changing conditions."
+        ],
+        "translation": "우리 혁신 그룹은 변화하는 환경 속에서. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our innovation group allocates available capital during the summit.",
+        "chunks": [
+          "Our innovation group",
+          "allocates available capital",
+          "during the summit."
+        ],
+        "translation": "우리 혁신 그룹은 서밋 회의 동안에. 가용 자본을 배분합니다"
+      },
+      {
+        "text": "Our innovation group allocates available capital with department heads.",
+        "chunks": [
+          "Our innovation group",
+          "allocates available capital",
+          "with department heads."
+        ],
+        "translation": "우리 혁신 그룹은 부서장들과 함께. 가용 자본을 배분합니다"
+      }
+    ],
+    "4": [
+      {
+        "text": "Continuous professional learning is highly essential in demanding environments during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning is highly essential in demanding environments without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning is highly essential by expanding operations during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning is highly essential by expanding operations without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning is highly essential into emerging markets during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning is highly essential into emerging markets without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning is highly essential to foster collaboration during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning is highly essential to foster collaboration without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning is highly essential which enhances productivity during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning is highly essential which enhances productivity without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "is highly essential",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 대단히 필수적입니다 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning across global units in demanding environments during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning across global units in demanding environments without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning across global units by expanding operations during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning across global units by expanding operations without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning across global units into emerging markets during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning across global units into emerging markets without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning across global units to foster collaboration during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning across global units to foster collaboration without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Continuous professional learning across global units which enhances productivity during this year.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "Continuous professional learning across global units which enhances productivity without compromising standards.",
+        "chunks": [
+          "Continuous professional learning",
+          "across global units",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "지속적인 전문 역량 학습은 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team is highly essential in demanding environments during this year.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "The global team is highly essential in demanding environments without compromising standards.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team is highly essential by expanding operations during this year.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "The global team is highly essential by expanding operations without compromising standards.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team is highly essential into emerging markets during this year.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "The global team is highly essential into emerging markets without compromising standards.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team is highly essential to foster collaboration during this year.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "The global team is highly essential to foster collaboration without compromising standards.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team is highly essential which enhances productivity during this year.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "The global team is highly essential which enhances productivity without compromising standards.",
+        "chunks": [
+          "The global team",
+          "is highly essential",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 대단히 필수적입니다 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team across global units in demanding environments during this year.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "The global team across global units in demanding environments without compromising standards.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team across global units by expanding operations during this year.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "The global team across global units by expanding operations without compromising standards.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team across global units into emerging markets during this year.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "The global team across global units into emerging markets without compromising standards.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team across global units to foster collaboration during this year.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "The global team across global units to foster collaboration without compromising standards.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "The global team across global units which enhances productivity during this year.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "The global team across global units which enhances productivity without compromising standards.",
+        "chunks": [
+          "The global team",
+          "across global units",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "글로벌 비즈니스 팀은 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential in demanding environments during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential in demanding environments without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential by expanding operations during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential by expanding operations without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential into emerging markets during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential into emerging markets without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential to foster collaboration during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential to foster collaboration without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential which enhances productivity during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback is highly essential which enhances productivity without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "is highly essential",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 대단히 필수적입니다 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback across global units in demanding environments during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback across global units in demanding environments without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback across global units by expanding operations during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback across global units by expanding operations without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback across global units into emerging markets during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback across global units into emerging markets without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback across global units to foster collaboration during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback across global units to foster collaboration without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Integrating customer feedback across global units which enhances productivity during this year.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "Integrating customer feedback across global units which enhances productivity without compromising standards.",
+        "chunks": [
+          "Integrating customer feedback",
+          "across global units",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "고객 피드백의 직접 통합은 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, is highly essential in demanding environments during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "To protect advantages, is highly essential in demanding environments without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, is highly essential by expanding operations during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "To protect advantages, is highly essential by expanding operations without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, is highly essential into emerging markets during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "To protect advantages, is highly essential into emerging markets without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, is highly essential to foster collaboration during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "To protect advantages, is highly essential to foster collaboration without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, is highly essential which enhances productivity during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "To protect advantages, is highly essential which enhances productivity without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "is highly essential",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 대단히 필수적입니다 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, across global units in demanding environments during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "To protect advantages, across global units in demanding environments without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, across global units by expanding operations during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "To protect advantages, across global units by expanding operations without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, across global units into emerging markets during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "To protect advantages, across global units into emerging markets without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, across global units to foster collaboration during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "To protect advantages, across global units to foster collaboration without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "To protect advantages, across global units which enhances productivity during this year.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "To protect advantages, across global units which enhances productivity without compromising standards.",
+        "chunks": [
+          "To protect advantages,",
+          "across global units",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "경쟁적 우위를 보호하기 위해, 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential in demanding environments during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential in demanding environments without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential by expanding operations during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential by expanding operations without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential into emerging markets during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential into emerging markets without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential to foster collaboration during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential to foster collaboration without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential which enhances productivity during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks is highly essential which enhances productivity without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "is highly essential",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 대단히 필수적입니다 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks across global units in demanding environments during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "in demanding environments",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks across global units in demanding environments without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "in demanding environments",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 까다로운 환경 속에서 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks across global units by expanding operations during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "by expanding operations",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks across global units by expanding operations without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "by expanding operations",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 운영을 확장함으로써 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks across global units into emerging markets during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "into emerging markets",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks across global units into emerging markets without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "into emerging markets",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 신흥 시장 속으로 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks across global units to foster collaboration during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "to foster collaboration",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks across global units to foster collaboration without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "to foster collaboration",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 협업을 적극 조성하기 위해 표준을 훼손하지 않고."
+      },
+      {
+        "text": "Strengthening supply networks across global units which enhances productivity during this year.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "which enhances productivity",
+          "during this year."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 올해 동안."
+      },
+      {
+        "text": "Strengthening supply networks across global units which enhances productivity without compromising standards.",
+        "chunks": [
+          "Strengthening supply networks",
+          "across global units",
+          "which enhances productivity",
+          "without compromising standards."
+        ],
+        "translation": "공급 네트워크의 강화는 글로벌 부서 전반에 걸쳐 생산성을 직접 향상시키는 표준을 훼손하지 않고."
+      }
+    ]
+  },
+  "C1": {
+    "2": [
+      {
+        "text": "The board reached a unanimous policy consensus.",
+        "chunks": [
+          "The board reached",
+          "a unanimous policy consensus."
+        ],
+        "translation": "이사회는 도달했습니다 만장일치의 정책 합의에."
+      },
+      {
+        "text": "The board reached preempts operational bottlenecks.",
+        "chunks": [
+          "The board reached",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "이사회는 도달했습니다 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "The board reached upon agile monetary policies.",
+        "chunks": [
+          "The board reached",
+          "upon agile monetary policies."
+        ],
+        "translation": "이사회는 도달했습니다 기민한 통화 정책에."
+      },
+      {
+        "text": "The board reached fosters institutional investor confidence.",
+        "chunks": [
+          "The board reached",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "이사회는 도달했습니다 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "The board reached demand rigorous expenditure oversight.",
+        "chunks": [
+          "The board reached",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "이사회는 도달했습니다 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "The board reached requires transparent executive dialogue.",
+        "chunks": [
+          "The board reached",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "이사회는 도달했습니다 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "The board reached enables unprecedented technological innovation.",
+        "chunks": [
+          "The board reached",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "이사회는 도달했습니다 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "The board reached preempts volatile market disruptions.",
+        "chunks": [
+          "The board reached",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "이사회는 도달했습니다 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "The board reached dismantles legacy business paradigms.",
+        "chunks": [
+          "The board reached",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "이사회는 도달했습니다 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "The board reached hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "The board reached",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "이사회는 도달했습니다 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny a unanimous policy consensus.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "a unanimous policy consensus."
+        ],
+        "translation": "철저한 규제 정밀 검토는 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny preempts operational bottlenecks.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "철저한 규제 정밀 검토는 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny upon agile monetary policies.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "upon agile monetary policies."
+        ],
+        "translation": "철저한 규제 정밀 검토는 기민한 통화 정책에."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny fosters institutional investor confidence.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "철저한 규제 정밀 검토는 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny demand rigorous expenditure oversight.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "철저한 규제 정밀 검토는 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny requires transparent executive dialogue.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "철저한 규제 정밀 검토는 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny enables unprecedented technological innovation.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "철저한 규제 정밀 검토는 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny preempts volatile market disruptions.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "철저한 규제 정밀 검토는 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny dismantles legacy business paradigms.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "철저한 규제 정밀 검토는 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Meticulous regulatory scrutiny hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Meticulous regulatory scrutiny",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "철저한 규제 정밀 검토는 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges a unanimous policy consensus.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "a unanimous policy consensus."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Macroeconomic resilience hinges preempts operational bottlenecks.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges upon agile monetary policies.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "upon agile monetary policies."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 기민한 통화 정책에."
+      },
+      {
+        "text": "Macroeconomic resilience hinges fosters institutional investor confidence.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges demand rigorous expenditure oversight.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges requires transparent executive dialogue.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges enables unprecedented technological innovation.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges preempts volatile market disruptions.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges dismantles legacy business paradigms.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Macroeconomic resilience hinges hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Macroeconomic resilience hinges",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "거시 경제적 회복력은 달려 있습니다 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Transparent corporate governance a unanimous policy consensus.",
+        "chunks": [
+          "Transparent corporate governance",
+          "a unanimous policy consensus."
+        ],
+        "translation": "투명한 기업 지배구조는 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Transparent corporate governance preempts operational bottlenecks.",
+        "chunks": [
+          "Transparent corporate governance",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "투명한 기업 지배구조는 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Transparent corporate governance upon agile monetary policies.",
+        "chunks": [
+          "Transparent corporate governance",
+          "upon agile monetary policies."
+        ],
+        "translation": "투명한 기업 지배구조는 기민한 통화 정책에."
+      },
+      {
+        "text": "Transparent corporate governance fosters institutional investor confidence.",
+        "chunks": [
+          "Transparent corporate governance",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "투명한 기업 지배구조는 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Transparent corporate governance demand rigorous expenditure oversight.",
+        "chunks": [
+          "Transparent corporate governance",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "투명한 기업 지배구조는 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Transparent corporate governance requires transparent executive dialogue.",
+        "chunks": [
+          "Transparent corporate governance",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "투명한 기업 지배구조는 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Transparent corporate governance enables unprecedented technological innovation.",
+        "chunks": [
+          "Transparent corporate governance",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "투명한 기업 지배구조는 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Transparent corporate governance preempts volatile market disruptions.",
+        "chunks": [
+          "Transparent corporate governance",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "투명한 기업 지배구조는 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Transparent corporate governance dismantles legacy business paradigms.",
+        "chunks": [
+          "Transparent corporate governance",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "투명한 기업 지배구조는 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Transparent corporate governance hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Transparent corporate governance",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "투명한 기업 지배구조는 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures a unanimous policy consensus.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "a unanimous policy consensus."
+        ],
+        "translation": "재정 건전화 조치는 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Fiscal consolidation measures preempts operational bottlenecks.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "재정 건전화 조치는 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures upon agile monetary policies.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "upon agile monetary policies."
+        ],
+        "translation": "재정 건전화 조치는 기민한 통화 정책에."
+      },
+      {
+        "text": "Fiscal consolidation measures fosters institutional investor confidence.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "재정 건전화 조치는 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures demand rigorous expenditure oversight.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "재정 건전화 조치는 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures requires transparent executive dialogue.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "재정 건전화 조치는 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures enables unprecedented technological innovation.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "재정 건전화 조치는 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures preempts volatile market disruptions.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "재정 건전화 조치는 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures dismantles legacy business paradigms.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "재정 건전화 조치는 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Fiscal consolidation measures hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Fiscal consolidation measures",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "재정 건전화 조치는 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy a unanimous policy consensus.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "a unanimous policy consensus."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Cultivating organizational synergy preempts operational bottlenecks.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy upon agile monetary policies.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "upon agile monetary policies."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 기민한 통화 정책에."
+      },
+      {
+        "text": "Cultivating organizational synergy fosters institutional investor confidence.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy demand rigorous expenditure oversight.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy requires transparent executive dialogue.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy enables unprecedented technological innovation.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy preempts volatile market disruptions.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy dismantles legacy business paradigms.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Cultivating organizational synergy hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions a unanimous policy consensus.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "a unanimous policy consensus."
+        ],
+        "translation": "기존 통념에 도전하는 것은 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Challenging orthodox assumptions preempts operational bottlenecks.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "기존 통념에 도전하는 것은 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions upon agile monetary policies.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "upon agile monetary policies."
+        ],
+        "translation": "기존 통념에 도전하는 것은 기민한 통화 정책에."
+      },
+      {
+        "text": "Challenging orthodox assumptions fosters institutional investor confidence.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "기존 통념에 도전하는 것은 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions demand rigorous expenditure oversight.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "기존 통념에 도전하는 것은 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions requires transparent executive dialogue.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "기존 통념에 도전하는 것은 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions enables unprecedented technological innovation.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "기존 통념에 도전하는 것은 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions preempts volatile market disruptions.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "기존 통념에 도전하는 것은 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions dismantles legacy business paradigms.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "기존 통념에 도전하는 것은 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Challenging orthodox assumptions hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Challenging orthodox assumptions",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "기존 통념에 도전하는 것은 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Fostering institutional agility a unanimous policy consensus.",
+        "chunks": [
+          "Fostering institutional agility",
+          "a unanimous policy consensus."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Fostering institutional agility preempts operational bottlenecks.",
+        "chunks": [
+          "Fostering institutional agility",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Fostering institutional agility upon agile monetary policies.",
+        "chunks": [
+          "Fostering institutional agility",
+          "upon agile monetary policies."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 기민한 통화 정책에."
+      },
+      {
+        "text": "Fostering institutional agility fosters institutional investor confidence.",
+        "chunks": [
+          "Fostering institutional agility",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Fostering institutional agility demand rigorous expenditure oversight.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Fostering institutional agility requires transparent executive dialogue.",
+        "chunks": [
+          "Fostering institutional agility",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Fostering institutional agility enables unprecedented technological innovation.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Fostering institutional agility preempts volatile market disruptions.",
+        "chunks": [
+          "Fostering institutional agility",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Fostering institutional agility dismantles legacy business paradigms.",
+        "chunks": [
+          "Fostering institutional agility",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Fostering institutional agility hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Fostering institutional agility",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "기관의 기민성을 함양하는 것은 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence a unanimous policy consensus.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "a unanimous policy consensus."
+        ],
+        "translation": "선구적인 인공지능 기술은 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Pioneering artificial intelligence preempts operational bottlenecks.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "선구적인 인공지능 기술은 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence upon agile monetary policies.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "upon agile monetary policies."
+        ],
+        "translation": "선구적인 인공지능 기술은 기민한 통화 정책에."
+      },
+      {
+        "text": "Pioneering artificial intelligence fosters institutional investor confidence.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "선구적인 인공지능 기술은 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence demand rigorous expenditure oversight.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "선구적인 인공지능 기술은 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence requires transparent executive dialogue.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "선구적인 인공지능 기술은 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence enables unprecedented technological innovation.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "선구적인 인공지능 기술은 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence preempts volatile market disruptions.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "선구적인 인공지능 기술은 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence dismantles legacy business paradigms.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "선구적인 인공지능 기술은 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Pioneering artificial intelligence hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Pioneering artificial intelligence",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "선구적인 인공지능 기술은 구조적 거시 경제 변동성을 방어합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification a unanimous policy consensus.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "a unanimous policy consensus."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 만장일치의 정책 합의에."
+      },
+      {
+        "text": "Comprehensive portfolio diversification preempts operational bottlenecks.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "preempts operational bottlenecks."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 운영상의 병목 현상을 선제 방지합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification upon agile monetary policies.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "upon agile monetary policies."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 기민한 통화 정책에."
+      },
+      {
+        "text": "Comprehensive portfolio diversification fosters institutional investor confidence.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "fosters institutional investor confidence."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 기관 투자자의 신뢰를 촉진합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification demand rigorous expenditure oversight.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "demand rigorous expenditure oversight."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 엄격한 지출 감독을 요구합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification requires transparent executive dialogue.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "requires transparent executive dialogue."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 투명한 경영진 대화를 요구합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification enables unprecedented technological innovation.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "enables unprecedented technological innovation."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 전례 없는 기술 혁신을 가능하게 합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification preempts volatile market disruptions.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "preempts volatile market disruptions."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 변동성 큰 시장 붕괴를 선제 방어합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification dismantles legacy business paradigms.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "dismantles legacy business paradigms."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 기존 비즈니스 패러다임을 해체합니다."
+      },
+      {
+        "text": "Comprehensive portfolio diversification hedges systemic macroeconomic volatility.",
+        "chunks": [
+          "Comprehensive portfolio diversification",
+          "hedges systemic macroeconomic volatility."
+        ],
+        "translation": "포괄적인 포트폴리오 다각화는 구조적 거시 경제 변동성을 방어합니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "Sustainable macroeconomic resilience hinges on policy adjustments amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hinges on policy adjustments",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 전례 없는 지정학적 격변 속에서. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hinges on policy adjustments prior to concluding mergers.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hinges on policy adjustments",
+          "prior to concluding mergers."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 합병 계약을 체결하기 전에. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hinges on policy adjustments to ensure organizational viability.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hinges on policy adjustments",
+          "to ensure organizational viability."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 조직 생존력을 보장하기 위해. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hinges on policy adjustments across distributed global subsidiaries.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hinges on policy adjustments",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 분산된 글로벌 자회사 전반에 걸쳐. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience safeguards proprietary corporate assets amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "safeguards proprietary corporate assets",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 전례 없는 지정학적 격변 속에서. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience safeguards proprietary corporate assets prior to concluding mergers.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "safeguards proprietary corporate assets",
+          "prior to concluding mergers."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 합병 계약을 체결하기 전에. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience safeguards proprietary corporate assets to ensure organizational viability.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "safeguards proprietary corporate assets",
+          "to ensure organizational viability."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 조직 생존력을 보장하기 위해. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience safeguards proprietary corporate assets across distributed global subsidiaries.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "safeguards proprietary corporate assets",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 분산된 글로벌 자회사 전반에 걸쳐. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hedges against volatile fluctuations amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hedges against volatile fluctuations",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 전례 없는 지정학적 격변 속에서. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hedges against volatile fluctuations prior to concluding mergers.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hedges against volatile fluctuations",
+          "prior to concluding mergers."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 합병 계약을 체결하기 전에. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hedges against volatile fluctuations to ensure organizational viability.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hedges against volatile fluctuations",
+          "to ensure organizational viability."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 조직 생존력을 보장하기 위해. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience hedges against volatile fluctuations across distributed global subsidiaries.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hedges against volatile fluctuations",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 분산된 글로벌 자회사 전반에 걸쳐. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience requires dismantling entrenched silos amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "requires dismantling entrenched silos",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 전례 없는 지정학적 격변 속에서. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience requires dismantling entrenched silos prior to concluding mergers.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "requires dismantling entrenched silos",
+          "prior to concluding mergers."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 합병 계약을 체결하기 전에. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience requires dismantling entrenched silos to ensure organizational viability.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "requires dismantling entrenched silos",
+          "to ensure organizational viability."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 조직 생존력을 보장하기 위해. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience requires dismantling entrenched silos across distributed global subsidiaries.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "requires dismantling entrenched silos",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 분산된 글로벌 자회사 전반에 걸쳐. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience demands proactive international engagement amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "demands proactive international engagement",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 전례 없는 지정학적 격변 속에서. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience demands proactive international engagement prior to concluding mergers.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "demands proactive international engagement",
+          "prior to concluding mergers."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 합병 계약을 체결하기 전에. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience demands proactive international engagement to ensure organizational viability.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "demands proactive international engagement",
+          "to ensure organizational viability."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 조직 생존력을 보장하기 위해. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Sustainable macroeconomic resilience demands proactive international engagement across distributed global subsidiaries.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "demands proactive international engagement",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "지속 가능한 거시경제 회복력은 분산된 글로벌 자회사 전반에 걸쳐. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hinges on policy adjustments amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hinges on policy adjustments",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "철저한 규제 준법 체계는 전례 없는 지정학적 격변 속에서. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hinges on policy adjustments prior to concluding mergers.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hinges on policy adjustments",
+          "prior to concluding mergers."
+        ],
+        "translation": "철저한 규제 준법 체계는 합병 계약을 체결하기 전에. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hinges on policy adjustments to ensure organizational viability.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hinges on policy adjustments",
+          "to ensure organizational viability."
+        ],
+        "translation": "철저한 규제 준법 체계는 조직 생존력을 보장하기 위해. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hinges on policy adjustments across distributed global subsidiaries.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hinges on policy adjustments",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "철저한 규제 준법 체계는 분산된 글로벌 자회사 전반에 걸쳐. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance safeguards proprietary corporate assets amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "safeguards proprietary corporate assets",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "철저한 규제 준법 체계는 전례 없는 지정학적 격변 속에서. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance safeguards proprietary corporate assets prior to concluding mergers.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "safeguards proprietary corporate assets",
+          "prior to concluding mergers."
+        ],
+        "translation": "철저한 규제 준법 체계는 합병 계약을 체결하기 전에. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance safeguards proprietary corporate assets to ensure organizational viability.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "safeguards proprietary corporate assets",
+          "to ensure organizational viability."
+        ],
+        "translation": "철저한 규제 준법 체계는 조직 생존력을 보장하기 위해. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance safeguards proprietary corporate assets across distributed global subsidiaries.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "safeguards proprietary corporate assets",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "철저한 규제 준법 체계는 분산된 글로벌 자회사 전반에 걸쳐. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hedges against volatile fluctuations amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hedges against volatile fluctuations",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "철저한 규제 준법 체계는 전례 없는 지정학적 격변 속에서. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hedges against volatile fluctuations prior to concluding mergers.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hedges against volatile fluctuations",
+          "prior to concluding mergers."
+        ],
+        "translation": "철저한 규제 준법 체계는 합병 계약을 체결하기 전에. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hedges against volatile fluctuations to ensure organizational viability.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hedges against volatile fluctuations",
+          "to ensure organizational viability."
+        ],
+        "translation": "철저한 규제 준법 체계는 조직 생존력을 보장하기 위해. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance hedges against volatile fluctuations across distributed global subsidiaries.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "hedges against volatile fluctuations",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "철저한 규제 준법 체계는 분산된 글로벌 자회사 전반에 걸쳐. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance requires dismantling entrenched silos amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "requires dismantling entrenched silos",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "철저한 규제 준법 체계는 전례 없는 지정학적 격변 속에서. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance requires dismantling entrenched silos prior to concluding mergers.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "requires dismantling entrenched silos",
+          "prior to concluding mergers."
+        ],
+        "translation": "철저한 규제 준법 체계는 합병 계약을 체결하기 전에. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance requires dismantling entrenched silos to ensure organizational viability.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "requires dismantling entrenched silos",
+          "to ensure organizational viability."
+        ],
+        "translation": "철저한 규제 준법 체계는 조직 생존력을 보장하기 위해. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance requires dismantling entrenched silos across distributed global subsidiaries.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "requires dismantling entrenched silos",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "철저한 규제 준법 체계는 분산된 글로벌 자회사 전반에 걸쳐. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance demands proactive international engagement amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "demands proactive international engagement",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "철저한 규제 준법 체계는 전례 없는 지정학적 격변 속에서. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance demands proactive international engagement prior to concluding mergers.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "demands proactive international engagement",
+          "prior to concluding mergers."
+        ],
+        "translation": "철저한 규제 준법 체계는 합병 계약을 체결하기 전에. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance demands proactive international engagement to ensure organizational viability.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "demands proactive international engagement",
+          "to ensure organizational viability."
+        ],
+        "translation": "철저한 규제 준법 체계는 조직 생존력을 보장하기 위해. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Meticulous regulatory compliance demands proactive international engagement across distributed global subsidiaries.",
+        "chunks": [
+          "Meticulous regulatory compliance",
+          "demands proactive international engagement",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "철저한 규제 준법 체계는 분산된 글로벌 자회사 전반에 걸쳐. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hinges on policy adjustments amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hinges on policy adjustments",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 전례 없는 지정학적 격변 속에서. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hinges on policy adjustments prior to concluding mergers.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hinges on policy adjustments",
+          "prior to concluding mergers."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 합병 계약을 체결하기 전에. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hinges on policy adjustments to ensure organizational viability.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hinges on policy adjustments",
+          "to ensure organizational viability."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 조직 생존력을 보장하기 위해. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hinges on policy adjustments across distributed global subsidiaries.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hinges on policy adjustments",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 분산된 글로벌 자회사 전반에 걸쳐. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Strategic portfolio diversification safeguards proprietary corporate assets amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "safeguards proprietary corporate assets",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 전례 없는 지정학적 격변 속에서. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification safeguards proprietary corporate assets prior to concluding mergers.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "safeguards proprietary corporate assets",
+          "prior to concluding mergers."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 합병 계약을 체결하기 전에. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification safeguards proprietary corporate assets to ensure organizational viability.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "safeguards proprietary corporate assets",
+          "to ensure organizational viability."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 조직 생존력을 보장하기 위해. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification safeguards proprietary corporate assets across distributed global subsidiaries.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "safeguards proprietary corporate assets",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 분산된 글로벌 자회사 전반에 걸쳐. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hedges against volatile fluctuations amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hedges against volatile fluctuations",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 전례 없는 지정학적 격변 속에서. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hedges against volatile fluctuations prior to concluding mergers.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hedges against volatile fluctuations",
+          "prior to concluding mergers."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 합병 계약을 체결하기 전에. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hedges against volatile fluctuations to ensure organizational viability.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hedges against volatile fluctuations",
+          "to ensure organizational viability."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 조직 생존력을 보장하기 위해. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification hedges against volatile fluctuations across distributed global subsidiaries.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "hedges against volatile fluctuations",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 분산된 글로벌 자회사 전반에 걸쳐. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification requires dismantling entrenched silos amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "requires dismantling entrenched silos",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 전례 없는 지정학적 격변 속에서. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification requires dismantling entrenched silos prior to concluding mergers.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "requires dismantling entrenched silos",
+          "prior to concluding mergers."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 합병 계약을 체결하기 전에. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification requires dismantling entrenched silos to ensure organizational viability.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "requires dismantling entrenched silos",
+          "to ensure organizational viability."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 조직 생존력을 보장하기 위해. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification requires dismantling entrenched silos across distributed global subsidiaries.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "requires dismantling entrenched silos",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 분산된 글로벌 자회사 전반에 걸쳐. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification demands proactive international engagement amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "demands proactive international engagement",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 전례 없는 지정학적 격변 속에서. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification demands proactive international engagement prior to concluding mergers.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "demands proactive international engagement",
+          "prior to concluding mergers."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 합병 계약을 체결하기 전에. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification demands proactive international engagement to ensure organizational viability.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "demands proactive international engagement",
+          "to ensure organizational viability."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 조직 생존력을 보장하기 위해. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Strategic portfolio diversification demands proactive international engagement across distributed global subsidiaries.",
+        "chunks": [
+          "Strategic portfolio diversification",
+          "demands proactive international engagement",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "전략적인 포트폴리오 다각화는 분산된 글로벌 자회사 전반에 걸쳐. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hinges on policy adjustments amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hinges on policy adjustments",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 전례 없는 지정학적 격변 속에서. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hinges on policy adjustments prior to concluding mergers.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hinges on policy adjustments",
+          "prior to concluding mergers."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 합병 계약을 체결하기 전에. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hinges on policy adjustments to ensure organizational viability.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hinges on policy adjustments",
+          "to ensure organizational viability."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 조직 생존력을 보장하기 위해. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hinges on policy adjustments across distributed global subsidiaries.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hinges on policy adjustments",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 분산된 글로벌 자회사 전반에 걸쳐. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Cultivating institutional synergy safeguards proprietary corporate assets amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "safeguards proprietary corporate assets",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 전례 없는 지정학적 격변 속에서. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy safeguards proprietary corporate assets prior to concluding mergers.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "safeguards proprietary corporate assets",
+          "prior to concluding mergers."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 합병 계약을 체결하기 전에. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy safeguards proprietary corporate assets to ensure organizational viability.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "safeguards proprietary corporate assets",
+          "to ensure organizational viability."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 조직 생존력을 보장하기 위해. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy safeguards proprietary corporate assets across distributed global subsidiaries.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "safeguards proprietary corporate assets",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 분산된 글로벌 자회사 전반에 걸쳐. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hedges against volatile fluctuations amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hedges against volatile fluctuations",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 전례 없는 지정학적 격변 속에서. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hedges against volatile fluctuations prior to concluding mergers.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hedges against volatile fluctuations",
+          "prior to concluding mergers."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 합병 계약을 체결하기 전에. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hedges against volatile fluctuations to ensure organizational viability.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hedges against volatile fluctuations",
+          "to ensure organizational viability."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 조직 생존력을 보장하기 위해. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy hedges against volatile fluctuations across distributed global subsidiaries.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "hedges against volatile fluctuations",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 분산된 글로벌 자회사 전반에 걸쳐. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy requires dismantling entrenched silos amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "requires dismantling entrenched silos",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 전례 없는 지정학적 격변 속에서. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy requires dismantling entrenched silos prior to concluding mergers.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "requires dismantling entrenched silos",
+          "prior to concluding mergers."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 합병 계약을 체결하기 전에. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy requires dismantling entrenched silos to ensure organizational viability.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "requires dismantling entrenched silos",
+          "to ensure organizational viability."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 조직 생존력을 보장하기 위해. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy requires dismantling entrenched silos across distributed global subsidiaries.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "requires dismantling entrenched silos",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 분산된 글로벌 자회사 전반에 걸쳐. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy demands proactive international engagement amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "demands proactive international engagement",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 전례 없는 지정학적 격변 속에서. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy demands proactive international engagement prior to concluding mergers.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "demands proactive international engagement",
+          "prior to concluding mergers."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 합병 계약을 체결하기 전에. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy demands proactive international engagement to ensure organizational viability.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "demands proactive international engagement",
+          "to ensure organizational viability."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 조직 생존력을 보장하기 위해. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Cultivating institutional synergy demands proactive international engagement across distributed global subsidiaries.",
+        "chunks": [
+          "Cultivating institutional synergy",
+          "demands proactive international engagement",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "조직 시너지를 육성하는 것은 분산된 글로벌 자회사 전반에 걸쳐. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hinges on policy adjustments amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hinges on policy adjustments",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 전례 없는 지정학적 격변 속에서. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hinges on policy adjustments prior to concluding mergers.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hinges on policy adjustments",
+          "prior to concluding mergers."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 합병 계약을 체결하기 전에. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hinges on policy adjustments to ensure organizational viability.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hinges on policy adjustments",
+          "to ensure organizational viability."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 조직 생존력을 보장하기 위해. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hinges on policy adjustments across distributed global subsidiaries.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hinges on policy adjustments",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 분산된 글로벌 자회사 전반에 걸쳐. 정책 조정에 달려 있습니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities safeguards proprietary corporate assets amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "safeguards proprietary corporate assets",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 전례 없는 지정학적 격변 속에서. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities safeguards proprietary corporate assets prior to concluding mergers.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "safeguards proprietary corporate assets",
+          "prior to concluding mergers."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 합병 계약을 체결하기 전에. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities safeguards proprietary corporate assets to ensure organizational viability.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "safeguards proprietary corporate assets",
+          "to ensure organizational viability."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 조직 생존력을 보장하기 위해. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities safeguards proprietary corporate assets across distributed global subsidiaries.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "safeguards proprietary corporate assets",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 분산된 글로벌 자회사 전반에 걸쳐. 독점적 기업 자산을 보호합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hedges against volatile fluctuations amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hedges against volatile fluctuations",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 전례 없는 지정학적 격변 속에서. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hedges against volatile fluctuations prior to concluding mergers.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hedges against volatile fluctuations",
+          "prior to concluding mergers."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 합병 계약을 체결하기 전에. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hedges against volatile fluctuations to ensure organizational viability.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hedges against volatile fluctuations",
+          "to ensure organizational viability."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 조직 생존력을 보장하기 위해. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities hedges against volatile fluctuations across distributed global subsidiaries.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "hedges against volatile fluctuations",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 분산된 글로벌 자회사 전반에 걸쳐. 변동성을 효과적으로 방어합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities requires dismantling entrenched silos amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "requires dismantling entrenched silos",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 전례 없는 지정학적 격변 속에서. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities requires dismantling entrenched silos prior to concluding mergers.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "requires dismantling entrenched silos",
+          "prior to concluding mergers."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 합병 계약을 체결하기 전에. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities requires dismantling entrenched silos to ensure organizational viability.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "requires dismantling entrenched silos",
+          "to ensure organizational viability."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 조직 생존력을 보장하기 위해. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities requires dismantling entrenched silos across distributed global subsidiaries.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "requires dismantling entrenched silos",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 분산된 글로벌 자회사 전반에 걸쳐. 고착화된 부서 장벽 해체를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities demands proactive international engagement amid unprecedented geopolitical shifts.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "demands proactive international engagement",
+          "amid unprecedented geopolitical shifts."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 전례 없는 지정학적 격변 속에서. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities demands proactive international engagement prior to concluding mergers.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "demands proactive international engagement",
+          "prior to concluding mergers."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 합병 계약을 체결하기 전에. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities demands proactive international engagement to ensure organizational viability.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "demands proactive international engagement",
+          "to ensure organizational viability."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 조직 생존력을 보장하기 위해. 선제적인 국제 참여를 요구합니다"
+      },
+      {
+        "text": "Navigating regulatory ambiguities demands proactive international engagement across distributed global subsidiaries.",
+        "chunks": [
+          "Navigating regulatory ambiguities",
+          "demands proactive international engagement",
+          "across distributed global subsidiaries."
+        ],
+        "translation": "규제 모호성을 헤쳐나가는 것은 분산된 글로벌 자회사 전반에 걸쳐. 선제적인 국제 참여를 요구합니다"
+      }
+    ],
+    "4": [
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities demands decisive executive leadership while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Navigating cross border ambiguities enables resilient multinational enterprises while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Navigating cross border ambiguities",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "국경 간 규제 모호성 해결은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility demands decisive executive leadership while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Fostering institutional agility enables resilient multinational enterprises while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Fostering institutional agility",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "기관의 기민성을 육성하는 것은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms demands decisive executive leadership while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Leveraging predictive algorithms enables resilient multinational enterprises while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Leveraging predictive algorithms",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "예측 알고리즘을 활용하는 것은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators demands decisive executive leadership while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "Synthesizing macroeconomic indicators enables resilient multinational enterprises while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "Synthesizing macroeconomic indicators",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "거시 경제 지표를 종합하는 것은, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, demands decisive executive leadership while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "demands decisive executive leadership",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 결단력 있는 리더십을 요구하며 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises to challenge orthodox assumptions across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises to challenge orthodox assumptions without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "to challenge orthodox assumptions",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 고착화된 통념에 도전하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises and implement compliance protocols across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises and implement compliance protocols without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "and implement compliance protocols",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 준법 프로토콜을 시행하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises to anticipate structural shifts across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 구조적 변화를 예측하고, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises to anticipate structural shifts without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "to anticipate structural shifts",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 구조적 변화를 예측하고, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises and optimize capital allocation across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises and optimize capital allocation without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "and optimize capital allocation",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 자본 배분을 최적화하도록, 운영의 진실성을 훼손하지 않고."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises while preserving institutional credibility across global capital markets.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "across global capital markets."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 글로벌 자본 시장 전반에 걸쳐."
+      },
+      {
+        "text": "To preempt financial failures, enables resilient multinational enterprises while preserving institutional credibility without compromising operational integrity.",
+        "chunks": [
+          "To preempt financial failures,",
+          "enables resilient multinational enterprises",
+          "while preserving institutional credibility",
+          "without compromising operational integrity."
+        ],
+        "translation": "금융 실패를 선제 방어하기 위해, 다국적 기업들로 하여금 기관 신뢰도를 보존하면서, 운영의 진실성을 훼손하지 않고."
+      }
+    ]
+  }
 };
 
-const CHUNK_DATABASE = buildSentenceDatabase();
-
-// 모바일 브라우저별 최적 코덱 감지 (iOS Safari: mp4/aac, Android/PC: webm)
+// 모바일(iOS Safari 및 Android Chrome) 브라우저별 최적 녹음 코덱 감지
 const getBestAudioMimeType = () => {
   if (typeof MediaRecorder === 'undefined' || !MediaRecorder.isTypeSupported) return '';
   const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent) || /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -385,7 +10947,7 @@ const generateLocalFeedback = (target, spoken, level) => {
 
   if (normTarget === normSpoken) {
     if (level === 'A2' || level === 'B1') {
-      return { isPerfect: true, message: `🎉 완벽합니다! (${level} 레벨: 관사나 사소한 차이는 유연하게 통과되었습니다.)` };
+      return { isPerfect: true, message: `🎉 완벽합니다! (${level} 레벨: 관사나 사소한 오류는 자동으로 패스했습니다.)` };
     }
     return { isPerfect: true, message: "🎉 완벽합니다! (Spot on!) 정확하게 말씀하셨습니다." };
   }
@@ -410,17 +10972,17 @@ const generateLocalFeedback = (target, spoken, level) => {
 
   if (level === 'A2') {
     if (missingWords.length + substituted.length <= 1 && extraWords.length <= 1) {
-      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 핵심 표현이 정확하여 통과되었습니다.)" };
+      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 1~2단어의 사소한 인식 오류를 관대하게 패스했습니다.)" };
     }
   }
 
   if (level === 'B1') {
     if (missingWords.length === 0 && substituted.length === 0 && extraWords.length <= 1) {
-      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 핵심 의미가 잘 전달되었습니다.)" };
+      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 핵심 단어가 일치하여 패스했습니다.)" };
     }
   }
 
-  const strictNotice = (level === 'C1' || level === 'B2') ? ` (${level} 모드: 엄격 채점)` : '';
+  const strictNotice = (level === 'C1' || level === 'B2') ? ` (${level} 모드: 매우 엄격함)` : '';
 
   if (substituted.length > 0) {
     return {
@@ -637,6 +11199,7 @@ export default function EnglishTutorApp() {
       }
       const audio = new Audio();
       audio.src = recordedAudioUrl;
+      // iOS Safari 모바일 인라인 재생 필수 속성
       audio.setAttribute('playsinline', 'true');
       audio.setAttribute('webkit-playsinline', 'true');
       audio.preload = 'auto';
@@ -713,6 +11276,7 @@ export default function EnglishTutorApp() {
           }
         };
 
+        // 모바일 브라우저에서 데이터 손실 방지를 위해 200ms 단위 청크 플러시
         mediaRecorder.start(200);
         mediaRecorderRef.current = mediaRecorder;
       }
@@ -833,7 +11397,7 @@ export default function EnglishTutorApp() {
               </div>
               <div>
                 <h1 className="font-bold text-base sm:text-lg text-white tracking-wide">Wysh English Tutor</h1>
-                <p className="text-[11px] sm:text-xs text-slate-400">2~4단어 리듬 섀도잉 (1,200문장 탑재)</p>
+                <p className="text-[11px] sm:text-xs text-slate-400">의미 덩어리(청크) 단위 보이스 섀도잉</p>
               </div>
             </div>
 
@@ -952,7 +11516,7 @@ export default function EnglishTutorApp() {
           {/* 침묵 대기 시간 조절 */}
           <div className="mt-3.5 pt-3 border-t border-slate-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-2 text-[10px] sm:text-xs">
             <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-              <Timer className="w-3.5 h-3.5 text-amber-400" />
+              <Timer className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
               말 멈춤 대기 시간 (정적 허용):
             </span>
             <div className="flex flex-wrap items-center gap-1.5">
@@ -1189,7 +11753,7 @@ export default function EnglishTutorApp() {
                               className="px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 flex items-center gap-1 sm:gap-1.5 transition-all active:scale-95"
                             >
                               <span>다음 문장 넘어가기</span>
-                              <ArrowRight className="w-3.5 h-3.5" />
+                              <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                             </button>
                           </div>
                         )}
