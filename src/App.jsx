@@ -926,14 +926,14 @@ const generateLocalFeedback = (target, spoken, level) => {
   
   if (level === 'A2') {
     if (missingWords.length + substituted.length <= 2 || accuracyRatio >= 0.55) {
-      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 핵심 표현이 정확하여 통과되었습니다.)", markedSpoken };
+      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 핵심 표현이 정확하여 통과되었습니다.)" };
     }
   }
 
   // B1 (중급): 핵심 단어 위주로 평가 (단어 1~2개 누락/치환 허용 또는 정확도 65% 이상)
   if (level === 'B1') {
     if (missingWords.length + substituted.length <= 1 || accuracyRatio >= 0.65) {
-      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 대사의 의미가 명확하게 전달되었습니다.)", markedSpoken };
+      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 대사의 의미가 명확하게 전달되었습니다.)" };
     }
   }
 
@@ -942,7 +942,7 @@ const generateLocalFeedback = (target, spoken, level) => {
   // B2 (고급): 깐깐함 대폭 완화! 핵심 단어 70% 이상 일치하거나 1단어 오류 시 통과 처리
   if (level === 'B2') {
     if (missingWords.length + substituted.length <= 1 || accuracyRatio >= 0.70) {
-      return { isPerfect: true, message: "🎉 멋집니다! (B2 고급: 핵심 대사의 호흡과 발음이 자연스럽게 통과되었습니다.)", markedSpoken };
+      return { isPerfect: true, message: "🎉 멋집니다! (B2 고급: 핵심 대사의 호흡과 발음이 자연스럽게 통과되었습니다.)" };
     }
   }
 
@@ -1544,7 +1544,14 @@ export default function EnglishTutorApp() {
 
                 <div className="text-xs sm:text-sm font-medium text-slate-300 leading-snug">
                   {userSpeech ? (
-                    markedSpoken ? (
+                    (evaluation && isPerfect) ? (
+                      <div className="flex flex-col gap-2 mt-1">
+                        <div className="text-emerald-300">"{userSpeech}"</div>
+                        <div className="text-[11px] sm:text-xs text-indigo-200 border-t border-slate-700/60 pt-2">
+                          <span className="font-bold mr-1">원문:</span> {displayItem.text}
+                        </div>
+                      </div>
+                    ) : markedSpoken ? (
                       <div dangerouslySetInnerHTML={{ __html: `"${markedSpoken}"` }} className="break-words" />
                     ) : (
                       <span className="text-indigo-200">"{userSpeech}"</span>
