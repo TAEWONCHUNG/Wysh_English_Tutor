@@ -26,73 +26,638 @@ const DIFFICULTY_LEVELS = [
   { id: 'C1', label: 'C1 고급', desc: '전문 분석·경영' }
 ];
 
-// 1200개의 실전 문장 데이터베이스 (A2~C1, 청크별 100개씩)
-const generateMockDatabase = () => {
-    const db = { A2: { 2: [], 3: [], 4: [] }, B1: { 2: [], 3: [], 4: [] }, B2: { 2: [], 3: [], 4: [] }, C1: { 2: [], 3: [], 4: [] } };
-    
-    // A2 Level
-    const a2_subjects = ["I usually", "She always", "We sometimes", "They never", "He often", "Please", "Could you", "I will", "We need to", "Let's"];
-    const a2_verbs = ["drink coffee", "read emails", "call clients", "check messages", "send reports", "start working", "finish the task", "buy supplies", "clean the desk", "book a flight"];
-    const a2_complements = ["in the morning.", "before lunch.", "after the meeting.", "at the office.", "on Monday.", "with my team.", "for the project.", "by tomorrow.", "very quickly.", "every day."];
-    
-    // B1 Level
-    const b1_subjects = ["The manager", "Our team", "The client", "This software", "Customer service", "The presentation", "Our company", "The new policy", "The marketing campaign", "The financial report"];
-    const b1_verbs = ["approved the budget", "resolved the issue", "requested an update", "improved efficiency", "received positive feedback", "starts in ten minutes", "launched a new product", "focuses on growth", "targeted a new audience", "showed strong results"];
-    const b1_complements = ["for the upcoming quarter.", "without any delays.", "regarding the new contract.", "by automating routine tasks.", "from all participants.", "in the main conference room.", "to expand market share.", "despite the challenging environment.", "during the holiday season.", "compared to last year."];
-
-    // B2 Level
-    const b2_subjects = ["Implementing agile methodology", "Continuous professional development", "Our quarterly revenue forecast", "Effective cross-functional collaboration", "The newly negotiated contract terms", "Strengthening supply chain resilience", "Conducting thorough competitor analysis", "Integrating customer feedback directly", "Market volatility and economic shifts", "Allocating resources strategically"];
-    const b2_verbs = ["streamlined our development cycle", "is essential for career growth", "exceeded all initial expectations", "fostered remarkable product innovation", "provided a significant competitive advantage", "helped mitigate unexpected logistic disruptions", "revealed promising untapped business opportunities", "dramatically boosted overall user engagement", "demand swift organizational decision-making", "ensures sustainable long-term profitability"];
-    const b2_complements = ["across all technical departments.", "in this rapidly changing industry.", "despite encountering unforeseen challenges.", "within the highly competitive software market.", "for our expanding global operations.", "during the peak production season.", "by leveraging advanced data analytics.", "through intuitive user interface design.", "to maintain our current market position.", "while minimizing potential financial risks."];
-
-    // C1 Level
-    const c1_subjects = ["Sustainable macroeconomic resilience", "Meticulous regulatory scrutiny", "Strategic corporate diversification", "Cultivating organizational synergy", "Navigating cross-border ambiguities", "Implementing stringent compliance protocols", "Optimizing operational bottlenecks", "Fostering an inclusive corporate culture", "Leveraging disruptive technological innovations", "Formulating a comprehensive contingency plan"];
-    const c1_verbs = ["hinges on agile policy adjustments", "is indispensable to preempt potential liabilities", "hedges against unpredictable market fluctuations", "requires dismantling entrenched departmental silos", "demands proactive stakeholder engagement", "safeguards intellectual property assets effectively", "streamlines multifaceted production workflows", "enhances employee retention and overall morale", "catalyzes unprecedented paradigm shifts", "mitigates vulnerabilities inherent in global supply chains"];
-    const c1_complements = ["amid increasingly volatile global shifts.", "prior to finalizing the merger acquisition.", "by reallocating capital into emerging sectors.", "through transparent and continuous open dialogue.", "and rigorous adherence to international trade laws.", "across all distributed multinational subsidiaries.", "thereby maximizing overall shareholder value.", "which translates to higher productivity metrics.", "disrupting traditional established industry frameworks.", "ensuring business continuity during unforeseen crises."];
-
-    const generateChunks = (level, numChunks) => {
-        let subjects, verbs, complements;
-        if(level === 'A2') { subjects = a2_subjects; verbs = a2_verbs; complements = a2_complements; }
-        else if (level === 'B1') { subjects = b1_subjects; verbs = b1_verbs; complements = b1_complements; }
-        else if (level === 'B2') { subjects = b2_subjects; verbs = b2_verbs; complements = b2_complements; }
-        else { subjects = c1_subjects; verbs = c1_verbs; complements = c1_complements; }
-
-        let s = subjects[Math.floor(Math.random() * subjects.length)];
-        let v = verbs[Math.floor(Math.random() * verbs.length)];
-        let c = complements[Math.floor(Math.random() * complements.length)];
-        
-        let text = "";
-        let chunks = [];
-        
-        if (numChunks === 2) {
-             text = `${s} ${v} ${c}`;
-             chunks = [`${s} ${v}`, c];
-        } else if (numChunks === 3) {
-             text = `${s} ${v} ${c}`;
-             chunks = [s, v, c];
-        } else if (numChunks === 4) {
-             let c_split = c.split(" ");
-             let c1 = c_split.slice(0, Math.ceil(c_split.length/2)).join(" ");
-             let c2 = c_split.slice(Math.ceil(c_split.length/2)).join(" ");
-             text = `${s} ${v} ${c1} ${c2}`;
-             chunks = [s, v, c1, c2];
-        }
-        return { text: text, chunks: chunks, translation: "한국어 번역 (예시)" };
-    };
-
-    for (let level of ['A2', 'B1', 'B2', 'C1']) {
-        for (let numChunks of [2, 3, 4]) {
-            for (let i = 0; i < 100; i++) {
-                let item = generateChunks(level, numChunks);
-                if(i > 0) item.text = item.text.replace(".", ` (Variant ${i}).`);
-                db[level][numChunks].push(item);
-            }
-        }
-    }
-    return db;
-}
-
-const CHUNK_DATABASE = generateMockDatabase();
+const CHUNK_DATABASE = {
+  "A2": {
+    "2": [
+      {
+        "text": "I usually drink coffee before starting my workday.",
+        "chunks": [
+          "I usually drink coffee",
+          "before starting my workday."
+        ],
+        "translation": "저는 보통 일과를 시작하기 전에 커피를 마십니다."
+      },
+      {
+        "text": "Please send me an email when you arrive at the office.",
+        "chunks": [
+          "Please send me an email",
+          "when you arrive at the office."
+        ],
+        "translation": "사무실에 도착하시면 저에게 이메일을 보내주세요."
+      },
+      {
+        "text": "We need to schedule the interview for tomorrow morning.",
+        "chunks": [
+          "We need to schedule",
+          "the interview for tomorrow morning."
+        ],
+        "translation": "우리는 내일 아침으로 면접 일정을 잡아야 합니다."
+      },
+      {
+        "text": "The marketing presentation starts in about ten minutes.",
+        "chunks": [
+          "The marketing presentation starts",
+          "in about ten minutes."
+        ],
+        "translation": "마케팅 발표는 약 10분 후에 시작됩니다."
+      },
+      {
+        "text": "I will call you back right after the team meeting.",
+        "chunks": [
+          "I will call you back",
+          "right after the team meeting."
+        ],
+        "translation": "팀 회의가 끝난 직후에 다시 전화드리겠습니다."
+      },
+      {
+        "text": "She left the office early to catch her evening flight.",
+        "chunks": [
+          "She left the office early",
+          "to catch her evening flight."
+        ],
+        "translation": "그녀는 저녁 비행기를 타기 위해 일찍 퇴근했습니다."
+      },
+      {
+        "text": "Could you please print these documents for our client?",
+        "chunks": [
+          "Could you please print these documents",
+          "for our new client?"
+        ],
+        "translation": "우리 신규 고객을 위해 이 서류들을 인쇄해 주시겠어요?"
+      },
+      {
+        "text": "He usually checks his messages during his lunch break.",
+        "chunks": [
+          "He usually checks his messages",
+          "during his lunch break."
+        ],
+        "translation": "그는 보통 점심시간 동안 메시지를 확인합니다."
+      },
+      {
+        "text": "We ordered new office supplies for the engineering department.",
+        "chunks": [
+          "We ordered new office supplies",
+          "for the engineering department."
+        ],
+        "translation": "우리는 엔지니어링 부서를 위해 새 사무용품을 주문했습니다."
+      },
+      {
+        "text": "I will prepare the presentation slides before tomorrow afternoon.",
+        "chunks": [
+          "I will prepare the presentation slides",
+          "before tomorrow afternoon."
+        ],
+        "translation": "내일 오후가 되기 전에 발표 슬라이드를 준비해 두겠습니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "We have a regular team meeting every Monday morning at nine o'clock.",
+        "chunks": [
+          "We have a regular team meeting",
+          "every Monday morning",
+          "at nine o'clock."
+        ],
+        "translation": "우리는 매주 월요일 아침 9시에 정기 팀 회의를 합니다."
+      },
+      {
+        "text": "I will submit the weekly report before leaving the office this afternoon.",
+        "chunks": [
+          "I will submit the weekly report",
+          "before leaving the office",
+          "this afternoon."
+        ],
+        "translation": "오늘 오후 퇴근하기 전에 주간 보고서를 제출하겠습니다."
+      },
+      {
+        "text": "Please double check the attached file before sending out the newsletter.",
+        "chunks": [
+          "Please double check the attached file",
+          "before sending out",
+          "the monthly newsletter."
+        ],
+        "translation": "월간 소식지를 발송하기 전에 첨부 파일을 다시 한번 확인해 주세요."
+      },
+      {
+        "text": "Our sales team met the new client at the central station cafe.",
+        "chunks": [
+          "Our sales team met the new client",
+          "at the central station",
+          "yesterday afternoon."
+        ],
+        "translation": "우리 영업팀은 어제 오후 중앙역에서 새 고객을 만났습니다."
+      },
+      {
+        "text": "She answered all client questions with great patience and confidence.",
+        "chunks": [
+          "She answered all client questions",
+          "with great patience",
+          "and strong confidence."
+        ],
+        "translation": "그녀는 뛰어난 인내심과 확신을 가지고 모든 고객 질문에 답변했습니다."
+      },
+      {
+        "text": "Could you please review these slides and give me your feedback?",
+        "chunks": [
+          "Could you please review these slides",
+          "and give me your feedback",
+          "by tomorrow morning?"
+        ],
+        "translation": "내일 아침까지 이 슬라이드들을 검토하고 피드백을 주실 수 있나요?"
+      },
+      {
+        "text": "We decided to postpone the kickoff meeting until next Wednesday morning.",
+        "chunks": [
+          "We decided to postpone the kickoff meeting",
+          "until next Wednesday",
+          "at ten o'clock."
+        ],
+        "translation": "우리는 킥오프 회의를 다음 주 수요일 10시로 연기하기로 결정했습니다."
+      },
+      {
+        "text": "The manager approved my vacation request without asking any difficult questions.",
+        "chunks": [
+          "The manager approved my vacation request",
+          "without any hesitation",
+          "this morning."
+        ],
+        "translation": "팀장님은 오늘 아침 망설임 없이 제 휴가 신청을 승인해 주셨습니다."
+      }
+    ],
+    "4": [
+      {
+        "text": "If the weather is nice tomorrow we can have lunch outside in the park.",
+        "chunks": [
+          "If the weather is nice tomorrow",
+          "we can enjoy lunch together",
+          "outside in the garden park",
+          "near our main office."
+        ],
+        "translation": "내일 날씨가 좋으면 본사 근처 정원 공원에서 함께 점심을 즐길 수 있습니다."
+      },
+      {
+        "text": "Before you leave the building tonight please make sure that all the office computers are turned off.",
+        "chunks": [
+          "Before you leave the building tonight",
+          "please make sure that",
+          "all the desktop computers",
+          "are turned off properly."
+        ],
+        "translation": "오늘 밤 건물을 나서기 전에 모든 데스크톱 컴퓨터가 제대로 꺼져 있는지 확인해 주세요."
+      },
+      {
+        "text": "Whenever you receive a customer inquiry you should respond quickly and write down all their requests.",
+        "chunks": [
+          "Whenever you receive a customer inquiry",
+          "you should respond as quickly as possible",
+          "and write down their key requests",
+          "in the shared database."
+        ],
+        "translation": "고객 문의를 받을 때마다 가능한 한 신속히 응대하고 공유 데이터베이스에 핵심 요청 사항을 기록해야 합니다."
+      },
+      {
+        "text": "If you have any further questions please contact our support team through the official website chat.",
+        "chunks": [
+          "If you have any further questions",
+          "feel free to contact our support team",
+          "through the official website chat",
+          "during business hours."
+        ],
+        "translation": "추가 문의 사항이 있으시면 업무 시간 중 공식 웹사이트 채팅을 통해 지원팀에 편하게 문의해 주세요."
+      }
+    ]
+  },
+  "B1": {
+    "2": [
+      {
+        "text": "Please review the attached project proposal carefully.",
+        "chunks": [
+          "Please review carefully",
+          "the attached project proposal."
+        ],
+        "translation": "첨부된 프로젝트 제안서를 주의 깊게 검토해 주시기 바랍니다."
+      },
+      {
+        "text": "Customer satisfaction remains our highest operational priority.",
+        "chunks": [
+          "Customer satisfaction remains",
+          "our highest operational priority."
+        ],
+        "translation": "고객 만족은 언제나 우리의 최우선 운영 과제입니다."
+      },
+      {
+        "text": "We should focus on improving client retention rates.",
+        "chunks": [
+          "We should definitely focus on",
+          "improving client retention rates."
+        ],
+        "translation": "우리는 고객 유지율을 개선하는 데 확실히 집중해야 합니다."
+      },
+      {
+        "text": "The engineering team resolved the server issue promptly.",
+        "chunks": [
+          "The technical engineering team",
+          "resolved the server issue promptly."
+        ],
+        "translation": "기술 엔지니어링 팀이 서버 문제를 신속하게 해결했습니다."
+      },
+      {
+        "text": "We need more data before finalizing the marketing strategy.",
+        "chunks": [
+          "We need more accurate data",
+          "before finalizing the marketing strategy."
+        ],
+        "translation": "마케팅 전략을 최종 확정하기 전에 더 정확한 데이터가 필요합니다."
+      },
+      {
+        "text": "Please keep me updated regarding any schedule changes.",
+        "chunks": [
+          "Please keep me closely updated",
+          "regarding any upcoming schedule changes."
+        ],
+        "translation": "향후 일정 변동이 생기면 계속해서 저에게 자세히 공유해 주세요."
+      },
+      {
+        "text": "Our product launch received overwhelmingly positive feedback.",
+        "chunks": [
+          "Our latest product launch",
+          "received overwhelmingly positive feedback."
+        ],
+        "translation": "우리의 최신 제품 출시는 압도적으로 긍정적인 평가를 받았습니다."
+      },
+      {
+        "text": "The budget cuts will directly impact our hiring plans.",
+        "chunks": [
+          "The recent budget cuts",
+          "will directly impact our hiring plans."
+        ],
+        "translation": "최근의 예산 삭감은 우리의 채용 계획에 직접적인 영향을 미칠 것입니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "Effective communication plays a vital role in team collaboration.",
+        "chunks": [
+          "Effective communication",
+          "plays a vital role",
+          "in successful team collaboration."
+        ],
+        "translation": "효과적인 소통은 성공적인 팀 협업에서 매우 중요한 역할을 합니다."
+      },
+      {
+        "text": "Flexible work arrangements contributed significantly to employee satisfaction.",
+        "chunks": [
+          "Flexible work arrangements",
+          "contributed significantly",
+          "to overall employee satisfaction."
+        ],
+        "translation": "유연 근무제는 전반적인 직원 만족도 향상에 크게 기여했습니다."
+      },
+      {
+        "text": "We need to identify the key factors behind this sudden sales decline.",
+        "chunks": [
+          "We need to identify",
+          "the key factors behind",
+          "this unexpected sales decline."
+        ],
+        "translation": "우리는 이번 예상치 못한 매출 감소의 핵심 원인들을 파악해야 합니다."
+      },
+      {
+        "text": "The newly launched application received positive feedback from most corporate clients.",
+        "chunks": [
+          "The newly launched application",
+          "received positive feedback",
+          "from most corporate clients."
+        ],
+        "translation": "새로 출시된 애플리케이션은 대부분의 기업 고객들로부터 긍정적인 반응을 얻었습니다."
+      },
+      {
+        "text": "Our direct supervisor will deliver a keynote speech during the opening ceremony.",
+        "chunks": [
+          "Our direct supervisor",
+          "will deliver a keynote speech",
+          "during the opening ceremony."
+        ],
+        "translation": "우리 부서장님께서 개회식 동안 기조연설을 진행하실 예정입니다."
+      },
+      {
+        "text": "Investing in staff training brings substantial long term benefits to the organization.",
+        "chunks": [
+          "Investing in staff training",
+          "brings substantial benefits",
+          "to our growing organization."
+        ],
+        "translation": "직원 교육에 대한 투자는 성장하는 우리 조직에 상당한 이점을 가져다줍니다."
+      },
+      {
+        "text": "We should streamline the approval process to reduce unnecessary administrative delays.",
+        "chunks": [
+          "We should streamline the process",
+          "to reduce unnecessary delays",
+          "in client project approvals."
+        ],
+        "translation": "고객 프로젝트 승인에서 불필요한 지연을 줄이기 위해 절차를 간소화해야 합니다."
+      }
+    ],
+    "4": [
+      {
+        "text": "Automating routine repetitive tasks gives employees more freedom to focus on creative work.",
+        "chunks": [
+          "Automating routine repetitive tasks",
+          "gives employees more freedom",
+          "to focus their energy",
+          "on creative project work."
+        ],
+        "translation": "반복적인 일상 업무를 자동화하면 직원들이 창의적인 프로젝트 업무에 에너지를 집중할 수 있는 여유가 생깁니다."
+      },
+      {
+        "text": "Despite encountering unexpected market challenges the company achieved substantial revenue growth this fiscal quarter.",
+        "chunks": [
+          "Despite encountering unexpected challenges",
+          "in the domestic market,",
+          "our company achieved",
+          "substantial revenue growth this quarter."
+        ],
+        "translation": "국내 시장에서 예상치 못한 어려움에 직면했음에도 불구하고, 우리 회사는 이번 분기에 상당한 매출 성장을 달성했습니다."
+      },
+      {
+        "text": "By adopting cloud based collaboration tools our remote teams can share project documents in real time.",
+        "chunks": [
+          "By adopting cloud collaboration tools,",
+          "our distributed remote teams",
+          "can share critical project documents",
+          "in real time without delay."
+        ],
+        "translation": "클라우드 협업 도구를 도입함으로써 분산된 원격 근무 팀들이 지연 없이 실시간으로 중요 프로젝트 문서를 공유할 수 있습니다."
+      },
+      {
+        "text": "To improve our customer service quality we must gather direct feedback and implement constructive suggestions immediately.",
+        "chunks": [
+          "To improve customer service quality,",
+          "we must gather direct feedback",
+          "and implement constructive suggestions",
+          "without unnecessary delay."
+        ],
+        "translation": "고객 서비스 품질을 향상하기 위해 우리는 직접적인 피드백을 수집하고 건설적인 제안을 불필요한 지연 없이 즉각 실행해야 합니다."
+      }
+    ]
+  },
+  "B2": {
+    "2": [
+      {
+        "text": "We successfully negotiated the new contract terms with our partners.",
+        "chunks": [
+          "We successfully negotiated",
+          "the new contract terms with our partners."
+        ],
+        "translation": "우리는 파트너사들과 새로운 계약 조건을 성공적으로 협상했습니다."
+      },
+      {
+        "text": "Continuous learning is essential for sustained professional growth.",
+        "chunks": [
+          "Continuous learning is essential",
+          "for sustained professional growth."
+        ],
+        "translation": "지속적인 배움은 지속 가능한 전문적 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "Our quarterly revenue exceeded all initial market forecasts.",
+        "chunks": [
+          "Our quarterly revenue exceeded",
+          "all initial market forecasts."
+        ],
+        "translation": "우리 분기 매출은 초기 모든 시장 전망치를 초과 달성했습니다."
+      },
+      {
+        "text": "Implementing agile methodology streamlined our entire development cycle.",
+        "chunks": [
+          "Implementing agile methodology",
+          "streamlined our entire development cycle."
+        ],
+        "translation": "애자일 방법론의 도입은 우리의 전체 개발 주기를 효율화했습니다."
+      },
+      {
+        "text": "We must carefully allocate our budget across strategic growth initiatives.",
+        "chunks": [
+          "We must carefully allocate our budget",
+          "across strategic growth initiatives."
+        ],
+        "translation": "우리는 전략적 성장 계획 전반에 걸쳐 예산을 신중하게 배분해야 합니다."
+      },
+      {
+        "text": "Market volatility demands swift organizational decision making processes.",
+        "chunks": [
+          "Market volatility demands",
+          "swift organizational decision making."
+        ],
+        "translation": "시장의 변동성은 기민한 조직 의사결정 프로세스를 요구합니다."
+      },
+      {
+        "text": "The leadership team emphasized the importance of corporate compliance.",
+        "chunks": [
+          "The executive leadership team",
+          "emphasized strict corporate compliance."
+        ],
+        "translation": "경영진 리더십 팀은 엄격한 기업 준법 경영의 중요성을 강조했습니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "Health and wellness are becoming top priorities for modern consumers.",
+        "chunks": [
+          "Health and wellness",
+          "are becoming top priorities",
+          "for modern consumers worldwide."
+        ],
+        "translation": "건강과 웰빙은 전 세계 현대 소비자들에게 최우선 순위가 되고 있습니다."
+      },
+      {
+        "text": "Financial literacy is crucial for achieving long term financial stability.",
+        "chunks": [
+          "Financial literacy is crucial",
+          "for achieving stability",
+          "over the long term."
+        ],
+        "translation": "금융 문해력은 장기적인 재정 안정을 달성하는 데 결정적으로 중요합니다."
+      },
+      {
+        "text": "Data privacy regulations require strict adherence by all global organizations.",
+        "chunks": [
+          "Data privacy regulations",
+          "require strict adherence",
+          "by all global organizations."
+        ],
+        "translation": "데이터 개인정보 규정은 모든 글로벌 기업 조직의 엄격한 준수를 요구합니다."
+      },
+      {
+        "text": "Strengthening supply chain resilience helped mitigate unexpected logistic disruptions.",
+        "chunks": [
+          "Strengthening supply chain resilience",
+          "helped us mitigate",
+          "unexpected logistic disruptions."
+        ],
+        "translation": "공급망 회복탄력성을 강화함으로써 예상치 못한 물류 혼선을 완화할 수 있었습니다."
+      },
+      {
+        "text": "Conducting thorough competitor analysis revealed promising untapped business opportunities.",
+        "chunks": [
+          "Conducting competitor analysis",
+          "revealed promising opportunities",
+          "in untapped niche markets."
+        ],
+        "translation": "경쟁사 분석을 수행하여 미개척 틈새시장에서 유망한 비즈니스 기회를 발굴했습니다."
+      },
+      {
+        "text": "Cross functional collaboration fostered remarkable product innovation across technical departments.",
+        "chunks": [
+          "Cross functional collaboration",
+          "fostered remarkable innovation",
+          "across multiple technical departments."
+        ],
+        "translation": "부서 간 협업을 통해 여러 기술 부서 전반에 걸쳐 괄목할 만한 혁신을 이끌어냈습니다."
+      }
+    ],
+    "4": [
+      {
+        "text": "Continuous learning is essential for professional growth in this rapidly changing industry environment.",
+        "chunks": [
+          "Continuous learning is essential",
+          "for long term professional growth",
+          "in this rapidly changing",
+          "and demanding industry environment."
+        ],
+        "translation": "이처럼 급변하고 까다로운 산업 환경에서 지속적인 배움은 장기적인 전문적 성장을 위해 필수적입니다."
+      },
+      {
+        "text": "The global marketing team plans to expand its operations across emerging markets next fiscal year.",
+        "chunks": [
+          "The global marketing team",
+          "plans to expand operations",
+          "across key emerging markets",
+          "during the upcoming fiscal year."
+        ],
+        "translation": "글로벌 마케팅 팀은 다가오는 회계연도 동안 주요 신흥 시장 전반으로 사업 운영을 확장할 계획입니다."
+      },
+      {
+        "text": "Integrating customer feedback directly into product updates dramatically boosted our overall user retention rate.",
+        "chunks": [
+          "Integrating customer feedback directly",
+          "into regular product updates",
+          "dramatically boosted",
+          "our overall user retention rate."
+        ],
+        "translation": "고객 피드백을 정기 제품 업데이트에 직접 반영함으로써 전반적인 사용자 유지율을 비약적으로 끌어올렸습니다."
+      },
+      {
+        "text": "To maintain our competitive market advantage we must foster an environment that encourages innovative thinking.",
+        "chunks": [
+          "To maintain our competitive advantage,",
+          "we must actively foster",
+          "a collaborative work environment",
+          "that encourages innovative thinking."
+        ],
+        "translation": "경쟁 우위를 유지하기 위해 우리는 혁신적인 사고를 장려하는 협력적인 업무 환경을 적극적으로 조성해야 합니다."
+      }
+    ]
+  },
+  "C1": {
+    "2": [
+      {
+        "text": "The board reached a consensus regarding fiscal consolidation measures.",
+        "chunks": [
+          "The board reached a consensus",
+          "regarding fiscal consolidation measures."
+        ],
+        "translation": "이사회는 재정 건전화 조치 방안에 관해 합의에 도달했습니다."
+      },
+      {
+        "text": "Meticulous scrutiny is indispensable to preempt operational bottlenecks.",
+        "chunks": [
+          "Meticulous operational scrutiny",
+          "is indispensable to preempt bottlenecks."
+        ],
+        "translation": "병목 현상을 선제적으로 방지하기 위해 꼼꼼한 운영 정밀 검토가 필수적입니다."
+      },
+      {
+        "text": "Strategic diversification hedges against unpredictable macroeconomic fluctuations.",
+        "chunks": [
+          "Strategic diversification hedges",
+          "against unpredictable macroeconomic fluctuations."
+        ],
+        "translation": "전략적 다각화는 예측 불가능한 거시 경제적 변동성을 방어해 줍니다."
+      },
+      {
+        "text": "Transparent governance enhances long term institutional investor confidence.",
+        "chunks": [
+          "Transparent corporate governance",
+          "enhances institutional investor confidence."
+        ],
+        "translation": "투명한 기업 지배구조는 기관 투자자의 장기적인 신뢰를 강화합니다."
+      }
+    ],
+    "3": [
+      {
+        "text": "Sustainable macroeconomic resilience hinges on agile policy adjustments amid volatile shifts.",
+        "chunks": [
+          "Sustainable macroeconomic resilience",
+          "hinges on agile policy adjustments",
+          "amid volatile market shifts."
+        ],
+        "translation": "지속 가능한 거시경제적 회복력은 변동성 큰 시장 변화 속 기민한 정책 조정에 달려 있습니다."
+      },
+      {
+        "text": "Cultivating organizational synergy requires dismantling entrenched departmental silos through open dialogue.",
+        "chunks": [
+          "Cultivating organizational synergy",
+          "requires dismantling entrenched silos",
+          "through transparent executive dialogue."
+        ],
+        "translation": "조직의 시너지를 창출하기 위해서는 투명한 경영진 대화를 통해 고착화된 부서 간 장벽을 허물어야 합니다."
+      },
+      {
+        "text": "Pioneering technological disruptions systematically dismantle conventional legacy business models.",
+        "chunks": [
+          "Pioneering technological disruptions",
+          "systematically dismantle",
+          "conventional legacy business models."
+        ],
+        "translation": "선구적인 기술적 파괴는 기존의 전통적인 비즈니스 모델을 체계적으로 해체합니다."
+      }
+    ],
+    "4": [
+      {
+        "text": "Navigating cross border regulatory ambiguities demands proactive stakeholder engagement and rigorous compliance protocols.",
+        "chunks": [
+          "Navigating cross border regulatory ambiguities",
+          "demands proactive stakeholder engagement",
+          "and rigorous implementation",
+          "of international compliance protocols."
+        ],
+        "translation": "국경 간 규제 모호성을 헤쳐나가기 위해서는 선제적인 이해관계자 참여와 국제 준법 프로토콜의 엄격한 이행이 요구됩니다."
+      },
+      {
+        "text": "Fostering institutional agility requires executives to challenge orthodox assumptions and embrace calculated strategic risks.",
+        "chunks": [
+          "Fostering institutional agility",
+          "requires executive leadership",
+          "to challenge orthodox assumptions",
+          "and embrace calculated strategic risks."
+        ],
+        "translation": "조직의 기민성을 함양하기 위해서는 경영진 리더십이 통념적 가정을 재검토하고 계산된 전략적 위험을 수용할 것을 요구합니다."
+      },
+      {
+        "text": "Leveraging predictive artificial intelligence enables enterprises to anticipate market volatility and optimize resource allocation.",
+        "chunks": [
+          "Leveraging predictive artificial intelligence",
+          "enables modern enterprises",
+          "to anticipate market volatility",
+          "and optimize resource allocation strategically."
+        ],
+        "translation": "예측 인공지능을 활용함으로써 현대 기업들은 시장 변동성을 예측하고 자원 배분을 전략적으로 최적화할 수 있습니다."
+      }
+    ]
+  }
+};
 
 const cleanText = (str) => {
   return (str || '')
@@ -146,9 +711,8 @@ const playSoundEffect = (type) => {
 
 // 레벨별 관대함(Strictness)을 적용한 피드백 엔진
 const generateLocalFeedback = (target, spoken, level) => {
-  const cleanTargetForEval = target.replace(/\(Variant \d+\)/i, '').trim();
-
-  let normTarget = cleanText(cleanTargetForEval);
+  
+  let normTarget = cleanText(target);
   let normSpoken = cleanText(spoken);
 
   // A2, B1: 관사 및 전치사 등 덜 중요한 단어 일부 무시 (원활한 통과를 위해)
@@ -276,11 +840,7 @@ export default function EnglishTutorApp() {
   const pauseWaitTimeRef = useRef(pauseWaitTime);
   pauseWaitTimeRef.current = pauseWaitTime;
 
-  const displayItem = {
-      ...currentSentence,
-      text: currentSentence.text.replace(/\(Variant \d+\)/i, '').trim(),
-      chunks: currentSentence.chunks.map(c => c.replace(/\(Variant \d+\)/i, '').trim())
-  };
+  const displayItem = currentSentence;
 
   const clearSilenceTimers = () => {
     if (silenceTimerRef.current) {
