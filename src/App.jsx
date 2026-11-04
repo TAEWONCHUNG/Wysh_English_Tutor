@@ -922,24 +922,27 @@ const generateLocalFeedback = (target, spoken, level) => {
   const accuracyRatio = correctCount / totalTargetWords;
 
   // 발음 허용 범위 전반적 완화 (특히 B2 포함)
-  // A2 (초급): 단어 2개 미스 또는 정확도 55% 이상 통과
+  // 통과(isPerfect: true)하는 경우에도 markedSpoken을 반환하여 사용자가 본인의 발음 교정을 확인할 수 있게 함
+  
   if (level === 'A2') {
     if (missingWords.length + substituted.length <= 2 || accuracyRatio >= 0.55) {
-      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 핵심 표현이 정확하여 통과되었습니다.)" };
+      return { isPerfect: true, message: "🎉 훌륭합니다! (A2 초급: 핵심 표현이 정확하여 통과되었습니다.)", markedSpoken };
     }
   }
 
-  // B1 (중급): 단어 1~2개 오인식 또는 정확도 65% 이상 통과
+  // B1 (중급): 핵심 단어 위주로 평가 (단어 1~2개 누락/치환 허용 또는 정확도 65% 이상)
   if (level === 'B1') {
     if (missingWords.length + substituted.length <= 1 || accuracyRatio >= 0.65) {
-      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 대사의 의미가 명확하게 전달되었습니다.)" };
+      return { isPerfect: true, message: "🎉 잘하셨습니다! (B1 중급: 대사의 의미가 명확하게 전달되었습니다.)", markedSpoken };
     }
   }
 
-  // B2 (고급): 기존의 지나친 깐깐함 해소! 핵심 단어 70% 이상 일치 시 기분 좋게 통과
+  const strictNotice = level === 'B2' ? ' (B2 모드: 정밀 발음)' : '';
+
+  // B2 (고급): 깐깐함 대폭 완화! 핵심 단어 70% 이상 일치하거나 1단어 오류 시 통과 처리
   if (level === 'B2') {
     if (missingWords.length + substituted.length <= 1 || accuracyRatio >= 0.70) {
-      return { isPerfect: true, message: "🎉 멋집니다! (B2 고급: 핵심 대사의 호흡과 발음이 자연스럽게 통과되었습니다.)" };
+      return { isPerfect: true, message: "🎉 멋집니다! (B2 고급: 핵심 대사의 호흡과 발음이 자연스럽게 통과되었습니다.)", markedSpoken };
     }
   }
 
