@@ -78,7 +78,7 @@ const CHUNK_DATABASE = {
         "translation": "그녀는 저녁 비행기를 타기 위해 일찍 퇴근했습니다."
       },
       {
-        "text": "Could you please print these documents for our client?",
+        "text": "Could you please print these documents for our new client?",
         "chunks": [
           "Could you please print these documents",
           "for our new client?"
@@ -130,7 +130,7 @@ const CHUNK_DATABASE = {
         "translation": "오늘 오후 퇴근하기 전에 주간 보고서를 제출하겠습니다."
       },
       {
-        "text": "Please double check the attached file before sending out the newsletter.",
+        "text": "Please double check the attached file before sending out the monthly newsletter.",
         "chunks": [
           "Please double check the attached file",
           "before sending out",
@@ -139,7 +139,7 @@ const CHUNK_DATABASE = {
         "translation": "월간 소식지를 발송하기 전에 첨부 파일을 다시 한번 확인해 주세요."
       },
       {
-        "text": "Our sales team met the new client at the central station cafe.",
+        "text": "Our sales team met the new client at the central station yesterday afternoon.",
         "chunks": [
           "Our sales team met the new client",
           "at the central station",
@@ -148,7 +148,7 @@ const CHUNK_DATABASE = {
         "translation": "우리 영업팀은 어제 오후 중앙역에서 새 고객을 만났습니다."
       },
       {
-        "text": "She answered all client questions with great patience and confidence.",
+        "text": "She answered all client questions with great patience and strong confidence.",
         "chunks": [
           "She answered all client questions",
           "with great patience",
@@ -157,7 +157,7 @@ const CHUNK_DATABASE = {
         "translation": "그녀는 뛰어난 인내심과 확신을 가지고 모든 고객 질문에 답변했습니다."
       },
       {
-        "text": "Could you please review these slides and give me your feedback?",
+        "text": "Could you please review these slides and give me your feedback by tomorrow morning?",
         "chunks": [
           "Could you please review these slides",
           "and give me your feedback",
@@ -166,7 +166,7 @@ const CHUNK_DATABASE = {
         "translation": "내일 아침까지 이 슬라이드들을 검토하고 피드백을 주실 수 있나요?"
       },
       {
-        "text": "We decided to postpone the kickoff meeting until next Wednesday morning.",
+        "text": "We decided to postpone the kickoff meeting until next Wednesday at ten o'clock.",
         "chunks": [
           "We decided to postpone the kickoff meeting",
           "until next Wednesday",
@@ -175,7 +175,7 @@ const CHUNK_DATABASE = {
         "translation": "우리는 킥오프 회의를 다음 주 수요일 10시로 연기하기로 결정했습니다."
       },
       {
-        "text": "The manager approved my vacation request without asking any difficult questions.",
+        "text": "The manager approved my vacation request without any hesitation this morning.",
         "chunks": [
           "The manager approved my vacation request",
           "without any hesitation",
@@ -186,7 +186,7 @@ const CHUNK_DATABASE = {
     ],
     "4": [
       {
-        "text": "If the weather is nice tomorrow we can have lunch outside in the park.",
+        "text": "If the weather is nice tomorrow we can enjoy lunch together outside in the garden park near our main office.",
         "chunks": [
           "If the weather is nice tomorrow",
           "we can enjoy lunch together",
@@ -196,7 +196,7 @@ const CHUNK_DATABASE = {
         "translation": "내일 날씨가 좋으면 본사 근처 정원 공원에서 함께 점심을 즐길 수 있습니다."
       },
       {
-        "text": "Before you leave the building tonight please make sure that all the office computers are turned off.",
+        "text": "Before you leave the building tonight please make sure that all the desktop computers are turned off properly.",
         "chunks": [
           "Before you leave the building tonight",
           "please make sure that",
@@ -206,7 +206,7 @@ const CHUNK_DATABASE = {
         "translation": "오늘 밤 건물을 나서기 전에 모든 데스크톱 컴퓨터가 제대로 꺼져 있는지 확인해 주세요."
       },
       {
-        "text": "Whenever you receive a customer inquiry you should respond quickly and write down all their requests.",
+        "text": "Whenever you receive a customer inquiry you should respond as quickly as possible and write down their key requests in the shared database.",
         "chunks": [
           "Whenever you receive a customer inquiry",
           "you should respond as quickly as possible",
@@ -216,7 +216,7 @@ const CHUNK_DATABASE = {
         "translation": "고객 문의를 받을 때마다 가능한 한 신속히 응대하고 공유 데이터베이스에 핵심 요청 사항을 기록해야 합니다."
       },
       {
-        "text": "If you have any further questions please contact our support team through the official website chat.",
+        "text": "If you have any further questions feel free to contact our support team through the official website chat during business hours.",
         "chunks": [
           "If you have any further questions",
           "feel free to contact our support team",
@@ -230,7 +230,7 @@ const CHUNK_DATABASE = {
   "B1": {
     "2": [
       {
-        "text": "Please review the attached project proposal carefully.",
+        "text": "Please review carefully the attached project proposal.",
         "chunks": [
           "Please review carefully",
           "the attached project proposal."
@@ -246,7 +246,7 @@ const CHUNK_DATABASE = {
         "translation": "고객 만족은 언제나 우리의 최우선 운영 과제입니다."
       },
       {
-        "text": "We should focus on improving client retention rates.",
+        "text": "We should definitely focus on improving client retention rates.",
         "chunks": [
           "We should definitely focus on",
           "improving client retention rates."
@@ -254,7 +254,7 @@ const CHUNK_DATABASE = {
         "translation": "우리는 고객 유지율을 개선하는 데 확실히 집중해야 합니다."
       },
       {
-        "text": "The engineering team resolved the server issue promptly.",
+        "text": "The technical engineering team resolved the server issue promptly.",
         "chunks": [
           "The technical engineering team",
           "resolved the server issue promptly."
@@ -262,7 +262,7 @@ const CHUNK_DATABASE = {
         "translation": "기술 엔지니어링 팀이 서버 문제를 신속하게 해결했습니다."
       },
       {
-        "text": "We need more data before finalizing the marketing strategy.",
+        "text": "We need more accurate data before finalizing the marketing strategy.",
         "chunks": [
           "We need more accurate data",
           "before finalizing the marketing strategy."
@@ -270,7 +270,7 @@ const CHUNK_DATABASE = {
         "translation": "마케팅 전략을 최종 확정하기 전에 더 정확한 데이터가 필요합니다."
       },
       {
-        "text": "Please keep me updated regarding any schedule changes.",
+        "text": "Please keep me closely updated regarding any upcoming schedule changes.",
         "chunks": [
           "Please keep me closely updated",
           "regarding any upcoming schedule changes."
@@ -278,7 +278,7 @@ const CHUNK_DATABASE = {
         "translation": "향후 일정 변동이 생기면 계속해서 저에게 자세히 공유해 주세요."
       },
       {
-        "text": "Our product launch received overwhelmingly positive feedback.",
+        "text": "Our latest product launch received overwhelmingly positive feedback.",
         "chunks": [
           "Our latest product launch",
           "received overwhelmingly positive feedback."
@@ -286,7 +286,7 @@ const CHUNK_DATABASE = {
         "translation": "우리의 최신 제품 출시는 압도적으로 긍정적인 평가를 받았습니다."
       },
       {
-        "text": "The budget cuts will directly impact our hiring plans.",
+        "text": "The recent budget cuts will directly impact our hiring plans.",
         "chunks": [
           "The recent budget cuts",
           "will directly impact our hiring plans."
@@ -296,7 +296,7 @@ const CHUNK_DATABASE = {
     ],
     "3": [
       {
-        "text": "Effective communication plays a vital role in team collaboration.",
+        "text": "Effective communication plays a vital role in successful team collaboration.",
         "chunks": [
           "Effective communication",
           "plays a vital role",
@@ -305,7 +305,7 @@ const CHUNK_DATABASE = {
         "translation": "효과적인 소통은 성공적인 팀 협업에서 매우 중요한 역할을 합니다."
       },
       {
-        "text": "Flexible work arrangements contributed significantly to employee satisfaction.",
+        "text": "Flexible work arrangements contributed significantly to overall employee satisfaction.",
         "chunks": [
           "Flexible work arrangements",
           "contributed significantly",
@@ -314,7 +314,7 @@ const CHUNK_DATABASE = {
         "translation": "유연 근무제는 전반적인 직원 만족도 향상에 크게 기여했습니다."
       },
       {
-        "text": "We need to identify the key factors behind this sudden sales decline.",
+        "text": "We need to identify the key factors behind this unexpected sales decline.",
         "chunks": [
           "We need to identify",
           "the key factors behind",
@@ -341,7 +341,7 @@ const CHUNK_DATABASE = {
         "translation": "우리 부서장님께서 개회식 동안 기조연설을 진행하실 예정입니다."
       },
       {
-        "text": "Investing in staff training brings substantial long term benefits to the organization.",
+        "text": "Investing in staff training brings substantial benefits to our growing organization.",
         "chunks": [
           "Investing in staff training",
           "brings substantial benefits",
@@ -350,7 +350,7 @@ const CHUNK_DATABASE = {
         "translation": "직원 교육에 대한 투자는 성장하는 우리 조직에 상당한 이점을 가져다줍니다."
       },
       {
-        "text": "We should streamline the approval process to reduce unnecessary administrative delays.",
+        "text": "We should streamline the process to reduce unnecessary delays in client project approvals.",
         "chunks": [
           "We should streamline the process",
           "to reduce unnecessary delays",
@@ -361,7 +361,7 @@ const CHUNK_DATABASE = {
     ],
     "4": [
       {
-        "text": "Automating routine repetitive tasks gives employees more freedom to focus on creative work.",
+        "text": "Automating routine repetitive tasks gives employees more freedom to focus their energy on creative project work.",
         "chunks": [
           "Automating routine repetitive tasks",
           "gives employees more freedom",
@@ -371,7 +371,7 @@ const CHUNK_DATABASE = {
         "translation": "반복적인 일상 업무를 자동화하면 직원들이 창의적인 프로젝트 업무에 에너지를 집중할 수 있는 여유가 생깁니다."
       },
       {
-        "text": "Despite encountering unexpected market challenges the company achieved substantial revenue growth this fiscal quarter.",
+        "text": "Despite encountering unexpected challenges in the domestic market, our company achieved substantial revenue growth this quarter.",
         "chunks": [
           "Despite encountering unexpected challenges",
           "in the domestic market,",
@@ -381,7 +381,7 @@ const CHUNK_DATABASE = {
         "translation": "국내 시장에서 예상치 못한 어려움에 직면했음에도 불구하고, 우리 회사는 이번 분기에 상당한 매출 성장을 달성했습니다."
       },
       {
-        "text": "By adopting cloud based collaboration tools our remote teams can share project documents in real time.",
+        "text": "By adopting cloud collaboration tools, our distributed remote teams can share critical project documents in real time without delay.",
         "chunks": [
           "By adopting cloud collaboration tools,",
           "our distributed remote teams",
@@ -391,7 +391,7 @@ const CHUNK_DATABASE = {
         "translation": "클라우드 협업 도구를 도입함으로써 분산된 원격 근무 팀들이 지연 없이 실시간으로 중요 프로젝트 문서를 공유할 수 있습니다."
       },
       {
-        "text": "To improve our customer service quality we must gather direct feedback and implement constructive suggestions immediately.",
+        "text": "To improve customer service quality, we must gather direct feedback and implement constructive suggestions without unnecessary delay.",
         "chunks": [
           "To improve customer service quality,",
           "we must gather direct feedback",
@@ -445,7 +445,7 @@ const CHUNK_DATABASE = {
         "translation": "우리는 전략적 성장 계획 전반에 걸쳐 예산을 신중하게 배분해야 합니다."
       },
       {
-        "text": "Market volatility demands swift organizational decision making processes.",
+        "text": "Market volatility demands swift organizational decision making.",
         "chunks": [
           "Market volatility demands",
           "swift organizational decision making."
@@ -453,7 +453,7 @@ const CHUNK_DATABASE = {
         "translation": "시장의 변동성은 기민한 조직 의사결정 프로세스를 요구합니다."
       },
       {
-        "text": "The leadership team emphasized the importance of corporate compliance.",
+        "text": "The executive leadership team emphasized strict corporate compliance.",
         "chunks": [
           "The executive leadership team",
           "emphasized strict corporate compliance."
@@ -463,7 +463,7 @@ const CHUNK_DATABASE = {
     ],
     "3": [
       {
-        "text": "Health and wellness are becoming top priorities for modern consumers.",
+        "text": "Health and wellness are becoming top priorities for modern consumers worldwide.",
         "chunks": [
           "Health and wellness",
           "are becoming top priorities",
@@ -472,7 +472,7 @@ const CHUNK_DATABASE = {
         "translation": "건강과 웰빙은 전 세계 현대 소비자들에게 최우선 순위가 되고 있습니다."
       },
       {
-        "text": "Financial literacy is crucial for achieving long term financial stability.",
+        "text": "Financial literacy is crucial for achieving stability over the long term.",
         "chunks": [
           "Financial literacy is crucial",
           "for achieving stability",
@@ -490,7 +490,7 @@ const CHUNK_DATABASE = {
         "translation": "데이터 개인정보 규정은 모든 글로벌 기업 조직의 엄격한 준수를 요구합니다."
       },
       {
-        "text": "Strengthening supply chain resilience helped mitigate unexpected logistic disruptions.",
+        "text": "Strengthening supply chain resilience helped us mitigate unexpected logistic disruptions.",
         "chunks": [
           "Strengthening supply chain resilience",
           "helped us mitigate",
@@ -499,7 +499,7 @@ const CHUNK_DATABASE = {
         "translation": "공급망 회복탄력성을 강화함으로써 예상치 못한 물류 혼선을 완화할 수 있었습니다."
       },
       {
-        "text": "Conducting thorough competitor analysis revealed promising untapped business opportunities.",
+        "text": "Conducting competitor analysis revealed promising opportunities in untapped niche markets.",
         "chunks": [
           "Conducting competitor analysis",
           "revealed promising opportunities",
@@ -508,7 +508,7 @@ const CHUNK_DATABASE = {
         "translation": "경쟁사 분석을 수행하여 미개척 틈새시장에서 유망한 비즈니스 기회를 발굴했습니다."
       },
       {
-        "text": "Cross functional collaboration fostered remarkable product innovation across technical departments.",
+        "text": "Cross functional collaboration fostered remarkable innovation across multiple technical departments.",
         "chunks": [
           "Cross functional collaboration",
           "fostered remarkable innovation",
@@ -519,7 +519,7 @@ const CHUNK_DATABASE = {
     ],
     "4": [
       {
-        "text": "Continuous learning is essential for professional growth in this rapidly changing industry environment.",
+        "text": "Continuous learning is essential for long term professional growth in this rapidly changing and demanding industry environment.",
         "chunks": [
           "Continuous learning is essential",
           "for long term professional growth",
@@ -529,7 +529,7 @@ const CHUNK_DATABASE = {
         "translation": "이처럼 급변하고 까다로운 산업 환경에서 지속적인 배움은 장기적인 전문적 성장을 위해 필수적입니다."
       },
       {
-        "text": "The global marketing team plans to expand its operations across emerging markets next fiscal year.",
+        "text": "The global marketing team plans to expand operations across key emerging markets during the upcoming fiscal year.",
         "chunks": [
           "The global marketing team",
           "plans to expand operations",
@@ -539,7 +539,7 @@ const CHUNK_DATABASE = {
         "translation": "글로벌 마케팅 팀은 다가오는 회계연도 동안 주요 신흥 시장 전반으로 사업 운영을 확장할 계획입니다."
       },
       {
-        "text": "Integrating customer feedback directly into product updates dramatically boosted our overall user retention rate.",
+        "text": "Integrating customer feedback directly into regular product updates dramatically boosted our overall user retention rate.",
         "chunks": [
           "Integrating customer feedback directly",
           "into regular product updates",
@@ -549,7 +549,7 @@ const CHUNK_DATABASE = {
         "translation": "고객 피드백을 정기 제품 업데이트에 직접 반영함으로써 전반적인 사용자 유지율을 비약적으로 끌어올렸습니다."
       },
       {
-        "text": "To maintain our competitive market advantage we must foster an environment that encourages innovative thinking.",
+        "text": "To maintain our competitive advantage, we must actively foster a collaborative work environment that encourages innovative thinking.",
         "chunks": [
           "To maintain our competitive advantage,",
           "we must actively foster",
@@ -571,7 +571,7 @@ const CHUNK_DATABASE = {
         "translation": "이사회는 재정 건전화 조치 방안에 관해 합의에 도달했습니다."
       },
       {
-        "text": "Meticulous scrutiny is indispensable to preempt operational bottlenecks.",
+        "text": "Meticulous operational scrutiny is indispensable to preempt bottlenecks.",
         "chunks": [
           "Meticulous operational scrutiny",
           "is indispensable to preempt bottlenecks."
@@ -587,7 +587,7 @@ const CHUNK_DATABASE = {
         "translation": "전략적 다각화는 예측 불가능한 거시 경제적 변동성을 방어해 줍니다."
       },
       {
-        "text": "Transparent governance enhances long term institutional investor confidence.",
+        "text": "Transparent corporate governance enhances institutional investor confidence.",
         "chunks": [
           "Transparent corporate governance",
           "enhances institutional investor confidence."
@@ -597,7 +597,7 @@ const CHUNK_DATABASE = {
     ],
     "3": [
       {
-        "text": "Sustainable macroeconomic resilience hinges on agile policy adjustments amid volatile shifts.",
+        "text": "Sustainable macroeconomic resilience hinges on agile policy adjustments amid volatile market shifts.",
         "chunks": [
           "Sustainable macroeconomic resilience",
           "hinges on agile policy adjustments",
@@ -606,7 +606,7 @@ const CHUNK_DATABASE = {
         "translation": "지속 가능한 거시경제적 회복력은 변동성 큰 시장 변화 속 기민한 정책 조정에 달려 있습니다."
       },
       {
-        "text": "Cultivating organizational synergy requires dismantling entrenched departmental silos through open dialogue.",
+        "text": "Cultivating organizational synergy requires dismantling entrenched silos through transparent executive dialogue.",
         "chunks": [
           "Cultivating organizational synergy",
           "requires dismantling entrenched silos",
@@ -626,7 +626,7 @@ const CHUNK_DATABASE = {
     ],
     "4": [
       {
-        "text": "Navigating cross border regulatory ambiguities demands proactive stakeholder engagement and rigorous compliance protocols.",
+        "text": "Navigating cross border regulatory ambiguities demands proactive stakeholder engagement and rigorous implementation of international compliance protocols.",
         "chunks": [
           "Navigating cross border regulatory ambiguities",
           "demands proactive stakeholder engagement",
@@ -636,7 +636,7 @@ const CHUNK_DATABASE = {
         "translation": "국경 간 규제 모호성을 헤쳐나가기 위해서는 선제적인 이해관계자 참여와 국제 준법 프로토콜의 엄격한 이행이 요구됩니다."
       },
       {
-        "text": "Fostering institutional agility requires executives to challenge orthodox assumptions and embrace calculated strategic risks.",
+        "text": "Fostering institutional agility requires executive leadership to challenge orthodox assumptions and embrace calculated strategic risks.",
         "chunks": [
           "Fostering institutional agility",
           "requires executive leadership",
@@ -646,7 +646,7 @@ const CHUNK_DATABASE = {
         "translation": "조직의 기민성을 함양하기 위해서는 경영진 리더십이 통념적 가정을 재검토하고 계산된 전략적 위험을 수용할 것을 요구합니다."
       },
       {
-        "text": "Leveraging predictive artificial intelligence enables enterprises to anticipate market volatility and optimize resource allocation.",
+        "text": "Leveraging predictive artificial intelligence enables modern enterprises to anticipate market volatility and optimize resource allocation strategically.",
         "chunks": [
           "Leveraging predictive artificial intelligence",
           "enables modern enterprises",
@@ -804,8 +804,9 @@ export default function EnglishTutorApp() {
   const [currentSentence, setCurrentSentence] = useState(() => {
     const list = CHUNK_DATABASE.B2[2];
     const picked = list[Math.floor(Math.random() * list.length)];
-    historyRef.current.add(picked.text);
-    return { ...picked, level: 'B2' };
+    const text = picked.chunks ? picked.chunks.join(' ') : picked.text;
+    historyRef.current.add(text);
+    return { ...picked, text, level: 'B2' };
   });
 
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
@@ -867,7 +868,7 @@ export default function EnglishTutorApp() {
     const finalSpoken = accumulatedSpeechRef.current.trim();
     if (finalSpoken) {
       setUserSpeech(finalSpoken);
-      evaluateSpeech(finalSpoken, currentSentence.text);
+      evaluateSpeech(finalSpoken, currentItem.text);
     } else {
       setErrorMsg("음성이 감지되지 않았습니다. 마이크 버튼을 누르고 다시 말씀해 보세요.");
     }
@@ -1093,8 +1094,9 @@ export default function EnglishTutorApp() {
     }
 
     const picked = available[Math.floor(Math.random() * available.length)];
-    historyRef.current.add(picked.text);
-    setCurrentSentence({ ...picked, level: targetDiff });
+    const text = picked.chunks ? picked.chunks.join(' ') : picked.text;
+    historyRef.current.add(text);
+    setCurrentSentence({ ...picked, text, level: targetDiff });
     setPracticeRound((prev) => prev + 1);
   };
 
