@@ -2017,7 +2017,6 @@ export default function EnglishTutorApp() {
     setRecordedAudioUrl(null);
     setEvaluation(null);
     setIsPerfect(false);
-    setShowHintText(false);
 
     const diffGroup = CHUNK_DATABASE[targetDiff] || CHUNK_DATABASE.A2;
     const localList = diffGroup[targetLevel] || diffGroup[2];
@@ -2150,11 +2149,17 @@ export default function EnglishTutorApp() {
                 Unit 61 스크립트 원문
               </span>
               <button
+                type="button"
                 onClick={() => setShowHintText(prev => !prev)}
-                className="inline-flex items-center gap-1 text-[10px] text-slate-400 hover:text-slate-200"
+                title={showHintText ? "문장 표시 상태 (다음 문장에도 유지)" : "문장 가림 상태 (다음 문장에도 유지)"}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold border transition-all ${
+                  showHintText 
+                    ? 'bg-indigo-600 border-indigo-400 text-white shadow-sm' 
+                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-slate-200'
+                }`}
               >
-                {showHintText ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                <span>{showHintText ? '문장 숨김' : '문장 엿보기'}</span>
+                {showHintText ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5 text-slate-500" />}
+                <span>{showHintText ? '원문 표시 ON' : '원문 가림 OFF'}</span>
               </button>
             </div>
 
