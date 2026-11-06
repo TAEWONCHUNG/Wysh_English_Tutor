@@ -26,7 +26,7 @@ const DIFFICULTY_LEVELS = [
   { id: 'B2', label: 'B2', desc: '고급' }
 ];
 
-// 영화 [인턴 (The Intern, 2015)] 실전 명대사 원문 데이터베이스 (2~4단어 호흡 청크)
+// Unit 61 실전 스크립트 원문 데이터베이스 (2~4단어 호흡 청크)
 const CHUNK_DATABASE = {
   "A2": {
     "2": [
@@ -2068,7 +2068,7 @@ export default function EnglishTutorApp() {
           <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-1.5">
               <Film className="w-4 h-4 text-indigo-400" />
-              <h1 className="font-bold text-sm text-white tracking-tight">The Intern Shadowing</h1>
+              <h1 className="font-bold text-sm text-white tracking-tight">Unit 61 Shadowing</h1>
               <span className="text-[10px] text-slate-400">#{practiceRound}</span>
             </div>
 
@@ -2147,7 +2147,7 @@ export default function EnglishTutorApp() {
           <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 text-center flex flex-col items-center justify-center">
             <div className="flex items-center justify-between w-full mb-1">
               <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
-                영화 [인턴] 대사 원문
+                Unit 61 스크립트 원문
               </span>
               <button
                 onClick={() => setShowHintText(prev => !prev)}
