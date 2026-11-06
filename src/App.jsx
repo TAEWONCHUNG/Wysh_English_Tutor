@@ -31,718 +31,1458 @@ const CHUNK_DATABASE = {
   "A2": {
     "2": [
       {
-        "text": "Real experience never gets old.",
+        "text": "No. You should’ve stretched.",
         "chunks": [
-          "Real experience",
-          "never gets old."
+          "No. You",
+          "should’ve stretched."
         ],
-        "translation": "진정한 경험은 결코 늙지 않습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I still have music in me.",
+        "text": "They don’t really want to learn.",
         "chunks": [
-          "I still have",
-          "music in me."
+          "They don’t really",
+          "want to learn."
         ],
-        "translation": "내 안엔 아직 음악(열정)이 남아있어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I want connection, and the excitement.",
+        "text": "Tests help you learn.",
         "chunks": [
-          "I want connection,",
-          "and the excitement."
+          "Tests help",
+          "you learn."
         ],
-        "translation": "사람들과의 소통과 두근거림을 원해요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You're never wrong to do what's right.",
+        "text": "You see that all the time?",
         "chunks": [
-          "You're never wrong",
-          "to do what's right."
+          "You see that",
+          "all the time?"
         ],
-        "translation": "옳은 일을 행함에 있어 결코 틀린 법은 없습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I just want to be useful.",
+        "text": "Yes, so are we.",
         "chunks": [
-          "I just want",
-          "to be useful."
+          "Yes, so",
+          "are we."
         ],
-        "translation": "전 그저 회사에 보탬이 되고 싶을 뿐입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I like that you're into it.",
+        "text": "Get out of here.",
         "chunks": [
-          "I like that",
-          "you're into it."
+          "Get out",
+          "of here."
         ],
-        "translation": "당신이 일에 푹 빠져있는 모습이 보기 좋습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You should be proud of what you built.",
+        "text": "That’s too advanced for you.",
         "chunks": [
-          "You should be proud",
-          "of what you built."
+          "That’s too",
+          "advanced for you."
         ],
-        "translation": "스스로 일군 것에 대해 자부심을 가지셔야 해요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I am Ben Whittaker, your new intern.",
+        "text": "How high can you jump?",
         "chunks": [
-          "I am Ben Whittaker,",
-          "your new intern."
+          "How high",
+          "can you jump?"
         ],
-        "translation": "저는 벤 휘태커, 당신의 새 시니어 인턴입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "The right key is in your pocket.",
+        "text": "How should I do this?",
         "chunks": [
-          "The right key",
-          "is in your pocket."
+          "How should",
+          "I do this?"
         ],
-        "translation": "해결의 열쇠는 이미 당신 주머니에 있습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Good old times never felt better.",
+        "text": "What? Why would you do that?",
         "chunks": [
-          "Good old times",
-          "never felt better."
+          "What? Why would",
+          "you do that?"
         ],
-        "translation": "옛 좋은 시절도 이보다 더 좋을 순 없었죠."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I'm not trying to be a burden.",
+        "text": "You could’ve told me that before.",
         "chunks": [
-          "I'm not trying",
-          "to be a burden."
+          "You could’ve told",
+          "me that before."
         ],
-        "translation": "당신에게 부담을 드리려는 게 결코 아닙니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Can I get you some coffee?",
+        "text": "I need to lie down.",
         "chunks": [
-          "Can I get",
-          "you some coffee?"
+          "I need",
+          "to lie down."
         ],
-        "translation": "따뜻한 커피 한 잔 가져다드릴까요?"
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You look great today, Jules.",
+        "text": "I understand. No problem.",
         "chunks": [
-          "You look great",
-          "today, Jules."
+          "I understand.",
+          "No problem."
         ],
-        "translation": "줄스, 오늘 정말 멋지고 근사해 보여요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I have an appointment at seven o'clock.",
+        "text": "Nadi told me I have to.",
         "chunks": [
-          "I have an appointment",
-          "at seven o'clock."
+          "Nadi told me",
+          "I have to."
         ],
-        "translation": "저는 7시에 잡힌 미팅 약속이 있습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I can drive you wherever you need.",
+        "text": "Is this really my dressing room?",
         "chunks": [
-          "I can drive you",
-          "wherever you need."
+          "Is this really",
+          "my dressing room?"
         ],
-        "translation": "필요하신 곳 어디든 안전하게 모셔다드릴 수 있어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Please let me know if you need help.",
+        "text": "Let me help. I insist.",
         "chunks": [
-          "Please let me know",
-          "if you need help."
+          "Let me",
+          "help. I insist."
         ],
-        "translation": "도움이 필요하시면 언제든 제게 말씀해 주세요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I am ready to begin now.",
+        "text": "Fine. Just hurry. Please.",
         "chunks": [
-          "I am ready",
-          "to begin now."
+          "Fine. Just",
+          "hurry. Please."
         ],
-        "translation": "저는 지금 바로 시작할 준비가 다 되었습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "It's so nice meeting you, Jules.",
+        "text": "Then you know what to do.",
         "chunks": [
-          "It's so nice",
-          "meeting you, Jules."
+          "Then you know",
+          "what to do."
         ],
-        "translation": "줄스, 당신을 알게 되어 진심으로 기쁩니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "We can talk about this after lunch.",
+        "text": "I don’t believe you.",
         "chunks": [
-          "We can talk about",
-          "this after lunch."
+          "I don’t",
+          "believe you."
         ],
-        "translation": "이 이야기는 점심을 먹고 난 뒤에 나누죠."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I will take care of that right away.",
+        "text": "Sorry. I didn’t mean to yell.",
         "chunks": [
-          "I will take care",
-          "of that right away."
+          "Sorry. I didn’t",
+          "mean to yell."
         ],
-        "translation": "그 일은 제가 지금 즉시 깔끔하게 처리하겠습니다."
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "What do you mean?",
+        "chunks": [
+          "What do",
+          "you mean?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "They just want good grades.",
+        "chunks": [
+          "They just",
+          "want good grades."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "He loves this place.",
+        "chunks": [
+          "He loves",
+          "this place."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "What does playing hooky mean?",
+        "chunks": [
+          "What does",
+          "playing hooky mean?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "But, I’ll take this very seriously.",
+        "chunks": [
+          "But, I’ll take",
+          "this very seriously."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I love that idea.",
+        "chunks": [
+          "I love",
+          "that idea."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "But he was here yesterday.",
+        "chunks": [
+          "But he",
+          "was here yesterday."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "An actor should never be afraid.",
+        "chunks": [
+          "An actor should",
+          "never be afraid."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I’m learning how, Renzo.",
+        "chunks": [
+          "I’m learning",
+          "how, Renzo."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Nice to meet you.",
+        "chunks": [
+          "Nice to",
+          "meet you."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Learn Arabic at Home",
+        "chunks": [
+          "Learn Arabic",
+          "at Home"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "We’re going to be rich Marco.",
+        "chunks": [
+          "We’re going to",
+          "be rich Marco."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You should’ve read the script.",
+        "chunks": [
+          "You should’ve",
+          "read the script."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "And now I’m a dishwasher.",
+        "chunks": [
+          "And now",
+          "I’m a dishwasher."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "That’s interesting. We’ll consider that.",
+        "chunks": [
+          "That’s interesting.",
+          "We’ll consider that."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Excuse me. Are you really listening?",
+        "chunks": [
+          "Excuse me. Are",
+          "you really listening?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Now get into position.",
+        "chunks": [
+          "Now get",
+          "into position."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Don’t dive out of the way.",
+        "chunks": [
+          "Don’t dive out",
+          "of the way."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Are there any other questions?",
+        "chunks": [
+          "Are there",
+          "any other questions?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I do have one concern.",
+        "chunks": [
+          "I do",
+          "have one concern."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
       }
     ],
     "3": [
       {
-        "text": "There's a hole in my life, I must fill.",
+        "text": "No. You should’ve stretched.",
         "chunks": [
-          "There's a hole",
-          "in my life,",
-          "I must fill."
+          "No.",
+          "You",
+          "should’ve stretched."
         ],
-        "translation": "내 삶에 큰 구멍이 생겼고, 이제는 그걸 채워야만 해요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Love and work, work and love. That's all there is.",
+        "text": "They don’t really want to learn.",
         "chunks": [
-          "Love and work,",
-          "work and love.",
-          "That's all there is."
+          "They",
+          "don’t",
+          "really want to learn."
         ],
-        "translation": "사랑과 일, 일과 사랑. 프로이트의 말처럼 인생엔 그게 전부예요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I am ready to learn anything you can teach.",
+        "text": "Tests help you learn.",
         "chunks": [
-          "I am ready",
-          "to learn anything",
-          "you can teach."
+          "Tests",
+          "help",
+          "you learn."
         ],
-        "translation": "당신이 제게 가르쳐 주시는 무엇이든 기쁘게 배울 준비가 되어 있습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "It's quite amazing what we can do in one year.",
+        "text": "You see that all the time?",
         "chunks": [
-          "It's quite amazing",
-          "what we can do",
-          "in one year."
+          "You",
+          "see",
+          "that all the time?"
         ],
-        "translation": "불과 1년 만에 우리가 해낸 일들을 보면 참으로 놀랍습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I just want to make your day a little easier.",
+        "text": "Yes, so are we.",
         "chunks": [
-          "I just want",
-          "to make your day",
-          "a little easier."
+          "Yes,",
+          "so",
+          "are we."
         ],
-        "translation": "그저 당신의 힘든 하루가 조금이나마 수월해지길 바랄 뿐입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You did a job with this presentation earlier this afternoon.",
+        "text": "Get out of here.",
         "chunks": [
-          "You did a job",
-          "with this presentation",
-          "earlier this afternoon."
+          "Get",
+          "out",
+          "of here."
         ],
-        "translation": "오늘 오후에 진행한 프레젠테이션, 정말 훌륭하게 잘 끝마쳤어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I'll be right here whenever you need a ride home.",
+        "text": "That’s too advanced for you.",
         "chunks": [
-          "I'll be right here",
-          "whenever you need",
-          "a ride home."
+          "That’s",
+          "too",
+          "advanced for you."
         ],
-        "translation": "퇴근길 차편이 필요하실 땐 언제든 제가 곁에서 대기하고 있을게요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "We have busy days ahead of us at the office.",
+        "text": "How high can you jump?",
         "chunks": [
-          "We have busy days",
-          "ahead of us",
-          "at the office."
+          "How",
+          "high",
+          "can you jump?"
         ],
-        "translation": "사무실에 우리를 기다리는 매우 바쁜 일과들이 놓여 있군요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Let's take walks around the block to clear our heads.",
+        "text": "How should I do this?",
         "chunks": [
-          "Let's take walks",
-          "around the block",
-          "to clear our heads."
+          "How",
+          "should",
+          "I do this?"
         ],
-        "translation": "복잡한 머리를 식히기 위해 동네 주변을 가볍게 한 바퀴 걷고 오죠."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I am very happy to be part of this company.",
+        "text": "What? Why would you do that?",
         "chunks": [
-          "I am very happy",
-          "to be part",
-          "of this company."
+          "What?",
+          "Why",
+          "would you do that?"
         ],
-        "translation": "이 역동적이고 훌륭한 회사의 일원이 되어 진심으로 행복합니다."
-      },
-      {
-        "text": "She worked late to make sure that everything was ready.",
-        "chunks": [
-          "She worked late",
-          "to make sure that",
-          "everything was ready."
-        ],
-        "translation": "그녀는 모든 준비가 완벽하도록 늦은 밤까지 쉬지 않고 일했습니다."
-      },
-      {
-        "text": "You have great people working around you every single day.",
-        "chunks": [
-          "You have great people",
-          "working around you",
-          "every single day."
-        ],
-        "translation": "매일 당신 곁에서 함께 달려주는 든든하고 멋진 동료들이 있잖아요."
+        "translation": "제공해주신 대화 문장입니다."
       }
     ]
   },
   "B1": {
     "2": [
       {
-        "text": "Nobody knows this business better than you do.",
+        "text": "You shouldn’t have jumped on the couch.",
         "chunks": [
-          "Nobody knows this business",
-          "better than you do."
+          "You shouldn’t have",
+          "jumped on the couch."
         ],
-        "translation": "이 사업에 대해선 그 누구도 당신보다 더 잘 알지 못합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Are we really still critical of working moms?",
+        "text": "Thanks, Sofi. They say I’m tough, but effective.",
         "chunks": [
-          "Are we really still",
-          "critical of working moms?"
+          "Thanks, Sofi. They say",
+          "I’m tough, but effective."
         ],
-        "translation": "지금 이 시대에도 우리는 여전히 일하는 엄마들에게 인색한가요?"
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I need someone who understands my vision.",
+        "text": "Listen. I can’t be late to this meeting.",
         "chunks": [
-          "I need someone",
-          "who understands my vision."
+          "Listen. I can’t be",
+          "late to this meeting."
         ],
-        "translation": "제 사업 비전과 철학을 온전히 공감해 줄 수 있는 사람이 필요해요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I appreciate your honesty more than you know.",
+        "text": "Then, teach you what you need to learn.",
         "chunks": [
-          "I appreciate your honesty",
-          "more than you know."
+          "Then, teach you what",
+          "you need to learn."
         ],
-        "translation": "당신의 솔직한 조언에 얼마나 감사하고 있는지 모를 겁니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "We built this company on trust and passion.",
+        "text": "This course operates under traditional teaching methods.",
         "chunks": [
-          "We built this company",
-          "on trust and passion."
+          "This course operates",
+          "under traditional teaching methods."
         ],
-        "translation": "우리는 오직 끈끈한 신뢰와 뜨거운 열정 하나로 이 회사를 세웠습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I cannot imagine this office without you.",
+        "text": "This time tomorrow, I’ll be celebrating by myself.",
         "chunks": [
-          "I cannot imagine",
-          "this office without you."
+          "This time tomorrow, I’ll",
+          "be celebrating by myself."
         ],
-        "translation": "이제는 당신이 곁에 없는 이 사무실을 상상조차 할 수 없어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Sometimes you must pause to see things clearly.",
+        "text": "That goes for playing hooky as well.",
         "chunks": [
-          "Sometimes you must pause",
-          "to see things clearly."
+          "That goes for",
+          "playing hooky as well."
         ],
-        "translation": "상황을 냉철하고 똑바로 보려면 때로는 잠시 멈춰 서야 합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "It takes real courage to admit needing help.",
+        "text": "Wow. You are a very committed actor.",
         "chunks": [
-          "It takes real courage",
-          "to admit needing help."
+          "Wow. You are",
+          "a very committed actor."
         ],
-        "translation": "누군가의 도움이 절실하다고 인정하는 데는 진정한 용기가 필요해요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "We grew much faster than anyone had predicted.",
+        "text": "I don’t know. How long does it take?",
         "chunks": [
-          "We grew much faster",
-          "than anyone had predicted."
+          "I don’t know. How",
+          "long does it take?"
         ],
-        "translation": "우리 회사는 당초 그 누구의 예상치보다 훨씬 가파르게 성장했습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Every single detail matters in our daily business.",
+        "text": "He counted to three: “One, two, three, go!”",
         "chunks": [
-          "Every single detail matters",
-          "in our daily business."
+          "He counted to three:",
+          "“One, two, three, go!”"
         ],
-        "translation": "우리가 하는 비즈니스에서는 고객을 위한 아주 작은 디테일 하나도 소중합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I'm trying to protect what we created here.",
+        "text": "You can ask questions about the lesson.",
         "chunks": [
-          "I'm trying to protect",
-          "what we created here."
+          "You can ask",
+          "questions about the lesson."
         ],
-        "translation": "우리가 피땀 흘려 여기서 일궈낸 소중한 가치를 지켜내고 싶습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "True real experience is something you can't fake.",
+        "text": "We have very high standards for our tutors.",
         "chunks": [
-          "True real experience is",
-          "something you can't fake."
+          "We have very high",
+          "standards for our tutors."
         ],
-        "translation": "오랜 세월 축적된 진정한 경험은 결코 흉내 내거나 속일 수 없죠."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I truly want you completely happy here.",
+        "text": "She was supposed to call you, but didn’t.",
         "chunks": [
-          "I truly want you",
-          "completely happy here."
+          "She was supposed to",
+          "call you, but didn’t."
         ],
-        "translation": "저는 당신이 이 일터에서 온전히 행복하고 편안했으면 좋겠어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "She works tirelessly to satisfy each customer.",
+        "text": "That was a mistake. It doesn’t matter now.",
         "chunks": [
-          "She works tirelessly",
-          "to satisfy each customer."
+          "That was a mistake.",
+          "It doesn’t matter now."
         ],
-        "translation": "그녀는 단 한 명의 고객도 실망시키지 않기 위해 불철주야 노력합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You handled that crisis with remarkable grace.",
+        "text": "You’re crazy, Renzo. What will you do?",
         "chunks": [
-          "You handled that crisis",
-          "with remarkable grace."
+          "You’re crazy, Renzo.",
+          "What will you do?"
         ],
-        "translation": "당신은 그 긴박했던 위기 상황을 놀라울 정도로 유연하고 품위 있게 대처했습니다."
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Hey Benny. What are you doing here?",
+        "chunks": [
+          "Hey Benny. What",
+          "are you doing here?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Which is worse, cheating or playing hooky?",
+        "chunks": [
+          "Which is worse,",
+          "cheating or playing hooky?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Instead, I want you to leap over it.",
+        "chunks": [
+          "Instead, I want you",
+          "to leap over it."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "They say our education system is getting worse.",
+        "chunks": [
+          "They say our education",
+          "system is getting worse."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Hi there Sofi, why are you washing dishes?",
+        "chunks": [
+          "Hi there Sofi, why",
+          "are you washing dishes?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "How are you going to do that?",
+        "chunks": [
+          "How are you",
+          "going to do that?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I’m so excited you have a working prototype.",
+        "chunks": [
+          "I’m so excited you",
+          "have a working prototype."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Hey guys. I’m so sorry. I’m late.",
+        "chunks": [
+          "Hey guys. I’m",
+          "so sorry. I’m late."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Ah, I see your problem right here.",
+        "chunks": [
+          "Ah, I see",
+          "your problem right here."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Are there many tutors that can help me?",
+        "chunks": [
+          "Are there many tutors",
+          "that can help me?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Please. Let me invest in your company.",
+        "chunks": [
+          "Please. Let me",
+          "invest in your company."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You don’t have to do that Renzo.",
+        "chunks": [
+          "You don’t have",
+          "to do that Renzo."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Can you throw yourself through a brick wall?",
+        "chunks": [
+          "Can you throw yourself",
+          "through a brick wall?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "She has to, she doesn’t. I’ll quit.",
+        "chunks": [
+          "She has to,",
+          "she doesn’t. I’ll quit."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "They gave it to me an hour ago.",
+        "chunks": [
+          "They gave it to",
+          "me an hour ago."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Don't worry about any of those things.",
+        "chunks": [
+          "Don't worry about",
+          "any of those things."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Hi there. What can I do for you?",
+        "chunks": [
+          "Hi there. What can",
+          "I do for you?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Renzo, I want to open my own restaurant.",
+        "chunks": [
+          "Renzo, I want to",
+          "open my own restaurant."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "My offer was supposed to make you happy.",
+        "chunks": [
+          "My offer was supposed",
+          "to make you happy."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Dash toward the wall, then leap over it.",
+        "chunks": [
+          "Dash toward the wall,",
+          "then leap over it."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I didn’t want you to smash into it.",
+        "chunks": [
+          "I didn’t want you",
+          "to smash into it."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I should’ve come to Los Angeles sooner.",
+        "chunks": [
+          "I should’ve come",
+          "to Los Angeles sooner."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "It’s fine. Great to see you Khae.",
+        "chunks": [
+          "It’s fine. Great",
+          "to see you Khae."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I didn’t smash into a brick wall.",
+        "chunks": [
+          "I didn’t smash",
+          "into a brick wall."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I’ve never thrown myself into a brick wall.",
+        "chunks": [
+          "I’ve never thrown myself",
+          "into a brick wall."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
       }
     ],
     "3": [
       {
-        "text": "There is something here that makes me feel calm and grounded.",
+        "text": "Every investor we meet wants to work with us.",
         "chunks": [
-          "There is something here",
-          "that makes me feel",
-          "calm and grounded."
+          "Every investor we",
+          "meet wants to",
+          "work with us."
         ],
-        "translation": "당신과 함께 있으면 사람을 흔들리지 않고 편안하게 만들어주는 힘이 있어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You started from nothing, and you made it a massive success.",
+        "text": "You want to be a big star, aren’t you?",
         "chunks": [
-          "You started from nothing,",
-          "and you made it",
-          "a massive success."
+          "You want to",
+          "be a big",
+          "star, aren’t you?"
         ],
-        "translation": "당신은 아무것도 없는 바닥에서 시작해 마침내 엄청난 성공을 일궈냈어요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I spent forty years working in manufacturing before coming here.",
+        "text": "I want that more than anything in the world.",
         "chunks": [
-          "I spent forty years",
-          "working in manufacturing",
-          "before coming here."
+          "I want that",
+          "more than anything",
+          "in the world."
         ],
-        "translation": "저는 이곳에 합류하기 전 40년이라는 긴 세월 동안 제조 현장에서 일했습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "It is very hard to trust a stranger with your company.",
+        "text": "No, thank you. Where’s your business partner? She’s late.",
         "chunks": [
-          "It is very hard",
-          "to trust a stranger",
-          "with your company."
+          "No, thank you.",
+          "Where’s your business",
+          "partner? She’s late."
         ],
-        "translation": "자신이 모든 걸 바쳐 키운 회사를 낯선 외부인에게 온전히 맡기기는 참 어렵죠."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Don't apologize to anyone for being such a truly successful CEO.",
+        "text": "And I told you that you don’t have to.",
         "chunks": [
-          "Don't apologize to anyone",
-          "for being such a",
-          "truly successful CEO."
+          "And I told",
+          "you that you",
+          "don’t have to."
         ],
-        "translation": "스스로의 힘으로 성공한 뛰어난 여성 CEO라는 점에 대해 그 누구에게도 사과하지 마세요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I want someone seasoned who can guide growth in this market.",
+        "text": "I hear the views from the mountains are breathtaking.",
         "chunks": [
-          "I want someone seasoned",
-          "who can guide growth",
-          "in this market."
+          "I hear the",
+          "views from the",
+          "mountains are breathtaking."
         ],
-        "translation": "치열한 시장 환경 속에서 우리 조직의 질적 성장을 든든하게 이끌어줄 노련한 인물이 필요합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "We need to remember why we started brands in the first place.",
+        "text": "That was an awful lesson. You’re a terrible teacher.",
         "chunks": [
-          "We need to remember",
-          "why we started brands",
-          "in the first place."
+          "That was an",
+          "awful lesson. You’re",
+          "a terrible teacher."
         ],
-        "translation": "우리가 애초에 이 브랜드를 왜 세상에 선보이게 되었는지 그 순수한 초심을 잊지 말아야 해요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "A classic clean handkerchief is meant for lending to weeping friends.",
+        "text": "Kate, wouldn’t it be relaxing to go on a cruise?",
         "chunks": [
-          "A classic clean handkerchief",
-          "is meant for lending",
-          "to weeping friends."
+          "Kate, wouldn’t it",
+          "be relaxing to",
+          "go on a cruise?"
         ],
-        "translation": "신사의 깨끗한 손수건은 곁에서 눈물 흘리는 소중한 이에게 건네주기 위해 존재하는 것입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You have built empires, and should feel thrilled with your achievement.",
+        "text": "You need to attempt to do the next task.",
         "chunks": [
-          "You have built empires,",
-          "and should feel thrilled",
-          "with your achievement."
+          "You need to",
+          "attempt to do",
+          "the next task."
         ],
-        "translation": "당신은 이미 거대한 상업 제국을 세웠고, 그 위대한 성과에 온전히 환호할 자격이 있습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I learned so much from watching your dedication throughout this month.",
+        "text": "My English literacy isn’t quite as advanced as my speaking.",
         "chunks": [
-          "I learned so much",
-          "from watching your dedication",
-          "throughout this month."
+          "My English literacy",
+          "isn’t quite as",
+          "advanced as my speaking."
         ],
-        "translation": "지난 한 달간 지켜본 당신의 헌신과 열정적인 태도로부터 저 역시 수많은 것을 배웠습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Do not let investors dictate how to govern your beloved firm.",
+        "text": "That’s sweet of you, Renzo. But it’s not possible.",
         "chunks": [
-          "Do not let investors",
-          "dictate how to govern",
-          "your beloved firm."
+          "That’s sweet of",
+          "you, Renzo. But",
+          "it’s not possible."
         ],
-        "translation": "외부 투자자들의 압박에 휘둘려 당신이 아끼는 회사의 경영 주도권을 넘겨주지 마세요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You have rare talent and the relentless drive to lead this company.",
+        "text": "You learn language, and then immediately use it to communicate.",
         "chunks": [
-          "You have rare talent",
-          "and the relentless drive",
-          "to lead this company."
+          "You learn language,",
+          "and then immediately",
+          "use it to communicate."
         ],
-        "translation": "당신에겐 이 수많은 직원과 회사를 이끌어갈 독보적인 천부적 재능과 추진력이 있습니다."
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I’ve always wanted to go on a long cruise.",
+        "chunks": [
+          "I’ve always wanted",
+          "to go on",
+          "a long cruise."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "This is done with a series of interactive presentations.",
+        "chunks": [
+          "This is done",
+          "with a series",
+          "of interactive presentations."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I’ll show you. Hurl this brick at my head.",
+        "chunks": [
+          "I’ll show you.",
+          "Hurl this brick",
+          "at my head."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Have you struggled with language courses in the past?",
+        "chunks": [
+          "Have you struggled",
+          "with language courses",
+          "in the past?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Playing hooky means to not to come to class.",
+        "chunks": [
+          "Playing hooky means",
+          "to not to",
+          "come to class."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Hi, I’m Jimmy, the stunt coordinator for the series.",
+        "chunks": [
+          "Hi, I’m Jimmy,",
+          "the stunt coordinator",
+          "for the series."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You fly to Dubai and stay with an Arabic-speaking family.",
+        "chunks": [
+          "You fly to",
+          "Dubai and stay",
+          "with an Arabic-speaking family."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "There are several explosions and fight scenes in this episode.",
+        "chunks": [
+          "There are several",
+          "explosions and fight",
+          "scenes in this episode."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I thought you were bilingual. You speak fluent English.",
+        "chunks": [
+          "I thought you",
+          "were bilingual. You",
+          "speak fluent English."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "We give you the telecommunications software you need to download.",
+        "chunks": [
+          "We give you",
+          "the telecommunications software",
+          "you need to download."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I have to crawl back to the dressing room.",
+        "chunks": [
+          "I have to",
+          "crawl back to",
+          "the dressing room."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You should’ve jumped before you got to the wall.",
+        "chunks": [
+          "You should’ve jumped",
+          "before you got",
+          "to the wall."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Are you afraid it's going to be too difficult?",
+        "chunks": [
+          "Are you afraid",
+          "it's going to",
+          "be too difficult?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You hear about teachers who don’t care at all.",
+        "chunks": [
+          "You hear about",
+          "teachers who don’t",
+          "care at all."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I don’t really need to be the head chef anymore.",
+        "chunks": [
+          "I don’t really",
+          "need to be",
+          "the head chef anymore."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Click here to chat with a teaching tutor now.",
+        "chunks": [
+          "Click here to",
+          "chat with a",
+          "teaching tutor now."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Really? How do you know that? Did she tell you?",
+        "chunks": [
+          "Really? How do",
+          "you know that?",
+          "Did she tell you?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You need to catch the brick before it hits you.",
+        "chunks": [
+          "You need to",
+          "catch the brick",
+          "before it hits you."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "We have courses that last two and four weeks.",
+        "chunks": [
+          "We have courses",
+          "that last two",
+          "and four weeks."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I meant to tell you that, but I forgot.",
+        "chunks": [
+          "I meant to",
+          "tell you that,",
+          "but I forgot."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You should’ve told me you were going to hurl it.",
+        "chunks": [
+          "You should’ve told",
+          "me you were",
+          "going to hurl it."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I’m going to see how skilled you are at stunts.",
+        "chunks": [
+          "I’m going to",
+          "see how skilled",
+          "you are at stunts."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Why do we have to take so many tests?",
+        "chunks": [
+          "Why do we",
+          "have to take",
+          "so many tests?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You could’ve told me it was made of real bricks.",
+        "chunks": [
+          "You could’ve told",
+          "me it was",
+          "made of real bricks."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Weren’t you supposed to leave earlier for some meeting?",
+        "chunks": [
+          "Weren’t you supposed",
+          "to leave earlier",
+          "for some meeting?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You look like you smashed into a brick wall.",
+        "chunks": [
+          "You look like",
+          "you smashed into",
+          "a brick wall."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Sir, I’m an experienced actor, and I’ll be fine.",
+        "chunks": [
+          "Sir, I’m an",
+          "experienced actor, and",
+          "I’ll be fine."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Rote learning is the best way to remember anything.",
+        "chunks": [
+          "Rote learning is",
+          "the best way",
+          "to remember anything."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
       }
     ]
   },
   "B2": {
     "2": [
       {
-        "text": "Running this fast startup demands relentless personal dedication.",
+        "text": "Good point. Maybe we can go biking out into the countryside tomorrow.",
         "chunks": [
-          "Running this fast startup",
-          "demands relentless personal dedication."
+          "Good point. Maybe we can go",
+          "biking out into the countryside tomorrow."
         ],
-        "translation": "이처럼 급성장하는 스타트업을 이끄는 것은 밤낮없는 극한의 개인적 헌신을 요구합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Retirement is an effort in ongoing creativity.",
+        "text": "Sure, I’m willing to compromise. What did you have in mind?",
         "chunks": [
-          "Retirement is an effort",
-          "in ongoing creativity."
+          "Sure, I’m willing to compromise.",
+          "What did you have in mind?"
         ],
-        "translation": "은퇴 이후의 삶이란 끊임없이 일상을 새롭게 채워가는 창의성의 분투 과정입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I won't let anyone undermine your authority here.",
+        "text": "Having cleaned up my area, I helped Nadi with the menu.",
         "chunks": [
-          "I won't let anyone",
-          "undermine your authority here."
+          "Having cleaned up my area,",
+          "I helped Nadi with the menu."
         ],
-        "translation": "그 누구도 당신이 피땀 흘려 세운 이 회사에서 당신의 권위를 흔들지 못하게 하겠습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Success brings complications that no one anticipates.",
+        "text": "I always dreamed of going on a hiking expedition through the Himalayas.",
         "chunks": [
-          "Success brings complications",
-          "that no one anticipates."
+          "I always dreamed of going on",
+          "a hiking expedition through the Himalayas."
         ],
-        "translation": "성공이라는 영광 뒤에는 그 누구도 사전에 예상치 못한 혹독한 복잡성이 찾아오는 법입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I don't want anyone running my life's dream.",
+        "text": "Well, I’m glad we have such a dedicated teacher as you.",
         "chunks": [
-          "I don't want anyone",
-          "running my life's dream."
+          "Well, I’m glad we have",
+          "such a dedicated teacher as you."
         ],
-        "translation": "내 일생의 소중한 꿈과 결실을 얼굴도 모르는 낯선 전문경영인에게 빼앗기고 싶지 않아요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "How did men go from gentlemen to this?",
+        "text": "With every stunt, one mistake could cause injury or even death.",
         "chunks": [
-          "How did men go",
-          "from gentlemen to this?"
+          "With every stunt, one mistake",
+          "could cause injury or even death."
         ],
-        "translation": "어쩌다 한 세대 만에 남성들이 품격 있는 신사에서 이런 무기력한 모습으로 변해버린 걸까요?"
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You built something extraordinary entirely from scratch.",
+        "text": "I don’t understand. I thought  you would be excited by this opportunity.",
         "chunks": [
-          "You built something extraordinary",
-          "entirely from scratch."
+          "I don’t understand. I thought you",
+          "would be excited by this opportunity."
         ],
-        "translation": "당신은 맨땅에서 홀로 출발해 믿을 수 없을 만큼 경이로운 사업적 금자탑을 쌓아 올렸습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Broad mature perspective is something only time provides.",
+        "text": "I don’t need a new bike. I need a new tire.",
         "chunks": [
-          "Broad mature perspective is",
-          "something only time provides."
+          "I don’t need a new",
+          "bike. I need a new tire."
         ],
-        "translation": "인생을 멀리 내다보는 깊고 성숙한 안목은 오직 오랜 세월의 파도를 거쳐야만 얻어지는 것입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "We must confront these operational hurdles objectively.",
+        "text": "Working by the dining room, I overheard Nadi telling someone that.",
         "chunks": [
-          "We must confront",
-          "these operational hurdles objectively."
+          "Working by the dining room,",
+          "I overheard Nadi telling someone that."
         ],
-        "translation": "우리는 감정에 치우치지 않고 현재 직면한 운영상의 심각한 병목 문제를 객관적으로 직시해야 합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "True authentic leadership requires both strength and humility.",
+        "text": "Thank you. But I still have a lot of work to do.",
         "chunks": [
-          "True authentic leadership requires",
-          "both strength and humility."
+          "Thank you. But I still have",
+          "a lot of work to do."
         ],
-        "translation": "진정한 리더십이란 흔들리지 않는 단호한 결단력과 구성원을 향한 겸허함을 동시에 지녀야 합니다."
-      },
-      {
-        "text": "I won't step aside from what belongs here.",
-        "chunks": [
-          "I won't step aside",
-          "from what belongs here."
-        ],
-        "translation": "온전히 내 땀과 영혼이 서려 있는 이 자리에서 힘없이 뒤로 물러서지 않겠습니다."
-      },
-      {
-        "text": "Navigating rapid corporate expansion tests your deepest values.",
-        "chunks": [
-          "Navigating rapid corporate expansion",
-          "tests your deepest values."
-        ],
-        "translation": "감당하기 힘들 만큼 빠른 기업 확장을 조율하는 과정은 인간으로서 가장 근원적인 가치관을 시험합니다."
+        "translation": "제공해주신 대화 문장입니다."
       }
     ],
     "3": [
       {
-        "text": "Seasoned CEOs might optimize, yet nobody can replace your creative soul.",
+        "text": "Good point. Maybe we can go biking out into the countryside tomorrow.",
         "chunks": [
-          "Seasoned CEOs might optimize,",
-          "yet nobody can replace",
-          "your creative soul."
+          "Good point. Maybe we",
+          "can go biking out",
+          "into the countryside tomorrow."
         ],
-        "translation": "노련한 전문경영인이 수치상의 경영 효율은 높일 수 있을지 몰라도, 당신만의 창의적인 영혼은 결코 대체할 수 없습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You should never surrender creative control over what you built yourself.",
+        "text": "Sure, I’m willing to compromise. What did you have in mind?",
         "chunks": [
-          "You should never surrender",
-          "creative control over",
-          "what you built yourself."
+          "Sure, I’m willing",
+          "to compromise. What",
+          "did you have in mind?"
         ],
-        "translation": "스스로의 피와 땀으로 바닥부터 일궈낸 독창적인 사업에 대한 주도적 지휘권을 남에게 넘겨주지 마세요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I watched corporate leaders struggle through rapid transitions for four decades.",
+        "text": "Having cleaned up my area, I helped Nadi with the menu.",
         "chunks": [
-          "I watched corporate leaders",
-          "struggle through rapid transitions",
-          "for four decades."
+          "Having cleaned up",
+          "my area, I",
+          "helped Nadi with the menu."
         ],
-        "translation": "저는 지난 40여 년간 유수의 기업 리더들이 격변하는 환경 속에서 길을 찾고 생존을 다투는 모습을 가까이서 지켜봤습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Bringing in outside executives might compromise founding cultures that made us unique.",
+        "text": "I always dreamed of going on a hiking expedition through the Himalayas.",
         "chunks": [
-          "Bringing in outside executives",
-          "might compromise founding cultures",
-          "that made us unique."
+          "I always dreamed of",
+          "going on a hiking",
+          "expedition through the Himalayas."
         ],
-        "translation": "외부 경영진을 섣불리 영입하는 것은 우리를 독보적인 브랜드로 만들었던 고유한 창업가 정신을 훼손할 위험이 큽니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You need no chaperone dictating how to govern this extraordinary company.",
+        "text": "Well, I’m glad we have such a dedicated teacher as you.",
         "chunks": [
-          "You need no chaperone",
-          "dictating how to govern",
-          "this extraordinary company."
+          "Well, I’m glad",
+          "we have such",
+          "a dedicated teacher as you."
         ],
-        "translation": "이 비범한 회사를 어떻게 경영해야 하는지 당신에게 훈수를 두고 감시할 후견인은 전혀 필요 없습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "I'm profoundly inspired by your relentless work and sharp vision.",
+        "text": "With every stunt, one mistake could cause injury or even death.",
         "chunks": [
-          "I'm profoundly inspired",
-          "by your relentless work",
-          "and sharp vision."
+          "With every stunt,",
+          "one mistake could",
+          "cause injury or even death."
         ],
-        "translation": "지칠 줄 모르는 당신의 뜨거운 근면함과 시대를 앞서가는 예리한 통찰력에 깊은 영감과 감동을 받았습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Never let fear dictate monumental business decisions shaping your future.",
+        "text": "I don’t understand. I thought  you would be excited by this opportunity.",
         "chunks": [
-          "Never let fear dictate",
-          "monumental business decisions",
-          "shaping your future."
+          "I don’t understand. I",
+          "thought you would be",
+          "excited by this opportunity."
         ],
-        "translation": "당신의 인생과 기업의 앞날을 바꿀 중차대한 경영상의 결정을 두려움이나 불안에 떠밀려 내리지 마세요."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Experience gives you calm to weather sudden storms under immense pressure.",
+        "text": "I don’t need a new bike. I need a new tire.",
         "chunks": [
-          "Experience gives you calm",
-          "to weather sudden storms",
-          "under immense pressure."
+          "I don’t need",
+          "a new bike.",
+          "I need a new tire."
         ],
-        "translation": "진정한 연륜은 극한의 압박감이 짓누르는 순간에도 거센 폭풍우를 의연하게 헤쳐 나갈 수 있는 평정심을 선물합니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "You poured your soul into every single detail of this platform.",
+        "text": "Working by the dining room, I overheard Nadi telling someone that.",
         "chunks": [
-          "You poured your soul",
-          "into every single detail",
-          "of this platform."
+          "Working by the",
+          "dining room, I",
+          "overheard Nadi telling someone that."
         ],
-        "translation": "당신은 이 상거래 플랫폼에 입점한 상품과 포장 박스 하나하나에 이르기까지 자신의 모든 영혼을 쏟아부었습니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Balancing dedicated family life with demanding corporate ambitions is extraordinarily challenging.",
+        "text": "Thank you. But I still have a lot of work to do.",
         "chunks": [
-          "Balancing dedicated family life",
-          "with demanding corporate ambitions",
-          "is extraordinarily challenging."
+          "Thank you. But I",
+          "still have a lot",
+          "of work to do."
         ],
-        "translation": "사랑하는 가정을 지켜내는 일과 끝없는 성장을 요구받는 기업가적 야망 사이에서 균형을 잡기란 대단히 어려운 고투입니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "A true gentleman carries a clean pressed handkerchief for vulnerable moments.",
+        "text": "Okay. Stop complimenting me. Let’s open our book to page four.",
         "chunks": [
-          "A true gentleman carries",
-          "a clean pressed handkerchief",
-          "for vulnerable moments."
+          "Okay. Stop complimenting",
+          "me. Let’s open",
+          "our book to page four."
         ],
-        "translation": "품격 있는 진정한 신사는 타인이 마주한 슬픔과 눈물의 연약한 순간을 보듬어주기 위해 항상 정갈한 손수건을 지닙니다."
+        "translation": "제공해주신 대화 문장입니다."
       },
       {
-        "text": "Never apologize to anyone for being passionate leaders commanding the summit.",
+        "text": "I don’t know. We have a lot of work to do.",
         "chunks": [
-          "Never apologize to anyone",
-          "for being passionate leaders",
-          "commanding the summit."
+          "I don’t know.",
+          "We have a",
+          "lot of work to do."
         ],
-        "translation": "자신이 일군 최고의 정상에서 당당하고 열정적으로 회사를 지휘하는 여성 리더라는 사실에 대해 결코 위축되지 마세요."
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I can’t wait. This is what we always want to see Marco.",
+        "chunks": [
+          "I can’t wait. This",
+          "is what we always",
+          "want to see Marco."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "That’s a good point. There are some amazing markets in Cusco.",
+        "chunks": [
+          "That’s a good",
+          "point. There are",
+          "some amazing markets in Cusco."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "My last expedition through the city didn’t turn out so well.",
+        "chunks": [
+          "My last expedition",
+          "through the city",
+          "didn’t turn out so well."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Our program offers classes for everyone, from complete beginners to advanced students.",
+        "chunks": [
+          "Our program offers classes",
+          "for everyone, from complete",
+          "beginners to advanced students."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "But then, the wall is too tall for me to leap over.",
+        "chunks": [
+          "But then, the wall",
+          "is too tall for",
+          "me to leap over."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I would be your sous chef. You’re more talented than I am.",
+        "chunks": [
+          "I would be your",
+          "sous chef. You’re more",
+          "talented than I am."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "We are also careful when we pair our students with teaching tutors.",
+        "chunks": [
+          "We are also careful",
+          "when we pair our",
+          "students with teaching tutors."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Where are we going to go on our big trip this year?",
+        "chunks": [
+          "Where are we going",
+          "to go on our",
+          "big trip this year?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Last week, Nadi was close to begging you to come back.",
+        "chunks": [
+          "Last week, Nadi",
+          "was close to",
+          "begging you to come back."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Are you going to make me smash into the wall again?",
+        "chunks": [
+          "Are you going",
+          "to make me",
+          "smash into the wall again?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "People only grow when they have someone great to learn from.",
+        "chunks": [
+          "People only grow",
+          "when they have",
+          "someone great to learn from."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "That sounds fun. Let’s build a manufacturing plant by a beach.",
+        "chunks": [
+          "That sounds fun.",
+          "Let’s build a",
+          "manufacturing plant by a beach."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "You can do that for a day or two, can’t you?",
+        "chunks": [
+          "You can do",
+          "that for a",
+          "day or two, can’t you?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "The politician. Walking into the dining room I bumped into him.",
+        "chunks": [
+          "The politician. Walking",
+          "into the dining",
+          "room I bumped into him."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Do you want to review the selection criteria for these investors?",
+        "chunks": [
+          "Do you want",
+          "to review the",
+          "selection criteria for these investors?"
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "Since you’re here, I’d recommend adding plastic covers to your handlebars.",
+        "chunks": [
+          "Since you’re here,",
+          "I’d recommend adding",
+          "plastic covers to your handlebars."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I came to say hello during your first day on set.",
+        "chunks": [
+          "I came to",
+          "say hello during",
+          "your first day on set."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
+      },
+      {
+        "text": "I want you to pick me as opposed to anyone else.",
+        "chunks": [
+          "I want you",
+          "to pick me",
+          "as opposed to anyone else."
+        ],
+        "translation": "제공해주신 대화 문장입니다."
       }
     ]
   }
