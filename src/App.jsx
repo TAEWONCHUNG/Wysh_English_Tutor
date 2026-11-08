@@ -5606,6 +5606,52 @@ const cleanText = (str) => {
     .trim();
 };
 
+
+// Web Audio API 효과음 (통과 딩동댕동 / 오답 알림음)
+const playSoundEffect = (type) => {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+
+    if (type === 'success') {
+      // 통과 시: 경쾌하고 밝은 상승 4화음 챠임 (C5 - E5 - G5 - C6)
+      const pitches = [523.25, 659.25, 783.99, 1046.5];
+      const now = ctx.currentTime;
+      pitches.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+        gain.gain.setValueAtTime(0, now + idx * 0.08);
+        gain.gain.linearRampToValueAtTime(0.18, now + idx * 0.08 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.08);
+        osc.stop(now + idx * 0.08 + 0.36);
+      });
+    } else if (type === 'retry') {
+      // 불일치 시: 부드러운 2음 알림 (G4 -> D#4)
+      const pitches = [392.0, 311.13];
+      const now = ctx.currentTime;
+      pitches.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.13);
+        gain.gain.setValueAtTime(0, now + idx * 0.13);
+        gain.gain.linearRampToValueAtTime(0.15, now + idx * 0.13 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.13 + 0.22);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.13);
+        osc.stop(now + idx * 0.13 + 0.23);
+      });
+    }
+  } catch (err) {}
+};
+
 const generateLocalFeedback = (target, spoken) => {
   let normTarget = cleanText(target);
   let normSpoken = cleanText(spoken);
@@ -5715,6 +5761,8 @@ const generateLocalFeedback = (target, spoken) => {
 export default function EnglishTutorApp() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showHintText, setShowHintText] = useState(false);
+  const [isJumping, setIsJumping] = useState(false);
+  const [jumpInput, setJumpInput] = useState("");
   const [speechSpeed, setSpeechSpeed] = useState(0.85);
   const [playingChunkIdx, setPlayingChunkIdx] = useState(null);
 
@@ -5996,84 +6044,50 @@ export default function EnglishTutorApp() {
       if (localResult.markedSpoken) {
         setMarkedSpoken(localResult.markedSpoken);
       }
-      
-      // 사용자 발음 판정 후 성공/실패 효과음 재생
       playSoundEffect(localResult.isPerfect ? 'success' : 'retry');
     } catch (err) {
       setEvaluation("발음을 인식했습니다. 다시 한번 또렷하게 시도해 보세요!");
+      playSoundEffect('retry');
     } finally {
       setIsEvaluating(false);
     }
   };
 
-  // 다음 문장 전환 (자동으로 원어민 발음 재생)
+  // 특정 문장 번호로 바로 이동 (자동으로 원어민 발음 재생)
+  const jumpToSentence = (targetIdx) => {
+    setUserSpeech("");
+    setRecordedAudioUrl(null);
+    setEvaluation(null);
+    setIsPerfect(false);
+    setMarkedSpoken("");
+    setErrorMsg("");
+
+    if (userAudioPlayerRef.current) {
+      userAudioPlayerRef.current.pause();
+      userAudioPlayerRef.current.currentTime = 0;
+    }
+
+    const safeIdx = Math.max(0, Math.min(UNIT61_DATABASE.length - 1, targetIdx));
+    setCurrentIndex(safeIdx);
+    speakText(UNIT61_DATABASE[safeIdx].text);
+  };
+
   const handleNextSentence = () => {
-    setUserSpeech("");
-    setRecordedAudioUrl(null);
-    setEvaluation(null);
-    setIsPerfect(false);
-    setMarkedSpoken("");
-    setErrorMsg("");
-
-    if (userAudioPlayerRef.current) {
-      userAudioPlayerRef.current.pause();
-      userAudioPlayerRef.current.currentTime = 0;
-    }
-
-    const nextIdx = (currentIndex + 1) % UNIT61_DATABASE.length;
-    setCurrentIndex(nextIdx);
-    
-    // 다음 문장 원어민 오디오 자동 재생
-    speakText(UNIT61_DATABASE[nextIdx].text);
+    jumpToSentence((currentIndex + 1) % UNIT61_DATABASE.length);
   };
 
-  // 이전 문장 전환 (자동으로 원어민 발음 재생)
   const handlePrevSentence = () => {
-    setUserSpeech("");
-    setRecordedAudioUrl(null);
-    setEvaluation(null);
-    setIsPerfect(false);
-    setMarkedSpoken("");
-    setErrorMsg("");
-
-    if (userAudioPlayerRef.current) {
-      userAudioPlayerRef.current.pause();
-      userAudioPlayerRef.current.currentTime = 0;
-    }
-
-    const prevIdx = (currentIndex - 1 + UNIT61_DATABASE.length) % UNIT61_DATABASE.length;
-    setCurrentIndex(prevIdx);
-    
-    // 이전 문장 원어민 오디오 자동 재생
-    speakText(UNIT61_DATABASE[prevIdx].text);
+    jumpToSentence((currentIndex - 1 + UNIT61_DATABASE.length) % UNIT61_DATABASE.length);
   };
 
-
-  // 특정 문장 번호로 이동
-  const handleJumpToSentence = () => {
-    const input = window.prompt(`이동할 문장 번호를 입력하세요 (1 ~ ${UNIT61_DATABASE.length}):`, currentIndex + 1);
-    if (input === null) return; // Cancelled
-    
-    const num = parseInt(input, 10);
+  const handleJumpSubmit = (e) => {
+    if (e) e.preventDefault();
+    const num = parseInt(jumpInput, 10);
     if (!isNaN(num) && num >= 1 && num <= UNIT61_DATABASE.length) {
-      setUserSpeech("");
-      setRecordedAudioUrl(null);
-      setEvaluation(null);
-      setIsPerfect(false);
-      setMarkedSpoken("");
-      setErrorMsg("");
-
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      if (userAudioPlayerRef.current) {
-        userAudioPlayerRef.current.pause();
-        userAudioPlayerRef.current.currentTime = 0;
-      }
-
-      const nextIdx = num - 1;
-      setCurrentIndex(nextIdx);
-      speakText(UNIT61_DATABASE[nextIdx].text);
+      jumpToSentence(num - 1);
+      setIsJumping(false);
     } else {
-      alert("올바른 번호를 입력해 주세요.");
+      setErrorMsg(`1번부터 ${UNIT61_DATABASE.length}번 사이의 번호를 입력해 주세요.`);
     }
   };
 
@@ -6100,12 +6114,16 @@ export default function EnglishTutorApp() {
               <BookOpen className="w-4 h-4 text-indigo-400" />
               <h1 className="font-bold text-sm text-white tracking-tight">Unit 61 Study</h1>
               <button
-                onClick={handleJumpToSentence}
-                title="원하는 문장 번호로 이동"
-                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all active:scale-95 flex items-center gap-1"
+                type="button"
+                onClick={() => {
+                  setJumpInput(String(currentIndex + 1));
+                  setIsJumping(true);
+                }}
+                title="클릭하여 원하는 문장으로 이동 (1~287)"
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-indigo-300 hover:border-indigo-400 hover:text-white transition-all flex items-center gap-1 cursor-pointer active:scale-95"
               >
                 <span>#{currentIndex + 1} / {UNIT61_DATABASE.length}</span>
-                <span className="text-[9px] opacity-70 border-l border-indigo-400/50 pl-1 ml-0.5">이동</span>
+                <span className="text-[9px] text-indigo-400 font-bold">이동</span>
               </button>
             </div>
 
@@ -6377,6 +6395,79 @@ export default function EnglishTutorApp() {
 
         </div>
 
+
+        {/* 문장 이동 팝업 모달 */}
+        {isJumping && (
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-150"
+            onClick={() => setIsJumping(false)}
+          >
+            <div 
+              className="bg-slate-900 border border-slate-700 p-5 rounded-2xl max-w-xs w-full shadow-2xl flex flex-col gap-3.5"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <BookOpen className="w-4 h-4 text-indigo-400" />
+                  <h3 className="text-sm font-bold text-white">문장 바로 이동</h3>
+                </div>
+                <button 
+                  onClick={() => setIsJumping(false)} 
+                  className="text-slate-400 hover:text-white text-xs p-1"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <p className="text-xs text-slate-400">
+                이동할 번호 (1 ~ {UNIT61_DATABASE.length})를 입력하세요.
+              </p>
+              
+              <form onSubmit={handleJumpSubmit} className="flex gap-2">
+                <input 
+                  type="number" 
+                  min="1" 
+                  max={UNIT61_DATABASE.length}
+                  value={jumpInput} 
+                  onChange={(e) => setJumpInput(e.target.value)} 
+                  placeholder={`1 ~ ${UNIT61_DATABASE.length}`}
+                  autoFocus 
+                  className="flex-1 px-3 py-2 text-sm bg-slate-950 border border-slate-700 rounded-xl text-white text-center focus:outline-none focus:border-indigo-500 font-bold" 
+                />
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-bold text-white shadow-md active:scale-95 transition-all"
+                >
+                  이동
+                </button>
+              </form>
+
+              {/* 빠른 구간 점프 버튼들 */}
+              <div className="pt-2 border-t border-slate-800/80 flex flex-col gap-1.5">
+                <span className="text-[10px] text-slate-500 font-semibold">빠른 이동:</span>
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {[1, 30, 60, 100, 150, 200, 250, 287].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      onClick={() => {
+                        jumpToSentence(num - 1);
+                        setIsJumping(false);
+                      }}
+                      className={`px-2 py-1 rounded-md text-[10px] font-semibold border transition-all active:scale-95 ${
+                        currentIndex + 1 === num
+                          ? 'bg-indigo-600 text-white border-indigo-500 font-bold'
+                          : 'bg-slate-800 hover:bg-slate-750 text-slate-300 border-slate-700'
+                      }`}
+                    >
+                      #{num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
