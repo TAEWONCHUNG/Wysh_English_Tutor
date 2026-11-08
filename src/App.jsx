@@ -5996,6 +5996,9 @@ export default function EnglishTutorApp() {
       if (localResult.markedSpoken) {
         setMarkedSpoken(localResult.markedSpoken);
       }
+      
+      // 사용자 발음 판정 후 성공/실패 효과음 재생
+      playSoundEffect(localResult.isPerfect ? 'success' : 'retry');
     } catch (err) {
       setEvaluation("발음을 인식했습니다. 다시 한번 또렷하게 시도해 보세요!");
     } finally {
@@ -6045,6 +6048,35 @@ export default function EnglishTutorApp() {
     speakText(UNIT61_DATABASE[prevIdx].text);
   };
 
+
+  // 특정 문장 번호로 이동
+  const handleJumpToSentence = () => {
+    const input = window.prompt(`이동할 문장 번호를 입력하세요 (1 ~ ${UNIT61_DATABASE.length}):`, currentIndex + 1);
+    if (input === null) return; // Cancelled
+    
+    const num = parseInt(input, 10);
+    if (!isNaN(num) && num >= 1 && num <= UNIT61_DATABASE.length) {
+      setUserSpeech("");
+      setRecordedAudioUrl(null);
+      setEvaluation(null);
+      setIsPerfect(false);
+      setMarkedSpoken("");
+      setErrorMsg("");
+
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      if (userAudioPlayerRef.current) {
+        userAudioPlayerRef.current.pause();
+        userAudioPlayerRef.current.currentTime = 0;
+      }
+
+      const nextIdx = num - 1;
+      setCurrentIndex(nextIdx);
+      speakText(UNIT61_DATABASE[nextIdx].text);
+    } else {
+      alert("올바른 번호를 입력해 주세요.");
+    }
+  };
+
   if (!speechSupported) {
     return (
       <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4">
@@ -6067,9 +6099,14 @@ export default function EnglishTutorApp() {
             <div className="flex items-center gap-1.5">
               <BookOpen className="w-4 h-4 text-indigo-400" />
               <h1 className="font-bold text-sm text-white tracking-tight">Unit 61 Study</h1>
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-indigo-300">
-                #{currentIndex + 1} / {UNIT61_DATABASE.length}
-              </span>
+              <button
+                onClick={handleJumpToSentence}
+                title="원하는 문장 번호로 이동"
+                className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-indigo-300 hover:bg-indigo-600 hover:text-white transition-all active:scale-95 flex items-center gap-1"
+              >
+                <span>#{currentIndex + 1} / {UNIT61_DATABASE.length}</span>
+                <span className="text-[9px] opacity-70 border-l border-indigo-400/50 pl-1 ml-0.5">이동</span>
+              </button>
             </div>
 
             <div className="flex items-center gap-1.5">
