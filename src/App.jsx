@@ -20,13 +20,10 @@ import {
   RefreshCw
 } from 'lucide-react';
 
-// 👇 여기에 이전에 복사해 두신 2,700문장 JSON 데이터를 붙여넣어 주세요!
-// (예시: const fullCourseData = { "53": { "1": { "1": [ ... ] } } };)
-const fullCourseData = {
-  // 여기에 데이터를 덮어쓰세요.
-};
+// 같은 src 폴더의 courseData.json을 그대로 불러옵니다.
+import fullCourseData from './courseData.json';
 
-const STORAGE_KEY = 'wysh_english_tutor_progress_v2';
+const STORAGE_KEY = 'wysh_english_tutor_progress_v3';
 
 const loadSavedProgress = () => {
   try {
@@ -133,9 +130,7 @@ const playSoundEffect = (type) => {
         osc.stop(now + idx * 0.13 + 0.23);
       });
     }
-  } catch (err) {
-    console.warn("Audio effect error:", err);
-  }
+  } catch (err) {}
 };
 
 const generateLocalFeedback = (target, spoken) => {
@@ -267,13 +262,11 @@ export default function EnglishTutorApp() {
 
   const [isCoursePickerOpen, setIsCoursePickerOpen] = useState(false);
   const [pickerTab, setPickerTab] = useState('unit');
-  const [showHintText, setShowHintText] = useState(false);
+  const [showHintText, setShowHintText] = useState(true);
   const [isJumping, setIsJumping] = useState(false);
   const [jumpInput, setJumpInput] = useState("");
   const [speechSpeed, setSpeechSpeed] = useState(0.85);
   const [playingChunkIdx, setPlayingChunkIdx] = useState(null);
-  
-  // 내 목소리 녹음 토글 (메모리 누수 방지용)
   const [recordMyVoice, setRecordMyVoice] = useState(false);
 
   const speechSpeedRef = useRef(0.85);
@@ -302,7 +295,6 @@ export default function EnglishTutorApp() {
 
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [isBusy, setIsBusy] = useState(false); 
   const [userSpeech, setUserSpeech] = useState("");
   const [recordedAudioUrl, setRecordedAudioUrl] = useState(null);
   const [isPlayingMyVoice, setIsPlayingMyVoice] = useState(false);
@@ -324,23 +316,9 @@ export default function EnglishTutorApp() {
   const audioChunksRef = useRef([]);
   const userAudioPlayerRef = useRef(null);
   const isRecordingRef = useRef(false);
+  const hasEvaluatedRef = useRef(false);
   const accumulatedSpeechRef = useRef("");
-  const ttsTimerRef = useRef(null);
   const utteranceRef = useRef(null);
-
-  const destroyRecognition = () => {
-    if (recognitionRef.current) {
-      const rec = recognitionRef.current;
-      recognitionRef.current = null;
-      rec.onstart = null;
-      rec.onresult = null;
-      rec.onerror = null;
-      rec.onend = null;
-      try {
-        rec.abort();
-      } catch (e) {}
-    }
-  };
 
   const destroyMediaRecorder = () => {
     if (mediaRecorderRef.current) {
@@ -349,9 +327,7 @@ export default function EnglishTutorApp() {
       mr.ondataavailable = null;
       mr.onstop = null;
       if (mr.state !== 'inactive') {
-        try {
-          mr.stop();
-        } catch (e) {}
+        try { mr.stop(); } catch (e) {}
       }
     }
     if (mediaStreamRef.current) {
@@ -363,11 +339,8 @@ export default function EnglishTutorApp() {
     audioChunksRef.current = [];
   };
 
+  // 재생 중인 음성만 안전하게 정지 (크롬 speechSynthesis.cancel() 프리징 방지)
   const stopAllAudioOnly = () => {
-    if (ttsTimerRef.current) {
-      clearTimeout(ttsTimerRef.current);
-      ttsTimerRef.current = null;
-    }
     if (utteranceRef.current) {
       utteranceRef.current.onstart = null;
       utteranceRef.current.onend = null;
@@ -380,7 +353,7 @@ export default function EnglishTutorApp() {
         userAudioPlayerRef.current.currentTime = 0;
       } catch (e) {}
     }
-    if ('speechSynthesis' in window) {
+    if ('speechSynthesis' in window && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
       try { window.speechSynthesis.cancel(); } catch (e) {}
     }
     setIsPlayingAudio(false);
@@ -389,11 +362,18 @@ export default function EnglishTutorApp() {
     setIsPlayingUserTts(false);
   };
 
-  const stopAllMediaAndSpeech = () => {
+  const stopRecordingSilently = () => {
+    hasEvaluatedRef.current = true;
     isRecordingRef.current = false;
     setIsRecording(false);
-    destroyRecognition();
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
+    }
     destroyMediaRecorder();
+  };
+
+  const stopAllMediaAndSpeech = () => {
+    stopRecordingSilently();
     stopAllAudioOnly();
   };
 
@@ -421,30 +401,29 @@ export default function EnglishTutorApp() {
     if (!('speechSynthesis' in window)) return;
     stopAllAudioOnly();
 
-    ttsTimerRef.current = setTimeout(() => {
-      try {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        utterance.rate = speechSpeedRef.current;
-        utterance.onstart = onStartCb;
-        utterance.onend = () => {
-          utteranceRef.current = null;
-          onEndCb();
-        };
-        utterance.onerror = () => {
-          utteranceRef.current = null;
-          onEndCb();
-        };
-        utteranceRef.current = utterance;
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
+    try {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = speechSpeedRef.current;
+      utterance.onstart = onStartCb;
+      utterance.onend = () => {
         utteranceRef.current = null;
         onEndCb();
-      }
-    }, 60);
+      };
+      utterance.onerror = () => {
+        utteranceRef.current = null;
+        onEndCb();
+      };
+      utteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      utteranceRef.current = null;
+      onEndCb();
+    }
   };
 
   const speakText = (text) => {
+    if (isRecordingRef.current) stopRecordingSilently();
     setPlayingChunkIdx(null);
     triggerSafeTts(
       text,
@@ -454,6 +433,7 @@ export default function EnglishTutorApp() {
   };
 
   const playChunkAudio = (chunkText, idx) => {
+    if (isRecordingRef.current) stopRecordingSilently();
     triggerSafeTts(
       chunkText,
       () => {
@@ -496,168 +476,176 @@ export default function EnglishTutorApp() {
     );
   };
 
-  const startFreshRecognition = () => {
-    if (!SpeechRecognitionAPI) return;
-    destroyRecognition();
+  // 녹음 종료 및 발음 채점 (수동 '완료' 클릭 또는 모바일 자동 종료 시 1회만 실행)
+  const finishAndEvaluate = () => {
+    if (hasEvaluatedRef.current) return;
+    hasEvaluatedRef.current = true;
+    isRecordingRef.current = false;
+    setIsRecording(false);
 
-    const recognition = new SpeechRecognitionAPI();
-    recognition.continuous = false; 
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch (e) {}
+    }
 
-    let sessionFinal = accumulatedSpeechRef.current ? accumulatedSpeechRef.current + " " : "";
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      try { mediaRecorderRef.current.stop(); } catch (e) { destroyMediaRecorder(); }
+    } else {
+      destroyMediaRecorder();
+    }
 
-    recognition.onresult = (event) => {
-      let currentFinal = "";
-      let currentInterim = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const res = event.results[i];
-        if (res.isFinal) currentFinal += res[0].transcript + " ";
-        else currentInterim += res[0].transcript;
-      }
-      if (currentFinal) {
-        sessionFinal += currentFinal;
-      }
-      const combined = (sessionFinal + currentInterim).trim();
-      accumulatedSpeechRef.current = combined;
-      setUserSpeech(combined);
-    };
-
-    recognition.onerror = (event) => {
-      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        isRecordingRef.current = false;
-        setIsRecording(false);
-        destroyMediaRecorder();
-        setErrorMsg("마이크 권한이 차단되었습니다. 브라우저 설정을 확인해 주세요.");
-      }
-    };
-
-    recognition.onend = () => {
-      if (isRecordingRef.current) {
-        setTimeout(() => {
-          if (isRecordingRef.current) {
-            startFreshRecognition();
-          }
-        }, 150);
-      }
-    };
-
-    recognitionRef.current = recognition;
-    try {
-      recognition.start();
-    } catch (e) {
-      console.warn("Recognition start skipped:", e);
+    const spoken = accumulatedSpeechRef.current.trim();
+    if (spoken) {
+      setIsEvaluating(true);
+      setTimeout(() => {
+        const result = generateLocalFeedback(displayItem.text, spoken);
+        setIsPerfect(result.isPerfect);
+        setEvaluation(result.message);
+        setMarkedSpoken(result.markedSpoken || "");
+        playSoundEffect(result.isPerfect ? 'success' : 'retry');
+        setIsEvaluating(false);
+      }, 120);
+    } else {
+      setErrorMsg("음성이 감지되지 않았습니다. 마이크에 대고 다시 말씀해 보세요.");
     }
   };
 
   const toggleRecording = async () => {
-    if (isBusy) return;
-
     if (isRecording) {
-      setIsBusy(true);
-      isRecordingRef.current = false;
-      setIsRecording(false);
+      finishAndEvaluate();
+      return;
+    }
 
-      destroyRecognition();
+    // 1. 재생 중인 오디오 정지
+    stopAllAudioOnly();
 
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-        try {
-          mediaRecorderRef.current.stop();
-        } catch (e) {
-          destroyMediaRecorder();
-        }
-      } else {
-        destroyMediaRecorder();
+    // 2. 상태 초기화
+    setUserSpeech("");
+    accumulatedSpeechRef.current = "";
+    hasEvaluatedRef.current = false;
+    setEvaluation(null);
+    setIsPerfect(false);
+    setMarkedSpoken("");
+    setErrorMsg("");
+    setRecordedAudioUrl((prevUrl) => {
+      if (prevUrl) URL.revokeObjectURL(prevUrl);
+      return null;
+    });
+
+    if (!SpeechRecognitionAPI) {
+      setErrorMsg("이 브라우저는 음성 인식을 지원하지 않습니다.");
+      return;
+    }
+
+    // 3. 사용자 클릭 이벤트 안에서 즉시(동기적으로) 음성 인식 시작 (모바일/사파리 멈춤 원천 차단)
+    try {
+      if (!recognitionRef.current) {
+        const recognition = new SpeechRecognitionAPI();
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        recognition.continuous = !isMobile;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        recognitionRef.current = recognition;
       }
 
-      const spoken = accumulatedSpeechRef.current.trim();
-      if (spoken) {
-        setIsEvaluating(true);
-        setTimeout(() => {
-          const result = generateLocalFeedback(displayItem.text, spoken);
-          setIsPerfect(result.isPerfect);
-          setEvaluation(result.message);
-          setMarkedSpoken(result.markedSpoken || "");
-          playSoundEffect(result.isPerfect ? 'success' : 'retry');
-          setIsEvaluating(false);
-          setIsBusy(false);
-        }, 150);
-      } else {
-        setErrorMsg("음성이 감지되지 않았습니다. 마이크에 대고 다시 말씀해 보세요.");
-        setIsBusy(false);
-      }
-    } else {
-      setIsBusy(true);
-      stopAllMediaAndSpeech();
+      const recognition = recognitionRef.current;
 
-      setUserSpeech("");
-      accumulatedSpeechRef.current = "";
-      setEvaluation(null);
-      setIsPerfect(false);
-      setMarkedSpoken("");
-      setErrorMsg("");
-      
-      setRecordedAudioUrl((prevUrl) => {
-        if (prevUrl) URL.revokeObjectURL(prevUrl);
-        return null;
-      });
-
-      await new Promise((r) => setTimeout(r, 80));
-
-      try {
-        if (recordMyVoice) {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: {
-              echoCancellation: true,
-              noiseSuppression: true,
-              autoGainControl: true
-            }
-          });
-          mediaStreamRef.current = stream;
-
-          const mimeType = getBestAudioMimeType();
-          const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
-          audioChunksRef.current = [];
-
-          mediaRecorder.ondataavailable = (e) => {
-            if (e.data && e.data.size > 0) {
-              audioChunksRef.current.push(e.data);
-            }
-          };
-
-          mediaRecorder.onstop = () => {
-            if (audioChunksRef.current.length > 0) {
-              const blob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
-              audioChunksRef.current = [];
-              setRecordedAudioUrl((prevUrl) => {
-                if (prevUrl) URL.revokeObjectURL(prevUrl);
-                return URL.createObjectURL(blob);
-              });
-            }
-            if (mediaStreamRef.current) {
-              mediaStreamRef.current.getTracks().forEach((t) => {
-                try { t.stop(); } catch (e) {}
-              });
-              mediaStreamRef.current = null;
-            }
-            mediaRecorderRef.current = null;
-          };
-
-          mediaRecorder.start(250);
-          mediaRecorderRef.current = mediaRecorder;
-        }
-
+      recognition.onstart = () => {
         isRecordingRef.current = true;
         setIsRecording(true);
-        startFreshRecognition();
-      } catch (e) {
-        isRecordingRef.current = false;
-        setIsRecording(false);
-        destroyMediaRecorder();
-        setErrorMsg("마이크 접근 권한이 필요합니다. 브라우저 설정에서 마이크를 허용해 주세요.");
-      } finally {
-        setIsBusy(false);
-      }
+        setErrorMsg("");
+      };
+
+      recognition.onresult = (event) => {
+        let finalTranscripts = "";
+        let interimTranscripts = "";
+        for (let i = 0; i < event.results.length; i++) {
+          const res = event.results[i];
+          if (res.isFinal) finalTranscripts += res[0].transcript + " ";
+          else interimTranscripts += res[0].transcript;
+        }
+        const combined = (finalTranscripts + interimTranscripts).trim();
+        accumulatedSpeechRef.current = combined;
+        setUserSpeech(combined);
+      };
+
+      recognition.onerror = (event) => {
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          hasEvaluatedRef.current = true;
+          isRecordingRef.current = false;
+          setIsRecording(false);
+          destroyMediaRecorder();
+          setErrorMsg("마이크 권한이 차단되었습니다. 브라우저 설정에서 마이크를 허용해 주세요.");
+        }
+      };
+
+      // 자동 재시작 루프 없이, 발화가 종료되면 즉시 자동 채점 실행
+      recognition.onend = () => {
+        if (isRecordingRef.current && !hasEvaluatedRef.current) {
+          finishAndEvaluate();
+        } else {
+          isRecordingRef.current = false;
+          setIsRecording(false);
+        }
+      };
+
+      isRecordingRef.current = true;
+      setIsRecording(true);
+      recognition.start();
+    } catch (e) {
+      isRecordingRef.current = false;
+      setIsRecording(false);
+      recognitionRef.current = null;
+      setErrorMsg("음성 인식을 초기화했습니다. '말하기'를 한 번 더 눌러 주세요.");
+      return;
+    }
+
+    // 4. '녹음ON'일 때만 별도로 내 목소리 녹음 실행
+    if (recordMyVoice) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+        if (!isRecordingRef.current) {
+          stream.getTracks().forEach((t) => t.stop());
+          return;
+        }
+        mediaStreamRef.current = stream;
+
+        const mimeType = getBestAudioMimeType();
+        const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
+        audioChunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            audioChunksRef.current.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          if (audioChunksRef.current.length > 0) {
+            const blob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
+            audioChunksRef.current = [];
+            setRecordedAudioUrl((prevUrl) => {
+              if (prevUrl) URL.revokeObjectURL(prevUrl);
+              return URL.createObjectURL(blob);
+            });
+          }
+          if (mediaStreamRef.current) {
+            mediaStreamRef.current.getTracks().forEach((t) => {
+              try { t.stop(); } catch (e) {}
+            });
+            mediaStreamRef.current = null;
+          }
+          mediaRecorderRef.current = null;
+        };
+
+        mediaRecorder.start(250);
+        mediaRecorderRef.current = mediaRecorder;
+      } catch (e) {}
     }
   };
 
@@ -727,6 +715,7 @@ export default function EnglishTutorApp() {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-start sm:justify-center p-2 sm:p-4 font-sans antialiased">
       <div className="w-full max-w-lg bg-slate-900/95 border border-slate-800/90 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden flex flex-col">
         
+        {/* 상단 통합 네비게이션 헤더 */}
         <div className="bg-slate-900 border-b border-slate-800/80 px-3 py-2.5 flex items-center justify-between gap-1.5">
           <button
             type="button"
@@ -759,7 +748,7 @@ export default function EnglishTutorApp() {
             <button
               type="button"
               onClick={() => setRecordMyVoice((v) => !v)}
-              title="내 목소리 녹음 기능 켜기/끄기 (끄면 장시간 학습 시 훨씬 안정적입니다)"
+              title="내 목소리 녹음 기능 켜기/끄기"
               className={`px-2 py-1 rounded-lg text-[10px] font-semibold border flex items-center gap-1 transition-all active:scale-95 ${
                 recordMyVoice
                   ? 'bg-emerald-950/80 border-emerald-500/60 text-emerald-300'
@@ -780,6 +769,7 @@ export default function EnglishTutorApp() {
           </div>
         </div>
 
+        {/* 메인 섀도잉 및 피드백 통합 영역 */}
         <div className="p-3 sm:p-4 flex flex-col gap-2.5">
           
           <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 text-center flex flex-col items-center justify-center">
@@ -862,6 +852,7 @@ export default function EnglishTutorApp() {
             )}
           </div>
 
+          {/* 메인 컨트롤 4버튼 */}
           <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
             <button
               type="button"
@@ -896,7 +887,6 @@ export default function EnglishTutorApp() {
 
             <button
               type="button"
-              disabled={isBusy}
               onClick={toggleRecording}
               className={`py-2.5 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all active:scale-95 ${
                 isRecording
@@ -916,6 +906,7 @@ export default function EnglishTutorApp() {
             </div>
           )}
 
+          {/* 내가 말한 내용 & 튜터 피드백 */}
           {(userSpeech || isEvaluating || evaluation) && (
             <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 flex flex-col gap-2.5">
               <div className="bg-slate-900/90 border border-slate-800/90 rounded-lg p-2.5">
@@ -1018,6 +1009,7 @@ export default function EnglishTutorApp() {
 
         </div>
 
+        {/* 3단계 코스 선택 모달 */}
         {isCoursePickerOpen && (
           <div
             className="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-3"
@@ -1138,6 +1130,7 @@ export default function EnglishTutorApp() {
           </div>
         )}
 
+        {/* 문장 번호 바로 이동 팝업 모달 */}
         {isJumping && (
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
