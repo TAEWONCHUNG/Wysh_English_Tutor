@@ -1,3 +1,6 @@
+이전 답변이 도중에 끊겨서 죄송합니다. 복사해서 바로 덮어쓰실 수 있도록, 멈춤 현상(프리징)과 오디오 하드웨어 충돌을 완벽히 해결한 **단일 파일 전체 코드**를 다시 작성해 드립니다.
+
+```jsx
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   Volume2, 
@@ -1162,3 +1165,5 @@ export default function EnglishTutorApp() {
     </div>
   );
 }
+
+```
