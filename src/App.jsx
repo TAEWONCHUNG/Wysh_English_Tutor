@@ -72,7 +72,7 @@ const cleanText = (str) => {
     .trim();
 };
 
-// 전역 싱글톤 AudioContext (반복 생성으로 인한 브라우저 오디오 리소스 고갈/프리징 완벽 방지)
+// 전역 싱글톤 AudioContext
 let sharedAudioCtx = null;
 
 const playSoundEffect = (type) => {
@@ -86,7 +86,7 @@ const playSoundEffect = (type) => {
     const ctx = sharedAudioCtx;
 
     if (ctx.state === 'suspended') {
-      ctx.resume();
+      ctx.resume().catch(() => {});
     }
 
     const now = ctx.currentTime;
@@ -295,35 +295,70 @@ export default function EnglishTutorApp() {
   const userAudioPlayerRef = useRef(null);
   const isRecordingRef = useRef(false);
   const accumulatedSpeechRef = useRef("");
+  const restartCountRef = useRef(0);
+  const restartTimerRef = useRef(null);
+  const ttsTimerRef = useRef(null);
 
-  // 녹음 및 오디오 리소스 안전 정리 함수
+  // 크롬/사파리 speechSynthesis 15초 이상 경과 시 멈춤(Hang) 방지용 킵얼라이브
+  useEffect(() => {
+    const keepAliveInterval = setInterval(() => {
+      if ('speechSynthesis' in window && window.speechSynthesis.speaking) {
+        window.speechSynthesis.pause();
+        window.speechSynthesis.resume();
+      }
+    }, 10000);
+    return () => clearInterval(keepAliveInterval);
+  }, []);
+
+  // 녹음 및 오디오 리소스 완전 해제 함수
   const stopAllMediaAndSpeech = () => {
     isRecordingRef.current = false;
+    restartCountRef.current = 0;
     setIsRecording(false);
 
+    if (restartTimerRef.current) {
+      clearTimeout(restartTimerRef.current);
+      restartTimerRef.current = null;
+    }
+
+    if (ttsTimerRef.current) {
+      clearTimeout(ttsTimerRef.current);
+      ttsTimerRef.current = null;
+    }
+
+    // 1. SpeechRecognition 먼저 강제 중단 (이벤트 큐 비우기)
     try {
-      if (recognitionRef.current) recognitionRef.current.stop();
+      if (recognitionRef.current) recognitionRef.current.abort();
     } catch (e) {}
 
+    // 2. MediaRecorder 정지
     try {
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         mediaRecorderRef.current.stop();
       }
     } catch (e) {}
 
+    // 3. 하드웨어 마이크 트랙 즉시 반환
     if (mediaStreamRef.current) {
-      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+      mediaStreamRef.current.getTracks().forEach((track) => {
+        try { track.stop(); } catch (e) {}
+      });
       mediaStreamRef.current = null;
     }
 
+    // 4. 녹음 재생 오디오 정지
     if (userAudioPlayerRef.current) {
-      userAudioPlayerRef.current.pause();
-      userAudioPlayerRef.current.currentTime = 0;
+      try {
+        userAudioPlayerRef.current.pause();
+        userAudioPlayerRef.current.currentTime = 0;
+      } catch (e) {}
     }
 
+    // 5. TTS 음성 합성 정지
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      try { window.speechSynthesis.cancel(); } catch (e) {}
     }
+
     setIsPlayingAudio(false);
     setPlayingChunkIdx(null);
     setIsPlayingMyVoice(false);
@@ -344,7 +379,7 @@ export default function EnglishTutorApp() {
     setCurrentIndex(0);
   };
 
-  // 음성 인식(STT) 초기화 및 자동 재연결 처리
+  // 음성 인식(STT) 초기화 및 무한 루프 차단 처리
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -360,6 +395,8 @@ export default function EnglishTutorApp() {
       };
 
       recognition.onresult = (event) => {
+        // 정상적으로 음성이 인식되면 재시도 카운트 리셋
+        restartCountRef.current = 0;
         let finalTranscripts = "";
         let interimTranscripts = "";
         for (let i = 0; i < event.results.length; i++) {
@@ -373,18 +410,37 @@ export default function EnglishTutorApp() {
       };
 
       recognition.onerror = (event) => {
-        if (event.error !== 'no-speech' && event.error !== 'aborted') {
-          console.warn("Speech recognition error:", event.error);
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          isRecordingRef.current = false;
+          setIsRecording(false);
+          setErrorMsg("마이크 권한이 차단되었습니다. 브라우저 설정을 확인해 주세요.");
+        } else if (event.error !== 'no-speech' && event.error !== 'aborted') {
+          console.warn("Speech recognition warning:", event.error);
         }
       };
 
-      // 침묵으로 인해 인식이 잠시 끊겼을 때 녹음 중 상태라면 자동 재시작
+      // 침묵으로 인식이 끊겼을 때 무한 루프 없이 안전하게 재연결
       recognition.onend = () => {
         if (isRecordingRef.current) {
-          try {
-            recognition.start();
-          } catch (e) {}
+          if (restartCountRef.current < 3) {
+            restartCountRef.current += 1;
+            restartTimerRef.current = setTimeout(() => {
+              if (isRecordingRef.current) {
+                try {
+                  recognition.start();
+                } catch (e) {
+                  isRecordingRef.current = false;
+                  setIsRecording(false);
+                }
+              }
+            }, 250);
+          } else {
+            // 비정상 연속 재시작 감지 시 안전 종료
+            isRecordingRef.current = false;
+            setIsRecording(false);
+          }
         } else {
+          restartCountRef.current = 0;
           setIsRecording(false);
         }
       };
@@ -395,68 +451,75 @@ export default function EnglishTutorApp() {
     }
 
     return () => {
-      isRecordingRef.current = false;
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.abort();
-        } catch (e) {}
-      }
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
-      }
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopAllMediaAndSpeech();
     };
   }, []);
 
-  const speakText = (text) => {
+  // TTS 안전 재생 헬퍼 (cancel 직후 호출 시 크롬 멈춤 방지용 50ms 지연)
+  const triggerSafeTts = (text, onStartCb, onEndCb) => {
     if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
+    if (ttsTimerRef.current) {
+      clearTimeout(ttsTimerRef.current);
+      ttsTimerRef.current = null;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+    } catch (e) {}
+
+    ttsTimerRef.current = setTimeout(() => {
+      try {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = speechSpeedRef.current;
+        utterance.onstart = onStartCb;
+        utterance.onend = onEndCb;
+        utterance.onerror = onEndCb;
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        onEndCb();
+      }
+    }, 50);
+  };
+
+  const speakText = (text) => {
     setPlayingChunkIdx(null);
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = speechSpeedRef.current;
-    utterance.onstart = () => setIsPlayingAudio(true);
-    utterance.onend = () => setIsPlayingAudio(false);
-    utterance.onerror = () => setIsPlayingAudio(false);
-    window.speechSynthesis.speak(utterance);
+    triggerSafeTts(
+      text,
+      () => setIsPlayingAudio(true),
+      () => setIsPlayingAudio(false)
+    );
   };
 
   const playChunkAudio = (chunkText, idx) => {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(chunkText);
-    utterance.lang = 'en-US';
-    utterance.rate = speechSpeedRef.current;
-    utterance.onstart = () => {
-      setIsPlayingAudio(true);
-      setPlayingChunkIdx(idx);
-    };
-    utterance.onend = () => {
-      setIsPlayingAudio(false);
-      setPlayingChunkIdx(null);
-    };
-    utterance.onerror = () => {
-      setIsPlayingAudio(false);
-      setPlayingChunkIdx(null);
-    };
-    window.speechSynthesis.speak(utterance);
+    triggerSafeTts(
+      chunkText,
+      () => {
+        setIsPlayingAudio(true);
+        setPlayingChunkIdx(idx);
+      },
+      () => {
+        setIsPlayingAudio(false);
+        setPlayingChunkIdx(null);
+      }
+    );
   };
 
   const playMyVoiceAudio = () => {
     if (!recordedAudioUrl) return;
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
     try {
-      if (userAudioPlayerRef.current) {
-        userAudioPlayerRef.current.pause();
-        userAudioPlayerRef.current.currentTime = 0;
+      if (!userAudioPlayerRef.current) {
+        userAudioPlayerRef.current = new Audio();
+        userAudioPlayerRef.current.setAttribute('playsinline', 'true');
+        userAudioPlayerRef.current.setAttribute('webkit-playsinline', 'true');
       }
-      const audio = new Audio();
+      const audio = userAudioPlayerRef.current;
+      audio.pause();
+      audio.currentTime = 0;
       audio.src = recordedAudioUrl;
-      audio.setAttribute('playsinline', 'true');
-      audio.setAttribute('webkit-playsinline', 'true');
-      userAudioPlayerRef.current = audio;
       setIsPlayingMyVoice(true);
       audio.onended = () => setIsPlayingMyVoice(false);
       audio.onerror = () => setIsPlayingMyVoice(false);
@@ -467,30 +530,41 @@ export default function EnglishTutorApp() {
   };
 
   const playUserSpeechTts = () => {
-    if (!userSpeech || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(userSpeech);
-    utterance.lang = 'en-US';
-    utterance.rate = speechSpeedRef.current;
-    utterance.onstart = () => setIsPlayingUserTts(true);
-    utterance.onend = () => setIsPlayingUserTts(false);
-    utterance.onerror = () => setIsPlayingUserTts(false);
-    window.speechSynthesis.speak(utterance);
+    if (!userSpeech) return;
+    triggerSafeTts(
+      userSpeech,
+      () => setIsPlayingUserTts(true),
+      () => setIsPlayingUserTts(false)
+    );
   };
 
   const toggleRecording = async () => {
     if (isRecording) {
-      // 녹음 종료 및 발음 평가
+      // [녹음 종료 및 평가]
       isRecordingRef.current = false;
+      restartCountRef.current = 0;
       setIsRecording(false);
+
+      if (restartTimerRef.current) {
+        clearTimeout(restartTimerRef.current);
+        restartTimerRef.current = null;
+      }
+
+      // 1. 음성 인식 먼저 즉시 중단
       try {
-        recognitionRef.current?.stop();
+        recognitionRef.current?.abort();
       } catch (e) {}
 
+      // 2. 미디어 레코더 정지 (onstop에서 스트림 트랙 반환)
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         try {
           mediaRecorderRef.current.stop();
         } catch (e) {}
+      } else if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((t) => {
+          try { t.stop(); } catch (e) {}
+        });
+        mediaStreamRef.current = null;
       }
 
       const spoken = accumulatedSpeechRef.current.trim();
@@ -503,18 +577,17 @@ export default function EnglishTutorApp() {
           setMarkedSpoken(result.markedSpoken || "");
           playSoundEffect(result.isPerfect ? 'success' : 'retry');
           setIsEvaluating(false);
-        }, 250);
+        }, 200);
       } else {
         setErrorMsg("음성이 감지되지 않았습니다. 마이크에 대고 다시 말씀해 보세요.");
       }
     } else {
-      // 새 녹음 시작 전 기존 재생/녹음 정리
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      setIsPlayingAudio(false);
-      setPlayingChunkIdx(null);
+      // [새 녹음 시작 전 기존 리소스 완전 정리]
+      stopAllMediaAndSpeech();
 
       setUserSpeech("");
       accumulatedSpeechRef.current = "";
+      restartCountRef.current = 0;
       setEvaluation(null);
       setIsPerfect(false);
       setMarkedSpoken("");
@@ -543,26 +616,35 @@ export default function EnglishTutorApp() {
         mediaRecorder.onstop = () => {
           if (audioChunksRef.current.length > 0) {
             const blob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' });
-            // 이전 녹음 파일 메모리 해제 (Blob URL 메모리 누수 방지)
             setRecordedAudioUrl((prevUrl) => {
               if (prevUrl) URL.revokeObjectURL(prevUrl);
               return URL.createObjectURL(blob);
             });
           }
           if (mediaStreamRef.current) {
-            mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+            mediaStreamRef.current.getTracks().forEach((t) => {
+              try { t.stop(); } catch (e) {}
+            });
             mediaStreamRef.current = null;
           }
         };
 
-        mediaRecorder.start(200);
+        mediaRecorder.start(250);
         mediaRecorderRef.current = mediaRecorder;
 
+        // 마이크 스트림 안정화 후 100ms 뒤 STT 시작 (하드웨어 충돌 방지)
         isRecordingRef.current = true;
-        try {
-          recognitionRef.current?.start();
-        } catch (e) {}
+        setIsRecording(true);
+        setTimeout(() => {
+          if (isRecordingRef.current) {
+            try {
+              recognitionRef.current?.start();
+            } catch (e) {}
+          }
+        }, 100);
       } catch (e) {
+        isRecordingRef.current = false;
+        setIsRecording(false);
         setErrorMsg("마이크 접근 권한이 필요합니다. 브라우저 설정에서 마이크를 허용해 주세요.");
       }
     }
@@ -589,7 +671,6 @@ export default function EnglishTutorApp() {
     if (currentIndex + 1 < episodeDatabase.length) {
       jumpToSentence(currentIndex + 1);
     } else {
-      // 현재 에피소드의 마지막(15번) 문장 완료 시 다음 코스로 자동 전환
       if (selectedEpisode < 3) {
         setSelectedEpisode((e) => e + 1);
         resetEpisodeState();
@@ -777,7 +858,6 @@ export default function EnglishTutorApp() {
             <button
               type="button"
               onClick={() => speakText(displayItem.text)}
-              disabled={isPlayingAudio}
               className={`py-2.5 px-1.5 rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all active:scale-95 ${
                 isPlayingAudio
                   ? 'bg-indigo-900/80 border border-indigo-500 text-indigo-200 ring-2 ring-indigo-500/20'
